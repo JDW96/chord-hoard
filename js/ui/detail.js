@@ -1,0 +1,337 @@
+// detail.js — progression detail view (#/prog/<id>) and the minimal
+// performance-mode placeholder (#/perform/<id>).
+//
+// Key selection is remembered per progression in localStorage under
+// "chordhoard.keychoice" as an object of id → tonic.
+
+import { parseNote, formatNoteDisplay } from "../engine/theory.js";
+import * as capo from "../engine/capo.js";
+import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
+import { state, renderIn, ratingIn } from "./app.js";
+import {
+  el,
+  clear,
+  prettySymbol,
+  prettyNote,
+  capitalise,
+  levelClass,
+  getGuitarData,
+} from "./util.js";
+
+// The 12 supported tonics per mode family (CLAUDE.md's locked spelling
+// choices — the engine doesn't export these lists, so they live here, once,
+// and the chord/scale libraries and performance mode import them from here).
+export const MAJOR_FAMILY_TONICS = ["C", "G", "D", "A", "E", "B", "F#", "F", "Bb", "Eb", "Ab", "Db"];
+export const MINOR_FAMILY_TONICS = ["A", "E", "B", "F#", "C#", "G#", "D", "G", "C", "F", "Bb", "Eb"];
+const MAJOR_FAMILY_MODES = new Set(["major", "mixolydian", "lydian"]);
+
+const KEYCHOICE_KEY = "chordhoard.keychoice";
+
+export function isMajorFamily(entry) {
+  return MAJOR_FAMILY_MODES.has(entry.mode);
+}
+
+export function tonicsFor(entry) {
+  return isMajorFamily(entry) ? MAJOR_FAMILY_TONICS : MINOR_FAMILY_TONICS;
+}
+
+function loadKeyChoices() {
+  try {
+    return JSON.parse(localStorage.getItem(KEYCHOICE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+export function chosenTonic(entry) {
+  const choices = loadKeyChoices();
+  const tonic = choices[entry.id];
+  return tonicsFor(entry).includes(tonic) ? tonic : entry.homeKey;
+}
+
+function rememberTonic(entry, tonic) {
+  const choices = loadKeyChoices();
+  if (tonic === entry.homeKey) delete choices[entry.id];
+  else choices[entry.id] = tonic;
+  try {
+    localStorage.setItem(KEYCHOICE_KEY, JSON.stringify(choices));
+  } catch {
+    /* fine — the choice just won't stick */
+  }
+}
+
+function keyLabel(entry, tonic) {
+  return prettyNote(tonic) + " " + entry.mode;
+}
+
+// ---------------------------------------------------------------------------
+// Detail view
+// ---------------------------------------------------------------------------
+
+export function render(container, params) {
+  const id = decodeURIComponent(params[0] || "");
+  const entry = state.byId.get(id);
+  if (!entry) {
+    container.appendChild(notFound(id));
+    return;
+  }
+
+  let tonic = chosenTonic(entry);
+  let showPerChord = false;
+
+  const body = el("div", { className: "detail-body" });
+  // The href gains the current tonic in draw(), so the chosen key survives
+  // a refresh inside performance mode (#/perform/<id>/<tonic>).
+  const performLink = el("a", { className: "perform-btn" }, "Performance mode");
+
+  container.appendChild(
+    el(
+      "section",
+      { className: "detail" },
+      el(
+        "div",
+        { className: "detail-topbar" },
+        el("a", { className: "back-link", href: "#/hoard" }, "‹ Hoard"),
+        performLink
+      ),
+      body
+    )
+  );
+
+  draw();
+
+  function draw() {
+    clear(body);
+    performLink.href =
+      "#/perform/" + encodeURIComponent(entry.id) + "/" + encodeURIComponent(tonic);
+    const rendered = renderIn(entry, tonic);
+    const rating = ratingIn(entry, tonic, state.instrument);
+    const perChordLevel = new Map(rendered.chords.map((c, i) => [i, rating.perChord[i].level]));
+
+    // ---- Title + badges -------------------------------------------------
+    const badge = el(
+      "button",
+      {
+        type: "button",
+        className: "badge badge-btn " + levelClass(rating.level),
+        attrs: {
+          title: "Tap to see the level of each chord",
+          "aria-pressed": String(showPerChord),
+        },
+        on: {
+          click: () => {
+            showPerChord = !showPerChord;
+            draw();
+          },
+        },
+      },
+      rating.level
+    );
+
+    body.appendChild(
+      el(
+        "header",
+        { className: "detail-head" },
+        el("h2", { className: "detail-name" }, entry.name),
+        el(
+          "div",
+          { className: "detail-meta" },
+          el("span", { className: "chip static" }, keyLabel(entry, tonic)),
+          el("span", { className: "chip static" }, entry.timeSig),
+          el("span", { className: "chip static" }, `${entry.bars} bars`),
+          el("span", { className: "chip static" }, capitalise(entry.tempo)),
+          badge
+        ),
+        el(
+          "div",
+          { className: "card-moods" },
+          entry.moods.map((m) => el("span", { className: "mood-tag" }, m)),
+          entry.genres.map((g) => el("span", { className: "mood-tag genre" }, g))
+        )
+      )
+    );
+
+    // ---- Big chord-by-chord strip ---------------------------------------
+    const strip = el("div", { className: "chord-strip" });
+    rendered.chords.forEach((chord, i) => {
+      strip.appendChild(
+        el(
+          "div",
+          { className: "chord-block" },
+          el("div", { className: "chord-symbol" }, prettySymbol(chord.symbol)),
+          el(
+            "div",
+            { className: "chord-sub" },
+            el("span", { className: "chord-numeral" }, chord.display),
+            el("span", { className: "chord-beats" }, `${chord.beats} beats`)
+          ),
+          showPerChord
+            ? el(
+                "span",
+                { className: "badge small " + levelClass(perChordLevel.get(i)) },
+                perChordLevel.get(i)
+              )
+            : null
+        )
+      );
+    });
+    body.appendChild(strip);
+
+    // ---- Capo hint (guitar only) ----------------------------------------
+    if (state.instrument === "guitar") {
+      const hint = capo.suggest(rendered.chords, tonic, !isMajorFamily(entry));
+      if (hint) {
+        body.appendChild(
+          el(
+            "p",
+            { className: "capo-hint" },
+            el("strong", {}, `Capo ${hint.capo} — play as ${hint.playAs}`),
+            " · " + hint.note
+          )
+        );
+      }
+    }
+
+    // ---- Key selector ----------------------------------------------------
+    const keyRow = el("div", { className: "key-row", attrs: { role: "group", "aria-label": "Choose a key" } });
+    for (const t of tonicsFor(entry)) {
+      keyRow.appendChild(
+        el(
+          "button",
+          {
+            type: "button",
+            className:
+              "key-btn" +
+              (t === tonic ? " selected" : "") +
+              (t === entry.homeKey ? " home" : ""),
+            attrs: {
+              "aria-pressed": String(t === tonic),
+              title: t === entry.homeKey ? "Home key" : undefined,
+            },
+            on: {
+              click: () => {
+                tonic = t;
+                rememberTonic(entry, t);
+                draw();
+              },
+            },
+          },
+          formatNoteDisplay(parseNote(t))
+        )
+      );
+    }
+    body.appendChild(
+      el(
+        "div",
+        { className: "key-picker" },
+        el(
+          "h3",
+          {},
+          "Key",
+          tonic !== entry.homeKey
+            ? el("span", { className: "home-note" }, ` · home key is ${prettyNote(entry.homeKey)}`)
+            : el("span", { className: "home-note" }, " · this is the home key")
+        ),
+        keyRow
+      )
+    );
+
+    // ---- Diagrams strip ---------------------------------------------------
+    const diagrams = el("div", { className: "diagram-strip" });
+    body.appendChild(
+      el("div", { className: "diagrams" }, el("h3", {}, "Chord shapes"), diagrams)
+    );
+    fillDiagrams(diagrams, rendered);
+
+    // ---- Notes -------------------------------------------------------------
+    if (entry.notes) {
+      body.appendChild(
+        el("div", { className: "notes" }, el("h3", {}, "From the bandstand"), el("p", {}, entry.notes))
+      );
+    }
+
+    // ---- Songs ------------------------------------------------------------
+    if (entry.songs && entry.songs.length) {
+      body.appendChild(
+        el(
+          "div",
+          { className: "songs" },
+          el("h3", {}, "As heard in"),
+          el(
+            "ul",
+            {},
+            entry.songs.map((song) =>
+              el(
+                "li",
+                {},
+                el("strong", {}, song.title),
+                ` — ${song.artist} (${prettyNote(song.key)}, ${song.section})`
+              )
+            )
+          )
+        )
+      );
+    }
+  }
+}
+
+function notFound(id) {
+  return el(
+    "section",
+    { className: "coming-soon" },
+    el("h2", {}, "That one's not in the hoard"),
+    el("p", {}, `We couldn't find a progression called "${id}". It may have been renamed or removed.`),
+    el("p", {}, el("a", { href: "#/hoard" }, "Back to the hoard"))
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Diagrams — js/ui/diagrams.js renders SVG strings; the SVG builders escape
+// their own text, so titles are passed RAW (escaping here would double up).
+// Guitar shape data loads lazily via util.getGuitarData().
+// ---------------------------------------------------------------------------
+
+async function fillDiagrams(host, rendered) {
+  const instrument = state.instrument;
+
+  if (instrument === "guitar") {
+    let guitarData;
+    try {
+      guitarData = await getGuitarData();
+    } catch {
+      host.appendChild(
+        el(
+          "div",
+          { className: "diagram-placeholder" },
+          el("p", {}, "Guitar shapes wouldn't load"),
+          el("p", { className: "muted" }, "Check the connection and come back — the chords play fine without them.")
+        )
+      );
+      return;
+    }
+    for (const chord of rendered.distinctChords) {
+      const voicings = voicingsFor(chord, guitarData);
+      const cell = el("figure", { className: "diagram-cell" });
+      if (voicings && voicings.length) {
+        const svgHost = el("div", { className: "diagram-svg" });
+        svgHost.innerHTML = guitarChordSVG(voicings[0], { title: prettySymbol(chord.symbol) });
+        cell.appendChild(svgHost);
+      } else {
+        cell.appendChild(el("div", { className: "diagram-missing" }, "No shape on file"));
+      }
+      cell.appendChild(el("figcaption", {}, prettySymbol(chord.symbol)));
+      host.appendChild(cell);
+    }
+  } else {
+    for (const chord of rendered.distinctChords) {
+      const cell = el("figure", { className: "diagram-cell piano" });
+      const svgHost = el("div", { className: "diagram-svg" });
+      svgHost.innerHTML = pianoChordSVG(chord);
+      cell.appendChild(svgHost);
+      cell.appendChild(el("figcaption", {}, prettySymbol(chord.symbol)));
+      host.appendChild(cell);
+    }
+  }
+}
+
+// Performance mode lives in js/ui/perform.js (real full-screen view, wave 2).

@@ -1,0 +1,1204 @@
+/* app.css — Chord Hoard. Dark, warm, dragon's-hoard gold — but tasteful.
+   Mobile-first (designed at 360×780), works at desktop widths and in
+   780×360 landscape. No frameworks. */
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* Colour — deep warm charcoal, parchment text, one gold accent. */
+  --bg: #1c1712;
+  --bg-raised: #262019;
+  --bg-sunken: #15110d;
+  --bg-sheet: #2b2319;
+  --line: #3b3227;
+  --line-soft: #2e271d;
+
+  --ink: #f2e8d5;
+  --ink-dim: #b5a78d;
+  --ink-faint: #877a63;
+
+  --gold: #e3a83e;
+  --gold-bright: #f0be5e;
+  --gold-dim: #9c7426;
+  --gold-wash: rgba(227, 168, 62, 0.14);
+
+  /* Complexity levels: easy → hard. */
+  --lv-1: #79b06a;
+  --lv-2: #d8b84a;
+  --lv-3: #dd8b45;
+  --lv-4: #d4645a;
+
+  /* Type scale — chord symbols are the hero. */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+  --fs-chord-card: 1.3rem;
+  --fs-chord-hero: clamp(2.2rem, 9vw, 3.4rem);
+  --fs-chord-perform: clamp(2.6rem, 12vw, 5rem);
+
+  /* Spacing */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+
+  --tap: 44px; /* minimum touch target */
+
+  --header-h: 3.25rem;
+  --tabbar-h: 3.5rem;
+
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+}
+
+a {
+  color: var(--gold-bright);
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.muted {
+  color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                              */
+/* ------------------------------------------------------------------ */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: var(--header-h);
+  padding: env(safe-area-inset-top, 0px) max(var(--sp-4), env(safe-area-inset-right, 0px)) 0
+    max(var(--sp-4), env(safe-area-inset-left, 0px));
+  background: rgba(28, 23, 18, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.app-name {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.app-name a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.app-name a::first-letter {
+  color: var(--gold);
+}
+
+.instrument-toggle {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--bg-sunken);
+}
+
+.instrument-toggle button {
+  min-height: 2.25rem;
+  min-width: 4.25rem;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink-dim);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.instrument-toggle button.active {
+  background: var(--gold);
+  color: #221a0e;
+}
+
+/* ------------------------------------------------------------------ */
+/* Main view + tab bar                                                 */
+/* ------------------------------------------------------------------ */
+
+.view {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--sp-4) max(var(--sp-4), env(safe-area-inset-right, 0px)) var(--sp-6)
+    max(var(--sp-4), env(safe-area-inset-left, 0px));
+  outline: none;
+}
+
+.loading {
+  color: var(--ink-dim);
+  text-align: center;
+  padding: var(--sp-6) 0;
+}
+
+.tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-around;
+  min-height: var(--tabbar-h);
+  padding: var(--sp-1) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px)
+    env(safe-area-inset-left, 0px);
+  background: rgba(21, 17, 13, 0.96);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line-soft);
+}
+
+.tabbar a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--tap);
+  padding: var(--sp-1) 0;
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.tabbar a svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.tabbar a.active {
+  color: var(--gold);
+}
+
+/* ------------------------------------------------------------------ */
+/* Chips, badges, tags                                                 */
+/* ------------------------------------------------------------------ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-raised);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+button.chip {
+  min-height: var(--tap);
+}
+
+.chip.selected {
+  background: var(--gold-wash);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.chip.static {
+  min-height: 1.6rem;
+  font-size: var(--fs-xs);
+  pointer-events: none;
+}
+
+.mood-tag {
+  display: inline-block;
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--gold-wash);
+  color: var(--gold-bright);
+  font-size: var(--fs-xs);
+}
+
+.mood-tag.genre {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  min-height: 1.5rem;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #1d150c;
+}
+
+.badge.small {
+  min-width: 1.8rem;
+  min-height: 1.2rem;
+}
+
+button.badge-btn {
+  min-height: var(--tap);
+  min-width: var(--tap);
+  cursor: pointer;
+}
+
+.badge.lv-1, .chip.lv-1.selected { background: var(--lv-1); }
+.badge.lv-2, .chip.lv-2.selected { background: var(--lv-2); }
+.badge.lv-3, .chip.lv-3.selected { background: var(--lv-3); }
+.badge.lv-4, .chip.lv-4.selected { background: var(--lv-4); }
+
+.chip.lv-1.selected, .chip.lv-2.selected, .chip.lv-3.selected,
+.chip.lv-4.selected {
+  color: #1d150c;
+  border-color: transparent;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hoard: search + filters                                             */
+/* ------------------------------------------------------------------ */
+
+.search-row {
+  display: flex;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.search-box {
+  flex: 1;
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-family: inherit;
+}
+
+.search-box::placeholder {
+  color: var(--ink-faint);
+}
+
+.search-box:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.filter-toggle {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-raised);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.filter-toggle.has-active {
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.filter-sheet {
+  display: none;
+  margin-bottom: var(--sp-4);
+  padding: var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-sheet);
+  box-shadow: var(--shadow);
+}
+
+.filter-sheet.open {
+  display: block;
+}
+
+.filter-group {
+  margin-bottom: var(--sp-4);
+}
+
+.filter-group h3 {
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.clear-filters {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-sm);
+  color: var(--gold-bright);
+  font-weight: 600;
+}
+
+.result-count {
+  margin: 0 0 var(--sp-3);
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hoard: cards                                                        */
+/* ------------------------------------------------------------------ */
+
+.card-list {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 700px) {
+  .card-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  display: block;
+  padding: var(--sp-4);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: var(--gold-dim);
+}
+
+.card:active {
+  transform: scale(0.99);
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.card-name {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.card-numerals {
+  margin: var(--sp-2) 0 0;
+  color: var(--gold);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.card-chords {
+  margin: var(--sp-1) 0 var(--sp-3);
+  font-size: var(--fs-chord-card);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-2);
+}
+
+.card-moods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.empty-state {
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+  color: var(--ink-dim);
+}
+
+.empty-lead {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ */
+/* Detail view                                                         */
+/* ------------------------------------------------------------------ */
+
+.detail-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--sp-2);
+  color: var(--ink-dim);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--ink);
+}
+
+.perform-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+  color: #221a0e;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.perform-btn:hover {
+  background: var(--gold-bright);
+}
+
+.detail-head {
+  margin-bottom: var(--sp-4);
+}
+
+.detail-name {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--sp-2);
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-2);
+}
+
+.chord-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.chord-block {
+  flex: 1 1 8rem;
+  min-width: 7rem;
+  padding: var(--sp-3) var(--sp-2);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  text-align: center;
+}
+
+.chord-symbol {
+  font-size: var(--fs-chord-hero);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.chord-sub {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+}
+
+.chord-numeral {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.chord-block .badge.small {
+  margin-top: var(--sp-2);
+}
+
+.capo-hint {
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--gold-wash);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+}
+
+.capo-hint strong {
+  color: var(--gold-bright);
+}
+
+.key-picker,
+.diagrams,
+.notes,
+.songs {
+  margin-bottom: var(--sp-5);
+}
+
+.key-picker h3,
+.diagrams h3,
+.notes h3,
+.songs h3 {
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.home-note {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.key-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.key-btn {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--ink-dim);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.key-btn.home {
+  border-style: dashed;
+  border-color: var(--gold-dim);
+}
+
+.key-btn.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #221a0e;
+}
+
+.diagram-strip {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+  -webkit-overflow-scrolling: touch;
+}
+
+.diagram-cell {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--sp-2);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  text-align: center;
+}
+
+.diagram-cell figcaption {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.diagram-svg svg {
+  display: block;
+  max-width: 9rem;
+  height: auto;
+}
+
+.diagram-cell.piano .diagram-svg svg {
+  max-width: 13rem;
+}
+
+.diagram-missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9rem;
+  height: 7rem;
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.diagram-placeholder {
+  padding: var(--sp-4);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--ink-dim);
+  text-align: center;
+  width: 100%;
+}
+
+.diagram-placeholder p {
+  margin: 0 0 var(--sp-1);
+  font-weight: 600;
+}
+
+.diagram-placeholder .muted {
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+.notes p {
+  margin: 0;
+  color: var(--ink);
+}
+
+.songs ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.songs li {
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+}
+
+.songs li strong {
+  color: var(--ink);
+}
+
+.songs li:last-child {
+  border-bottom: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Chord library (wave 2 — js/ui/chords-lib.js)                        */
+/* ------------------------------------------------------------------ */
+
+/* Shared bits for both libraries: section headings, link-flavoured
+   key buttons and chips (the pickers are plain hash links). */
+.lib-picker h3,
+.where-next h3,
+.diatonic h3,
+.visitors h3 {
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.lib-picker {
+  margin-bottom: var(--sp-4);
+}
+
+a.key-btn,
+a.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+a.chip {
+  min-height: var(--tap);
+}
+
+.root-btn {
+  font-size: var(--fs-sm);
+  padding: 0 var(--sp-2);
+}
+
+.quality-group {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.quality-group-label {
+  flex: 0 0 4.5rem;
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.quality-row {
+  flex: 1;
+}
+
+.chord-hero {
+  margin: var(--sp-4) 0 var(--sp-5);
+  text-align: center;
+}
+
+.chord-hero-symbol {
+  font-size: var(--fs-chord-hero);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.chord-hero-quality {
+  color: var(--gold);
+  font-weight: 600;
+  margin-top: var(--sp-1);
+}
+
+.chord-hero-notes {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+
+.chord-note {
+  min-width: 2.2rem;
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.chord-note.root {
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.lib-piano-cell {
+  margin: 0;
+}
+
+.lib-piano svg {
+  max-width: 16rem;
+}
+
+.diagram-missing.wide {
+  width: auto;
+  height: auto;
+  padding: var(--sp-4);
+  text-align: left;
+  font-size: var(--fs-sm);
+}
+
+.where-next {
+  margin-bottom: var(--sp-5);
+}
+
+.where-next-lead {
+  margin: 0 0 var(--sp-3);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+}
+
+.dest-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-2);
+}
+
+@media (min-width: 700px) {
+  .dest-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dest-card {
+  display: block;
+  padding: var(--sp-3);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.dest-card:hover,
+.dest-card:focus-visible {
+  border-color: var(--gold-dim);
+}
+
+.dest-symbol {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+
+.dest-numeral {
+  color: var(--gold);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.dest-blurb {
+  margin-top: var(--sp-1);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scale library (wave 2 — js/ui/scales-lib.js)                        */
+/* ------------------------------------------------------------------ */
+
+.scale-hero {
+  margin: var(--sp-4) 0 var(--sp-4);
+  text-align: center;
+}
+
+.scale-name {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--sp-2);
+}
+
+.scale-notes {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.scale-guitar-tip {
+  margin-bottom: var(--sp-5);
+}
+
+.diatonic {
+  margin-bottom: var(--sp-5);
+}
+
+.degree-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  gap: var(--sp-2);
+}
+
+.degree-cell {
+  padding: var(--sp-3) var(--sp-2);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  text-align: center;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.degree-cell:hover,
+.degree-cell:focus-visible {
+  border-color: var(--gold-dim);
+}
+
+.degree-numeral {
+  color: var(--gold);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.degree-symbol {
+  font-size: var(--fs-md);
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.visitors {
+  margin-bottom: var(--sp-5);
+}
+
+.visitor-list {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.visitor-card {
+  display: block;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.visitor-card:hover,
+.visitor-card:focus-visible {
+  border-color: var(--gold-dim);
+}
+
+.visitor-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.visitor-symbol {
+  font-size: var(--fs-md);
+  font-weight: 800;
+}
+
+.visitor-blurb {
+  margin: var(--sp-1) 0 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+}
+
+/* ------------------------------------------------------------------ */
+/* Performance mode (wave 2 — js/ui/perform.js)                        */
+/*                                                                     */
+/* Full-viewport takeover: the shell's header and tab bar are hidden   */
+/* and the view pins itself to the screen. Chord symbols are the only  */
+/* bright thing on stage; everything else is dimmed. The symbol size   */
+/* is driven by --perform-fs, set (and shrunk to fit) from JS.         */
+/* ------------------------------------------------------------------ */
+
+body[data-route="perform"] {
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+body[data-route="perform"] .app-header,
+body[data-route="perform"] .tabbar {
+  display: none;
+}
+
+.perform-full {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.perform-strip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: env(safe-area-inset-top, 0px) var(--sp-2) 0 var(--sp-1);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.perform-exit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  color: var(--ink-dim);
+  font-size: var(--fs-md);
+  text-decoration: none;
+}
+
+.perform-exit:hover {
+  color: var(--ink);
+}
+
+.perform-strip-info {
+  flex: 1;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wake-dot {
+  color: var(--gold-dim);
+  font-size: 0.55rem;
+  padding-right: var(--sp-1);
+}
+
+.perform-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: var(--sp-1);
+  padding: 0 max(var(--sp-2), env(safe-area-inset-right, 0px))
+    max(var(--sp-2), env(safe-area-inset-bottom, 0px))
+    max(var(--sp-2), env(safe-area-inset-left, 0px));
+  overflow: hidden;
+}
+
+.perform-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+}
+
+.perform-symbol {
+  font-size: var(--perform-fs, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.perform-sub {
+  display: flex;
+  gap: 0.7em;
+  font-size: max(0.7rem, calc(var(--perform-fs, 3rem) * 0.22));
+  color: var(--ink-faint);
+}
+
+.perform-numeral {
+  color: var(--gold-dim);
+  font-weight: 700;
+}
+
+.perform-beats::after {
+  content: " beats";
+}
+
+/* ------------------------------------------------------------------ */
+/* Coming-soon panels                                                  */
+/* ------------------------------------------------------------------ */
+
+.coming-soon {
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+}
+
+.coming-soon h2 {
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-xl);
+}
+
+.coming-soon p {
+  margin: 0 auto var(--sp-3);
+  max-width: 28rem;
+  color: var(--ink-dim);
+}
+
+.coming-soon-tag {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius-pill);
+  color: var(--gold-bright);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ */
+/* Landscape (e.g. 780×360) — trim the chrome                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-height: 440px) {
+  :root {
+    --header-h: 2.75rem;
+    --tabbar-h: 2.75rem;
+  }
+
+  .tabbar a svg {
+    display: none;
+  }
+
+  .view {
+    padding-top: var(--sp-3);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

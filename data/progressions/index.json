@@ -1,0 +1,5 @@
+{
+  "note": "Manifest of progression batch files, fetched by js/ui/app.js. The empty progressions array keeps tools/validate.js happy (it validates every *.json in this directory as a batch).",
+  "files": ["seed.json"],
+  "progressions": []
+}

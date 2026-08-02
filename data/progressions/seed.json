@@ -1,0 +1,526 @@
+[
+  {
+    "id": "four-chord-anthem-01",
+    "name": "Anthem Engine",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["hopeful", "uplifting", "joyful"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "The four chords behind a thousand choruses, and they still work. Keep the strum steady and let the vi do the emotional dip — the IV lifts you straight back out.",
+    "songs": [
+      { "title": "Let It Be", "artist": "The Beatles", "key": "C", "section": "verse" },
+      { "title": "No Woman, No Cry", "artist": "Bob Marley & The Wailers", "key": "C", "section": "verse" },
+      { "title": "Don't Stop Believin'", "artist": "Journey", "key": "E", "section": "verse" }
+    ]
+  },
+  {
+    "id": "doo-wop-sway-01",
+    "name": "Malt-Shop Sway",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 12 },
+      { "numeral": "vi", "beats": 12 },
+      { "numeral": "IVadd9", "beats": 12 },
+      { "numeral": "V", "beats": 12 }
+    ],
+    "bars": 4,
+    "timeSig": "12/8",
+    "homeKey": "Eb",
+    "tempo": "slow",
+    "moods": ["romantic", "nostalgic", "tender"],
+    "genres": ["pop", "soul"],
+    "instrument": "both",
+    "notes": "The 1950s slow-dance in rolling 12/8 — count it in threes and arpeggiate rather than block. The add9 on the IV is a small modern touch; drop it for the full period costume.",
+    "songs": [
+      { "title": "Stand by Me", "artist": "Ben E. King", "key": "A", "section": "throughout" },
+      { "title": "Every Breath You Take", "artist": "The Police", "key": "Ab", "section": "verse" },
+      { "title": "Unchained Melody", "artist": "The Righteous Brothers", "key": "C", "section": "verse" }
+    ]
+  },
+  {
+    "id": "twelve-bar-roadhouse-01",
+    "name": "Roadhouse Twelve",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I7", "beats": 16 },
+      { "numeral": "IV7", "beats": 8 },
+      { "numeral": "I7", "beats": 8 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "IV7", "beats": 4 },
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 12,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["swaggering", "gritty", "carefree"],
+    "genres": ["blues", "rock"],
+    "instrument": "guitar",
+    "notes": "The 12-bar blues, dominant 7ths all the way through — that clash is the flavour, not a mistake. Shuffle the rhythm and hit the final V7 hard to throw you round again.",
+    "songs": [
+      { "title": "Johnny B. Goode", "artist": "Chuck Berry", "key": "Bb", "section": "throughout" },
+      { "title": "Hound Dog", "artist": "Elvis Presley", "key": "C", "section": "throughout" },
+      { "title": "Rock Around the Clock", "artist": "Bill Haley & His Comets", "key": "A", "section": "throughout" }
+    ]
+  },
+  {
+    "id": "heroic-fanfare-01",
+    "name": "Skyline Fanfare",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "Isus4", "beats": 2 },
+      { "numeral": "I", "beats": 2 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["heroic", "triumphant", "epic"],
+    "genres": ["cinematic", "rock"],
+    "instrument": "both",
+    "notes": "The borrowed bVI and bVII are the superhero sound — big blocks, no apology. Let the sus4 hang for two full beats before it resolves; that's the cape catching the wind.",
+    "songs": []
+  },
+  {
+    "id": "kitchen-ceilidh-01",
+    "name": "Kitchen Ceilidh",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "I", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["joyful", "dancing", "rustic"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "A jig in 6/8 — two big pulses per bar, not six little ones. The quick I-to-V flick in bar three is the kick of the heels; keep it light and keep it moving.",
+    "songs": []
+  },
+  {
+    "id": "nightlight-waltz-01",
+    "name": "Nightlight Waltz",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "vi", "beats": 3 },
+      { "numeral": "ii", "beats": 3 },
+      { "numeral": "V7", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "Db",
+    "tempo": "slow",
+    "moods": ["tender", "cozy", "serene"],
+    "genres": ["lullaby", "pop"],
+    "instrument": "piano",
+    "notes": "The old I–vi–ii–V turnaround slowed to a lullaby waltz. Root alone on beat one, the rest of the chord floating above on two and three — quieter than you think you should.",
+    "songs": [
+      { "title": "Heart and Soul", "artist": "Hoagy Carmichael", "key": "C", "section": "throughout" }
+    ]
+  },
+  {
+    "id": "staircase-descent-01",
+    "name": "Staircase Descent",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V/7", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "I/5", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I/3", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "Vsus4", "beats": 2 },
+      { "numeral": "V", "beats": 2 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["nostalgic", "tender", "hopeful"],
+    "genres": ["pop", "soul"],
+    "instrument": "piano",
+    "notes": "The whole trick is the bass walking down one step per bar — make the left hand the melody and keep the right hand simple. The sus4 at the bottom of the stairs holds the door open.",
+    "songs": [
+      { "title": "Piano Man", "artist": "Billy Joel", "key": "C", "section": "verse" }
+    ]
+  },
+  {
+    "id": "sidewalk-strut-01",
+    "name": "Sidewalk Strut",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "#idim", "beats": 2 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "I6", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["playful", "mischievous", "nostalgic"],
+    "genres": ["jazz", "showtune"],
+    "instrument": "piano",
+    "notes": "Pure vintage strut — the #idim is a passing chord, so treat it like a stepping stone, two beats and gone. Land on the I6 with a wink; that added 6th is the raised eyebrow.",
+    "songs": []
+  },
+  {
+    "id": "borrowed-ache-01",
+    "name": "Borrowed Ache",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "iv", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["bittersweet", "wistful", "yearning"],
+    "genres": ["pop", "indie"],
+    "instrument": "both",
+    "notes": "Three gentle diatonic chords, then the iv — a minor chord borrowed from the parallel minor — hurts in exactly the right way. Give it the full bar and don't rush back to the I.",
+    "songs": []
+  },
+  {
+    "id": "gospel-walk-up-01",
+    "name": "Chapel Walk-Up",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "vi", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["uplifting", "hopeful", "solemn"],
+    "genres": ["gospel", "soul"],
+    "instrument": "piano",
+    "notes": "A gospel climb that never quite resolves — ending on the vi keeps the congregation leaning forward. Big open voicings, and leave air between the chords.",
+    "songs": []
+  },
+  {
+    "id": "andalusian-fall-01",
+    "name": "Spanish Fall",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["dramatic", "sultry", "defiant"],
+    "genres": ["latin", "rock"],
+    "instrument": "both",
+    "notes": "Four chords stepping straight downhill; the major V at the bottom is the whole trick. Accent it, pause on it, then let it snap you back to the top.",
+    "songs": [
+      { "title": "Sultans of Swing", "artist": "Dire Straits", "key": "D", "section": "verse" },
+      { "title": "Runaway", "artist": "Del Shannon", "key": "Bb", "section": "verse" },
+      { "title": "Good Vibrations", "artist": "The Beach Boys", "key": "Eb", "section": "verse" }
+    ]
+  },
+  {
+    "id": "villains-tango-01",
+    "name": "Villain's Tango",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["menacing", "dramatic", "swaggering"],
+    "genres": ["latin", "showtune"],
+    "instrument": "piano",
+    "notes": "Stiff and deliberate — accent beats one and three like a tango and leave the offbeats empty. The V7 is where the villain smiles; hold it a touch too long.",
+    "songs": []
+  },
+  {
+    "id": "rolling-deck-shanty-01",
+    "name": "Rolling Deck",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bIII", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 },
+      { "numeral": "i", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["rustic", "defiant", "driving"],
+    "genres": ["shanty", "folk"],
+    "instrument": "both",
+    "notes": "A shanty sway in 6/8 — no leading tone anywhere, which is why it sounds a few centuries old. Stamp on beat one and let the crew sing the rest.",
+    "songs": [
+      { "title": "Drunken Sailor", "artist": "Traditional", "key": "D", "section": "throughout" }
+    ]
+  },
+  {
+    "id": "midnight-waltz-01",
+    "name": "Midnight Waltz",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bVI", "beats": 6 },
+      { "numeral": "V7", "beats": 6 },
+      { "numeral": "i", "beats": 6 }
+    ],
+    "bars": 8,
+    "timeSig": "3/4",
+    "homeKey": "B",
+    "tempo": "mid",
+    "moods": ["eerie", "romantic", "dramatic"],
+    "genres": ["waltz", "cinematic"],
+    "instrument": "piano",
+    "notes": "Two bars per chord, one-two-three, and be theatrical about it — this is a candelabra-and-cobwebs waltz. The V7 twists the knife just before you swirl back to the i.",
+    "songs": []
+  },
+  {
+    "id": "power-chord-surge-01",
+    "name": "Wall of Fuzz",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i5", "beats": 4 },
+      { "numeral": "bVI5", "beats": 4 },
+      { "numeral": "bIII5", "beats": 4 },
+      { "numeral": "bVII5", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F#",
+    "tempo": "fast",
+    "moods": ["defiant", "gritty", "driving"],
+    "genres": ["rock", "punk"],
+    "instrument": "guitar",
+    "notes": "All power chords, so there's no major or minor — just weight. Downstrokes only, palm-mute the verses and open it right up when the chorus hits.",
+    "songs": [
+      { "title": "Numb", "artist": "Linkin Park", "key": "F#", "section": "throughout" },
+      { "title": "Zombie", "artist": "The Cranberries", "key": "E", "section": "throughout" },
+      { "title": "The Kids Aren't Alright", "artist": "The Offspring", "key": "F#", "section": "throughout" }
+    ]
+  },
+  {
+    "id": "trailer-thunder-01",
+    "name": "Trailer Thunder",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 6,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["epic", "brooding", "triumphant"],
+    "genres": ["cinematic", "rock"],
+    "instrument": "both",
+    "notes": "The four-chord epic loop with a two-bar tail — that major V at the end is the surprise flash of light before the title card. Octaves in the left hand for maximum drama.",
+    "songs": []
+  },
+  {
+    "id": "smoke-rings-vamp-01",
+    "name": "Smoke Rings",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i7", "beats": 4 },
+      { "numeral": "iv7", "beats": 2 },
+      { "numeral": "bVImaj7", "beats": 2 }
+    ],
+    "bars": 2,
+    "timeSig": "4/4",
+    "homeKey": "C#",
+    "tempo": "slow",
+    "moods": ["sultry", "brooding", "sleazy"],
+    "genres": ["soul", "electronic"],
+    "instrument": "both",
+    "notes": "A two-bar late-night loop — the 7ths do all the talking, so play soft and behind the beat. The maj7 at the end is the smoke ring; watch it drift before you loop.",
+    "songs": []
+  },
+  {
+    "id": "klezmer-whirl-01",
+    "name": "Dizzy Wedding",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "fast",
+    "moods": ["frantic", "dancing", "mischievous"],
+    "genres": ["klezmer", "folk"],
+    "instrument": "both",
+    "notes": "Oom-pah it — bass note on the beat, chord stab off it — and speed up every time round like the band's being paid by the lap. Lean hard on that major V; it's the whole klezmer flavour.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-highway-01",
+    "name": "Highway Shoulder",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 2 },
+      { "numeral": "IV", "beats": 2 }
+    ],
+    "bars": 2,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["swaggering", "carefree", "driving"],
+    "genres": ["rock", "country"],
+    "instrument": "guitar",
+    "notes": "The bVII is what makes it mixolydian — no leading tone, so it rolls forever without ever needing to arrive. Loose wrist, let the open strings ring.",
+    "songs": [
+      { "title": "Sweet Home Alabama", "artist": "Lynyrd Skynyrd", "key": "D", "section": "throughout" },
+      { "title": "Gloria", "artist": "Them", "key": "E", "section": "throughout" },
+      { "title": "Fortunate Son", "artist": "Creedence Clearwater Revival", "key": "G", "section": "verse" }
+    ]
+  },
+  {
+    "id": "five-step-prowl-01",
+    "name": "Five-Step Prowl",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i7", "beats": 5 },
+      { "numeral": "IV7", "beats": 5 }
+    ],
+    "bars": 2,
+    "timeSig": "5/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["mysterious", "restless", "driving"],
+    "genres": ["jazz", "rock"],
+    "instrument": "both",
+    "notes": "Count it three-plus-two and keep the pulse walking — the odd bar length is the prowl. Minor chord, major IV: that's dorian, cooler than sad.",
+    "songs": []
+  },
+  {
+    "id": "dorian-simmer-01",
+    "name": "Slow Simmer",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 2,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["sultry", "swaggering", "dancing"],
+    "genres": ["latin", "rock"],
+    "instrument": "both",
+    "notes": "Two chords, all groove — the major IV against the minor i is the dorian brightness. Lock into a rhythm pattern and stay there; the discipline is the hook.",
+    "songs": [
+      { "title": "Oye Como Va", "artist": "Santana", "key": "A", "section": "throughout" },
+      { "title": "Evil Ways", "artist": "Santana", "key": "G", "section": "throughout" }
+    ]
+  },
+  {
+    "id": "bonfire-singalong-01",
+    "name": "Bonfire Singalong",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["uplifting", "triumphant", "joyful"],
+    "genres": ["rock", "pop"],
+    "instrument": "both",
+    "notes": "The great fade-out progression — it can loop for four minutes and nobody minds. Build it a little every pass: add a harmony, add a tambourine, add the neighbours.",
+    "songs": [
+      { "title": "Hey Jude", "artist": "The Beatles", "key": "F", "section": "outro" },
+      { "title": "Sympathy for the Devil", "artist": "The Rolling Stones", "key": "E", "section": "throughout" },
+      { "title": "Takin' Care of Business", "artist": "Bachman-Turner Overdrive", "key": "C", "section": "throughout" }
+    ]
+  },
+  {
+    "id": "lydian-drift-01",
+    "name": "Wide-Eyed Drift",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "II", "beats": 4 },
+      { "numeral": "Isus2", "beats": 4 },
+      { "numeral": "II", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["dreamy", "floating", "hopeful"],
+    "genres": ["cinematic", "indie"],
+    "instrument": "both",
+    "notes": "The major II chord is the lydian magic — it sneaks in the sharpened 4th and everything floats an inch off the ground. Arpeggiate slowly and let the sus2 blur the edges.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-doorstep-01",
+    "name": "Serpent's Doorstep",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "bvii", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["menacing", "unsettling", "gritty"],
+    "genres": ["rock", "latin"],
+    "instrument": "guitar",
+    "notes": "The bII a semitone above home is the phrygian threat — everything leans on that half-step. Play it low, palm-muted, and let the last i ring out like a locked door.",
+    "songs": []
+  }
+]
