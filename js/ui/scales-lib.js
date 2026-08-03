@@ -7,10 +7,11 @@
 // Pick a tonic and a mode, get: the scale spelled correctly (derived by
 // realising the mode's diatonic numerals through the engine and collecting
 // the chord roots — the engine is the only source of musical truth), the
-// notes lit up on a piano, a guitar tip built on relative-major thinking,
-// the seven diatonic chords (numeral + name, tappable through to the chord
-// library), and a shortlist of "frequent visitors" — borrowed chords that
-// drop by so often they should be on the guest list.
+// notes lit up on a piano (each note tappable, making it the new tonic), a
+// guitar tip built on relative-major thinking, the seven diatonic chords
+// (numeral + name, tappable through to the chord library), and the borrowed
+// chords that turn up in this mode most often. Explanations for both chord
+// lists come from chord-copy.js, shared with the chord library.
 
 import { parseNote, pitchClass, formatNoteDisplay } from "../engine/theory.js";
 import { realize } from "../engine/chords.js";
@@ -18,6 +19,7 @@ import { formatDisplay } from "../engine/numeral.js";
 import { pianoScaleSVG } from "./diagrams.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { chordHref } from "./chords-lib.js";
+import { copyFor, borrowedFor, copyBlock, revealList } from "./chord-copy.js";
 import { el, prettySymbol, prettyNote, capitalise } from "./util.js";
 
 // ---------------------------------------------------------------------------
@@ -68,48 +70,9 @@ const MODES = [
 
 const modeById = new Map(MODES.map((m) => [m.id, m]));
 
-// ---------------------------------------------------------------------------
-// Frequent visitors — curated borrowed moves per mode, one friendly line each.
-// Every one is a legal numeral, realised in the chosen key and tappable.
-// ---------------------------------------------------------------------------
-
-const VISITORS = {
-  major: [
-    { numeral: "iv", blurb: "The minor four — a borrowed ache right before home." },
-    { numeral: "bVII", blurb: "Flat seven — rock-and-roll swagger on loan from mixolydian." },
-    { numeral: "bVI", blurb: "Flat six — a big widescreen lift from the parallel minor." },
-    { numeral: "bIII", blurb: "Flat three — a bold sideways slide that shouldn't work, and does." },
-    { numeral: "III", blurb: "The major three — the drama route to vi. Milk it." },
-    { numeral: "V7sus4", blurb: "The gospel hover — hangs in the air, then lands home." },
-  ],
-  minor: [
-    {
-      numeral: "V",
-      blurb:
-        "The major five, borrowed from harmonic minor — raising one note gives the pull home real teeth.",
-    },
-    { numeral: "V7", blurb: "Same harmonic-minor trick with a seventh on top: even hungrier for home." },
-    { numeral: "IV", blurb: "The major four — a flash of dorian brightness in the gloom." },
-    { numeral: "bII", blurb: "Flat two — the phrygian sting. One chord of pure menace." },
-    { numeral: "viidim", blurb: "The leading-tone diminished — maximum squeeze before i." },
-  ],
-  dorian: [
-    { numeral: "V", blurb: "A borrowed major dominant when the groove needs pulling home." },
-    { numeral: "bVI", blurb: "Flat six — a darker shadow on loan from plain minor." },
-  ],
-  mixolydian: [
-    { numeral: "V", blurb: "Borrows the leading tone back for one proper cadence." },
-    { numeral: "bVI", blurb: "A sudden parallel-minor shadow — great before the bVII." },
-  ],
-  lydian: [
-    { numeral: "IV", blurb: "The plain four — borrowed calm when the ♯4 sparkle gets much." },
-    { numeral: "bVII", blurb: "Flat seven — brings all that floating gently back to earth." },
-  ],
-  phrygian: [
-    { numeral: "V", blurb: "The flamenco dominant — major five over all that darkness." },
-    { numeral: "bVII", blurb: "The major flat-seven — borrowed swagger to break the spell." },
-  ],
-};
+// Which numerals sit outside a mode's scale is COMPUTED per key from the notes
+// themselves (see the render function), so this tab can never contradict itself
+// about what counts as borrowed. Explanations come from chord-copy.js.
 
 // ---------------------------------------------------------------------------
 // Route handling
@@ -209,7 +172,10 @@ export function render(container, params) {
     el("div", { className: "lib-picker" }, el("h3", {}, "Mode"), modeRow)
   );
 
-  // ---- Scale notes -------------------------------------------------------------
+  // ---- Scale notes ---------------------------------------------------------
+  // Every note is a link that makes it the new tonic, keeping the mode. The
+  // pitch class is snapped to this family's supported spelling, so tapping G♭
+  // in D♭ major lands on F♯ major.
   section.appendChild(
     el(
       "header",
@@ -218,10 +184,23 @@ export function render(container, params) {
       el(
         "div",
         { className: "scale-notes" },
-        scaleNotes.map((n, i) =>
-          el("span", { className: "chord-note" + (i === 0 ? " root" : "") }, prettyNote(n))
-        )
-      )
+        scaleNotes.map((note, i) => {
+          if (i === 0) {
+            return el(
+              "span",
+              { className: "chord-note root", attrs: { "aria-current": "true" } },
+              prettyNote(note)
+            );
+          }
+          const target = tonicInFamily(note, mode);
+          return el(
+            "a",
+            { className: "chord-note note-link", href: hrefFor(target, mode.id) },
+            prettyNote(note)
+          );
+        })
+      ),
+      el("p", { className: "scale-notes-hint" }, "Tap a note to make it home.")
     )
   );
 
@@ -241,8 +220,8 @@ export function render(container, params) {
   const relRoot = realize(mode.relative, tonic).root;
   const guitarTip =
     mode.id === "major"
-      ? `${prettyNote(tonic)} major shares every note with ${prettyNote(relRoot)} minor — same fingerings, brighter home base.`
-      : `${prettyNote(tonic)} ${mode.id} = ${prettyNote(relRoot)} major fingerings, start on ${prettyNote(tonic)}. Same notes, different home.`;
+      ? `${prettyNote(relRoot)} minor is ${prettyNote(tonic)} major's relative minor: the same seven notes, the same fingerings, a different home note.`
+      : `${prettyNote(tonic)} ${mode.id} uses the ${prettyNote(relRoot)} major fingerings, starting on ${prettyNote(tonic)}.`;
   section.appendChild(
     el(
       "p",
@@ -268,46 +247,48 @@ export function render(container, params) {
     el(
       "div",
       { className: "diatonic" },
-      el("h3", {}, "The chords that live here"),
+      el("h3", {}, "Chords in this scale"),
       el(
         "p",
         { className: "where-next-lead" },
-        "Seven degrees, seven chords — all built from just these notes. Tap any of them to open it in the chord library."
+        "Seven chords built from these seven notes. Tap one to open it."
       ),
       grid
     )
   );
 
-  // ---- Frequent visitors ---------------------------------------------------------------
-  const visitors = VISITORS[mode.id] || [];
-  const visitorList = el("div", { className: "visitor-list" });
-  for (const v of visitors) {
-    const chord = realize(v.numeral, tonic);
-    visitorList.appendChild(
+  // ---- Borrowed chords ------------------------------------------------------
+  // In scale or borrowed is decided in pitch classes, not numeral strings: V7
+  // is diatonic in major and borrowed in lydian, and only the notes know that.
+  const scalePCs = new Set(scaleNotes.map((n) => pitchClass(parseNote(n))));
+  const inScale = (numeral) =>
+    realize(numeral, tonic).pitchClasses.every((pc) => scalePCs.has(pc));
+  const borrowed = borrowedFor(mode.family, mode.id, inScale);
+  const visitorCard = (numeral) => {
+    const chord = realize(numeral, tonic);
+    return el(
+      "a",
+      { className: "visitor-card", href: chordHref(chord) },
       el(
-        "a",
-        { className: "visitor-card", href: chordHref(chord) },
-        el(
-          "div",
-          { className: "visitor-head" },
-          el("span", { className: "degree-numeral" }, formatDisplay(v.numeral)),
-          el("span", { className: "visitor-symbol" }, prettySymbol(chord.symbol))
-        ),
-        el("p", { className: "visitor-blurb" }, v.blurb)
-      )
+        "div",
+        { className: "visitor-head" },
+        el("span", { className: "degree-numeral" }, formatDisplay(numeral)),
+        el("span", { className: "visitor-symbol" }, prettySymbol(chord.symbol))
+      ),
+      copyBlock(copyFor(numeral, mode.family, mode.id))
     );
-  }
+  };
   section.appendChild(
     el(
       "div",
       { className: "visitors" },
-      el("h3", {}, "Frequent visitors"),
+      el("h3", {}, "Borrowed chords"),
       el(
         "p",
         { className: "where-next-lead" },
-        "Not from round here, but they drop by so often you should know them — borrowed chords that love this mode."
+        "From outside the scale, but common in it anyway. Borrowing them is called modal interchange."
       ),
-      visitorList
+      revealList(borrowed, visitorCard, "visitor-list")
     )
   );
 

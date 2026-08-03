@@ -880,13 +880,13 @@ a.chip {
 
 .dest-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--sp-2);
 }
 
-@media (min-width: 700px) {
+@media (min-width: 560px) {
   .dest-list {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -917,10 +917,68 @@ a.chip {
   font-weight: 700;
 }
 
-.dest-blurb {
-  margin-top: var(--sp-1);
-  color: var(--ink-dim);
+.dest-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+/* Three labelled lines shared by destination and borrowed-chord cards. */
+.copy-block {
+  margin-top: var(--sp-2);
+  display: grid;
+  gap: 2px;
+}
+
+.copy-line {
+  display: grid;
+  grid-template-columns: 3.9rem 1fr;
+  gap: var(--sp-2);
+  align-items: baseline;
+}
+
+.copy-label {
   font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.copy-text {
+  font-size: var(--fs-xs);
+  line-height: 1.45;
+  color: var(--ink-dim);
+}
+
+.reveal-btn {
+  margin-top: var(--sp-3);
+  min-height: var(--tap);
+  width: 100%;
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.reveal-btn:hover,
+.reveal-btn:focus-visible {
+  border-color: var(--gold-dim);
+  color: var(--ink);
+}
+
+.reveal-rest {
+  margin-top: var(--sp-2);
+}
+
+/* The lists are display:grid, which beats the UA stylesheet's [hidden] rule,
+   so the collapsed half needs saying explicitly. */
+.reveal-rest[hidden] {
+  display: none;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1022,10 +1080,34 @@ a.chip {
   font-weight: 800;
 }
 
-.visitor-blurb {
-  margin: var(--sp-1) 0 0;
-  color: var(--ink-dim);
-  font-size: var(--fs-sm);
+.scale-notes-hint {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+}
+
+/* Scale notes are links: tapping one makes it the tonic, keeping the mode.
+   They used to look tappable without being tappable. */
+a.chord-note.note-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+a.chord-note.note-link:hover,
+a.chord-note.note-link:focus-visible {
+  border-color: var(--gold-dim);
+  color: var(--gold-bright);
+}
+
+.scale-notes .chord-note.root {
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1201,4 +1283,20 @@ body[data-route="perform"] .tabbar {
     animation: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Instrument toggle scope (backlog item 10)                           */
+/*                                                                     */
+/* The toggle drives complexity badges, filters and which diagram the  */
+/* detail view leads with. The chord and scale libraries show both     */
+/* instruments regardless, and the builder is a placeholder, so the    */
+/* control is hidden there rather than sitting in the header doing     */
+/* nothing.                                                            */
+/* ------------------------------------------------------------------ */
+
+body[data-route="chords"] .instrument-toggle,
+body[data-route="scales"] .instrument-toggle,
+body[data-route="build"] .instrument-toggle {
+  display: none;
 }

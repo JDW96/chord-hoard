@@ -26,6 +26,7 @@ import {
   pianoChordSVG,
 } from "./diagrams.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
+import { copyFor, orderFor, copyBlock, revealList } from "./chord-copy.js";
 import { el, clear, prettySymbol, prettyNote, getGuitarData } from "./util.js";
 
 // ---------------------------------------------------------------------------
@@ -113,28 +114,8 @@ export function chordHref(realized) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// "Where next?" — common destinations, treating the chord as home (I or i).
-// Blurbs stay short: a friendly bandmate leaning over, not a lecture.
-// ---------------------------------------------------------------------------
-
-const MAJOR_DESTS = [
-  { numeral: "IV", blurb: "the warm old friend" },
-  { numeral: "V", blurb: "pulls you straight home" },
-  { numeral: "vi", blurb: "the gentle sad turn" },
-  { numeral: "ii", blurb: "smooth set-up for five" },
-  { numeral: "bVII", blurb: "borrowed rock-and-roll swagger" },
-  { numeral: "iv", blurb: "the borrowed ache" },
-];
-
-const MINOR_DESTS = [
-  { numeral: "bVI", blurb: "big cinematic side-step" },
-  { numeral: "bVII", blurb: "the epic lift" },
-  { numeral: "iv", blurb: "deeper into the shadows" },
-  { numeral: "V", blurb: "the drama dominant" },
-  { numeral: "bIII", blurb: "relative-major sunshine" },
-  { numeral: "IV", blurb: "the dorian lift" },
-];
+// "Where next?" destinations come from chord-copy.js, which treats the
+// selected chord as home (I or i) and is shared with the scale library.
 
 // ---------------------------------------------------------------------------
 // Route handling
@@ -265,20 +246,24 @@ export function render(container, params) {
 
   // ---- Where next? -----------------------------------------------------------
   const homeNumeral = quality.family === "minor" ? "i" : "I";
-  const dests = quality.family === "minor" ? MINOR_DESTS : MAJOR_DESTS;
-  const destList = el("div", { className: "dest-list" });
-  for (const dest of dests) {
-    const destChord = realize(dest.numeral, tonic);
-    destList.appendChild(
+  const numerals = orderFor(quality.family);
+
+  const destCard = (numeral) => {
+    const copy = copyFor(numeral, quality.family);
+    const destChord = realize(numeral, tonic);
+    return el(
+      "a",
+      { className: "dest-card", href: chordHref(destChord) },
       el(
-        "a",
-        { className: "dest-card", href: chordHref(destChord) },
-        el("div", { className: "dest-symbol" }, prettySymbol(destChord.symbol)),
-        el("div", { className: "dest-numeral" }, formatDisplay(dest.numeral)),
-        el("div", { className: "dest-blurb" }, dest.blurb)
-      )
+        "div",
+        { className: "dest-head" },
+        el("span", { className: "dest-symbol" }, prettySymbol(destChord.symbol)),
+        el("span", { className: "dest-numeral" }, formatDisplay(numeral))
+      ),
+      copyBlock(copy)
     );
-  }
+  };
+
   section.appendChild(
     el(
       "div",
@@ -287,11 +272,11 @@ export function render(container, params) {
       el(
         "p",
         { className: "where-next-lead" },
-        `Call ${prettySymbol(realized.symbol)} home (that's ${formatDisplay(
+        `${prettySymbol(realized.symbol)} is home (${formatDisplay(
           homeNumeral
-        )}) and these are the classic places to go. Tap one to follow it.`
+        )}). These are the chords it usually moves to. Tap one.`
       ),
-      destList
+      revealList(numerals, destCard, "dest-list")
     )
   );
 
@@ -312,7 +297,7 @@ async function fillGuitarStrip(host, realized) {
       el(
         "div",
         { className: "diagram-missing wide" },
-        "No guitar shape on file for this one — the piano diagram above has all the notes."
+        "No guitar shape on file. Every note is on the piano diagram above."
       )
     );
     return;

@@ -70,6 +70,7 @@ chord-hoard/
       complexity.js     # complexity rating + playability profiles
       progression.js    # progression-level API (load entry, render in key)
     ui/                 # DOM code (phase 2+)
+      chord-copy.js     # the ONE place chord explanations are written
   data/
     schema.md           # human-readable schema description
     vocab.json          # controlled vocabularies (moods, genres, feels)
@@ -79,6 +80,7 @@ chord-hoard/
   tools/
     validate.js         # node tools/validate.js — MUST pass before any commit
     test-engine.js      # node tools/test-engine.js — MUST pass before any commit
+    test-copy.js        # node tools/test-copy.js — guards chord-copy.js
   docs/
     inspiration.md      # Jack's original progression list (see note below)
 ```
@@ -230,6 +232,75 @@ auto-suggested for mood/key continuity or hand-picked, saveable + exportable. Pe
 mode: one progression or full song structure, huge type, zero scrolling, portrait or
 landscape, Screen Wake Lock held.
 
+## Live deployment
+
+Live at **https://jdw96.github.io/chord-hoard/** (GitHub Pages, repo `jdw96/chord-hoard`,
+deploy from main branch root). Updates are currently manual: Jack drags changed files
+into the repo's web uploader. Bump `CACHE_VERSION` in sw.js whenever any shipped file
+changes, and always tell Jack exactly which files to re-upload. The cloud sandbox
+CANNOT reach github.com (egress blocked) — never attempt to push from a cloud session.
+
+## Copy voice rules (agreed 2026-08-02 — apply to ALL app copy and data text)
+
+- Sound like a human wrote it. NO em-dashes anywhere in app copy or data text.
+- No "it's not X, it's Y" / contradictory-conclusion constructions.
+- Progression names: use the canonical/obvious name where one exists ("12-Bar Blues",
+  "Doo-Wop", "Axis Progression", "Andalusian Cadence", "Jazz 2-5-1", "Ceilidh").
+  Otherwise descriptive beats emotive ("Atmospheric film soundtrack", "Carnival music",
+  not "Villain's Tango"-style cleverness).
+- Chord/scale explanation copy must earn its words. Lead with: what tension is created,
+  what function the chord serves (theory function AND emotional function), and what
+  usually comes next. Cut everything else.
+
+## Feedback backlog — 2026-08-02, phased 2026-08-03
+
+Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status below.
+
+1. Repo workflow: replace manual drag-upload with proper pushes — GitHub Desktop on
+   Jack's machine, or git run locally via an on-computer session. [workflow, anytime]
+2. Rename ALL progressions per the naming rule above; rewrite all `notes` per the voice
+   rules. [phase 3 prep — must land before mass generation]
+3. Key selector: circle-of-fifths wheel showing each key's accidentals
+   (e.g. "E: F♯ C♯ G♯ D♯"). Memorisation aid. [phase 2.5, TODO]
+4. Hoard/detail chord diagrams: uniform size, bigger, tappable → full-size popup, plus
+   a button through to the Chords tab. [phase 2.5, TODO]
+5. Capo mode: a toggle that applies the suggested capo — played shapes LARGE for
+   sight-reading, sounding chords/key small alongside. [phase 2.5, TODO]
+6. "Sounds like / common variations" section linking similar progressions. [phase 3]
+7. Chord-swap advice with tappable swaps, each stating its impact. [phase 4 — builder]
+8. Chords tab "where next?" blurbs: functional not cute. [phase 2.5, DONE 2026-08-03]
+9. Design overhaul: current brown background + negative-space piano diagram is hard to
+   read. Brainstorm options with Jack; chords must POP; must work in light AND dark
+   mode. [phase 2.5, TODO — design proposals first, then implement]
+10. Instrument toggle rescoped: hidden on Chords/Scales/Build via
+    `body[data-route]` in CSS, where it changed nothing. [phase 2.5, DONE 2026-08-03]
+11. Scales tab scale-note chips are now links that make that note the tonic, keeping
+    the mode, with a hint line. [phase 2.5, DONE 2026-08-03]
+12. Scales tab copy rewritten; headings are now "Chords in this scale" and
+    "Borrowed chords". [phase 2.5, DONE 2026-08-03]
+
+### Chord explanation copy (phase 2.5, agreed with Jack 2026-08-03)
+
+Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
+
+- Every chord explanation is three lines: **Tension** (how much, what kind), **Theory**
+  (function, which note does the work, what that does to the ear), **Next** (usual
+  destinations, cadence named where one exists, UK name first).
+- All of it lives in `js/ui/chord-copy.js`, keyed by **numeral and family** (major-ish
+  or minor-ish HOME), never by chord name. Both the Chords tab and the Scales tab read
+  it, so the same relationship cannot be described two different ways.
+- `OVERRIDES` holds mode-specific readings, keyed `"<mode>|<numeral>"`, for the five
+  cases where mode changes the function (lydian IV, mixolydian V, dorian IV,
+  dorian bVI, phrygian V).
+- Whether a chord is in the scale or borrowed is **computed from pitch classes** per
+  key, never written into the prose. V7 is diatonic in major and borrowed in lydian,
+  and only the notes know that.
+- Lists longer than `HEAD_COUNT` (8) use `revealList`, so nothing is silently cut.
+- Writing rule Jack stressed: factual, theory-founded, information-dense first;
+  emotional colour only where a technical term needs unpacking. Avoid the
+  ", so [effect]" join, "which is why", inflated stakes, and rewording an identical
+  fact just to avoid repeating it. `tools/test-copy.js` enforces the mechanical part.
+
 ## Phases & status
 
 - [x] **Phase 0** — plan agreed, CLAUDE.md written
@@ -238,7 +309,11 @@ landscape, Screen Wake Lock held.
 - [x] **Phase 2** — UI: browse/search/filter, cards, diagrams (guitar-chords.json from
       an MIT-licensed chord DB + generated piano SVGs), transpose/capo, chord library,
       scale library, performance mode + wake lock
-- [ ] **Phase 3** ← **current** — library generation to ~300 in themed batches (each batch validated;
+- [~] **Phase 2.5** ← **current** — design & UX polish. Done: items 8, 10, 11, 12
+      (chord explanation copy, shared copy table, instrument toggle scope, scale-note
+      links). Remaining: 3 (circle of fifths), 4 (diagrams), 5 (capo mode),
+      9 (design overhaul)
+- [ ] **Phase 3** — library generation to ~300 in themed batches (each batch validated;
       dedicated musical-theatre mood batches: patter, 11-o'clock number, villain song,
       torch ballad, opening number… tagged with general-purpose mood words)
 - [ ] **Phase 4** — pins, playability profiles, song builder, dynamic builder
@@ -249,7 +324,8 @@ landscape, Screen Wake Lock held.
 ## Workflow rules for agents
 
 1. `node tools/validate.js && node tools/test-engine.js` must pass after ANY change to
-   `data/` or `js/engine/`. Never commit red.
+   `data/` or `js/engine/`. `node tools/test-copy.js` must pass after any change to
+   `js/ui/chord-copy.js`. Never commit red.
 2. Validation must check: schema completeness, numeral parse, beats arithmetic, vocab
    membership, id uniqueness, dedupe (same mode + numeral sequence + timeSig = dupe),
    every entry realizes + transposes in all 12 keys without throwing, song keys valid.

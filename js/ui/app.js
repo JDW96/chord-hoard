@@ -138,6 +138,11 @@ function renderRoute() {
   if (!main) return;
   clear(main);
 
+  // Set before the loading/error branches: CSS scopes the header instrument
+  // toggle on this attribute, and it should not flash in on a slow first load.
+  const parsed = parseHash();
+  document.body.dataset.route = views[parsed.route] ? parsed.route : "hoard";
+
   if (dataError) {
     main.appendChild(
       el(
@@ -155,10 +160,9 @@ function renderRoute() {
     return;
   }
 
-  const { route, params } = parseHash();
+  const { route, params } = parsed;
   const view = views[route] || views.hoard;
   updateTabs(TAB_FOR_ROUTE[route] || "hoard");
-  document.body.dataset.route = views[route] ? route : "hoard";
   view.render(main, params);
   main.scrollTop = 0;
   window.scrollTo(0, 0);
