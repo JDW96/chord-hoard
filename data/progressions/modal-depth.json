@@ -1,0 +1,500 @@
+[
+  {
+    "id": "dorian-four-bar-01",
+    "name": "Dorian four-bar",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["mysterious", "driving", "hopeful"],
+    "genres": ["folk", "rock"],
+    "instrument": "both",
+    "notes": "The three chords that define dorian: a minor tonic, a major IV carrying the raised sixth, and bVII where a dominant would sit. Returning to i in bar four makes the mode obvious rather than ambiguous.",
+    "songs": []
+  },
+  {
+    "id": "dorian-rise-01",
+    "name": "Dorian rise",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["restless", "hopeful", "driving"],
+    "genres": ["rock", "indie"],
+    "instrument": "both",
+    "notes": "The bass climbs away from the tonic and never comes back inside the loop. The major IV against the flat third is what stops this sounding like plain natural minor.",
+    "songs": []
+  },
+  {
+    "id": "dorian-sevenths-01",
+    "name": "Dorian with sevenths",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i7", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "IV7", "beats": 4 },
+      { "numeral": "i7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["sultry", "mysterious", "serene"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "IV as a dominant seventh puts the raised sixth and the flat seventh in the same chord, which is dorian condensed into four notes. Voice it above the tonic so both notes stay audible.",
+    "songs": []
+  },
+  {
+    "id": "dorian-waltz-01",
+    "name": "Dorian waltz",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["wistful", "mysterious", "dancing"],
+    "genres": ["folk", "waltz"],
+    "instrument": "both",
+    "notes": "Tonic on the odd bars, so the mode is restated twice inside four bars. In three, the major IV lands on a strong bar and the brightness is impossible to miss.",
+    "songs": []
+  },
+  {
+    "id": "dorian-minor-five-01",
+    "name": "Dorian minor five",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "v", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["mysterious", "restless", "brooding"],
+    "genres": ["rock", "cinematic"],
+    "instrument": "both",
+    "notes": "Dorian has a minor v, so putting it next to a major IV inverts the usual brightness: the subdominant is the cheerful chord and the dominant is not. Nothing pulls home.",
+    "songs": []
+  },
+  {
+    "id": "dorian-twelve-eight-01",
+    "name": "Dorian in twelve-eight",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 12 },
+      { "numeral": "IV", "beats": 12 },
+      { "numeral": "bIII", "beats": 12 },
+      { "numeral": "IV", "beats": 12 }
+    ],
+    "bars": 4,
+    "timeSig": "12/8",
+    "homeKey": "F",
+    "tempo": "slow",
+    "moods": ["sultry", "brooding", "yearning"],
+    "genres": ["blues", "soul"],
+    "instrument": "both",
+    "notes": "One chord per bar of slow 12/8, with IV appearing twice so the raised sixth is the note the ear keeps returning to. Triplets underneath, and let the chords ring their full bar.",
+    "songs": []
+  },
+  {
+    "id": "dorian-diminished-01",
+    "name": "Dorian diminished",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "vidim", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "B",
+    "tempo": "mid",
+    "moods": ["unsettling", "mysterious", "eerie"],
+    "genres": ["cinematic", "folk"],
+    "instrument": "piano",
+    "notes": "Dorian puts its diminished chord on the sixth degree rather than the second, which is the clearest single test of the mode. It is unstable, so treat it as a step rather than a destination.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-minor-five-01",
+    "name": "Mixolydian minor five",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "v", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["rustic", "carefree", "wistful"],
+    "genres": ["folk", "rock"],
+    "instrument": "both",
+    "notes": "The flattened seventh makes the chord on the fifth degree minor instead of major, so the dominant loses its leading tone and stops pulling. That single change is the whole difference from a major key.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-descent-01",
+    "name": "Mixolydian descent",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "v", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["swaggering", "brooding", "driving"],
+    "genres": ["rock", "blues"],
+    "instrument": "guitar",
+    "notes": "The bass falls by step through every chord the mode makes on its own. Both bVII and the minor v carry the flat seventh, so it gets stated twice on the way down.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-in-six-01",
+    "name": "Mixolydian in six",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "I", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["dancing", "joyful", "rustic"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "The standard mixolydian loop in a jig lilt, one chord to the bar. Traditional dance music lives here because a mode with no leading tone can repeat forever without demanding an ending.",
+    "songs": []
+  },
+  {
+    "id": "dominant-mixolydian-01",
+    "name": "Dominant mixolydian",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["gritty", "swaggering", "driving"],
+    "genres": ["blues", "rock"],
+    "instrument": "guitar",
+    "notes": "Putting the flat seventh into the tonic chord itself makes the mode explicit from the first beat. The scale and the chord now contain the same note, which is why blues and mixolydian overlap so heavily.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-two-01",
+    "name": "Mixolydian two",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["hopeful", "gentle", "carefree"],
+    "genres": ["folk", "pop"],
+    "instrument": "both",
+    "notes": "The chord on the second degree stays minor in mixolydian, exactly as in a major key, so it is the one chord that gives nothing away. bVII in bar three is what settles the question.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-waltz-01",
+    "name": "Mixolydian waltz",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["rustic", "nostalgic", "dancing"],
+    "genres": ["folk", "waltz"],
+    "instrument": "both",
+    "notes": "bVII on both even bars, so the mode is stated twice per phrase and the loop leans flat-side throughout. Ending away from the tonic keeps the waltz turning.",
+    "songs": []
+  },
+  {
+    "id": "lydian-cadence-01",
+    "name": "Lydian cadence",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "II", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["hopeful", "dreamy", "uplifting"],
+    "genres": ["cinematic", "pop"],
+    "instrument": "both",
+    "notes": "II is major because of the raised fourth, and it moves to V by a fifth, so lydian gets a genuine cadence rather than just a colour. This is how to end in the mode instead of hovering in it.",
+    "songs": []
+  },
+  {
+    "id": "lydian-seven-01",
+    "name": "Lydian seven",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vii", "beats": 4 },
+      { "numeral": "II", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["floating", "mysterious", "dreamy"],
+    "genres": ["cinematic", "indie"],
+    "instrument": "piano",
+    "notes": "Lydian makes the chord on the seventh degree minor rather than diminished, because the fourth is raised out of it. That minor vii is the mode's quietest fingerprint.",
+    "songs": []
+  },
+  {
+    "id": "lydian-major-sevenths-01",
+    "name": "Lydian major sevenths",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 8 },
+      { "numeral": "IImaj7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "slow",
+    "moods": ["dreamy", "serene", "floating"],
+    "genres": ["jazz", "electronic"],
+    "instrument": "piano",
+    "notes": "Two major sevenths a whole tone apart, which between them contain every note of the lydian scale. Two bars each, and nothing in either chord wants to move.",
+    "songs": []
+  },
+  {
+    "id": "lydian-waltz-01",
+    "name": "Lydian waltz",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "II", "beats": 3 },
+      { "numeral": "vi", "beats": 3 },
+      { "numeral": "V", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["dreamy", "tender", "wistful"],
+    "genres": ["cinematic", "waltz"],
+    "instrument": "piano",
+    "notes": "The raised fourth appears once, in bar two, and everything after it is ordinary. Using the mode sparingly is usually more convincing than stating it in every chord.",
+    "songs": []
+  },
+  {
+    "id": "lydian-in-six-01",
+    "name": "Lydian in six",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "V", "beats": 6 },
+      { "numeral": "II", "beats": 6 },
+      { "numeral": "I", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["hopeful", "floating", "gentle"],
+    "genres": ["cinematic", "folk"],
+    "instrument": "both",
+    "notes": "V arrives before II, so the phrase sounds conventional for two bars and then tilts. Delaying the raised fourth is what makes it register as a surprise rather than a setting.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-rise-01",
+    "name": "Phrygian rise",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["menacing", "restless", "defiant"],
+    "genres": ["rock", "latin"],
+    "instrument": "guitar",
+    "notes": "The first three degrees of the scale in order, so the semitone between i and bII is heard twice. Ending on bII leaves the loop leaning on the note that makes the mode.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-turn-01",
+    "name": "Phrygian turn",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["brooding", "unsettling", "dramatic"],
+    "genres": ["rock", "cinematic"],
+    "instrument": "both",
+    "notes": "Down a tone, then up to the Neapolitan, then home, so the tonic is approached from a semitone above rather than below. Phrygian is the only mode where that is the natural cadence.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-four-01",
+    "name": "Phrygian four",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["mournful", "solemn", "eerie"],
+    "genres": ["folk", "cinematic"],
+    "instrument": "both",
+    "notes": "The minor iv is shared with natural minor, so it grounds the loop between two chords that are not. Useful when the mode needs to be present rather than overwhelming.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-waltz-01",
+    "name": "Phrygian waltz",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "bII", "beats": 3 },
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "B",
+    "tempo": "slow",
+    "moods": ["eerie", "melancholy", "mysterious"],
+    "genres": ["cinematic", "waltz"],
+    "instrument": "piano",
+    "notes": "Tonic on the odd bars with the Neapolitan and the flat seventh either side of it. In three the half-step lands on a strong bar, which sharpens it considerably.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-descent-01",
+    "name": "Phrygian descent",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F#",
+    "tempo": "mid",
+    "moods": ["dramatic", "defiant", "brooding"],
+    "genres": ["latin", "rock"],
+    "instrument": "guitar",
+    "notes": "Starting on bII means the tonic does not arrive until bar four, so the whole phrase is spent getting home. The half-step is heard at the join rather than inside the loop.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-in-six-01",
+    "name": "Phrygian in six",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bII", "beats": 6 },
+      { "numeral": "bVI", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["mysterious", "unsettling", "dancing"],
+    "genres": ["folk", "latin"],
+    "instrument": "both",
+    "notes": "Four of the mode's chords in a six-eight lilt, ending on bVII so it turns rather than closes. The Neapolitan in bar two is the only chord natural minor could not supply.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-power-chords-01",
+    "name": "Phrygian power chords",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i5", "beats": 4 },
+      { "numeral": "bII5", "beats": 4 },
+      { "numeral": "i5", "beats": 4 },
+      { "numeral": "bVII5", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "fast",
+    "moods": ["menacing", "gritty", "driving"],
+    "genres": ["rock", "punk"],
+    "instrument": "guitar",
+    "notes": "Power chords have no thirds, so the mode survives only in the root movement and the scale played over it. The semitone shift from i5 to bII5 is one fret, which is why metal reaches for phrygian.",
+    "songs": []
+  }
+]

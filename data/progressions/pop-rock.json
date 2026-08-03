@@ -1,0 +1,507 @@
+[
+  {
+    "id": "fifties-progression-01",
+    "name": "Fifties progression",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["nostalgic", "hopeful", "tender"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "The doo-wop changes at a plain 4/4 walking pace. Each chord moves to one that shares two notes with it, which is why it never sounds like an effort.",
+    "songs": []
+  },
+  {
+    "id": "minor-start-axis-01",
+    "name": "Axis from the six",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["wistful", "hopeful", "yearning"],
+    "genres": ["pop", "indie"],
+    "instrument": "both",
+    "notes": "The same four chords as the axis, rotated to start on vi, which puts the minor chord in the strong position and reads as sadder without changing a note. The I in bar three is the moment it turns.",
+    "songs": []
+  },
+  {
+    "id": "royal-road-01",
+    "name": "Royal Road Progression",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "vi", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["bittersweet", "yearning", "dramatic"],
+    "genres": ["pop", "indie"],
+    "instrument": "both",
+    "notes": "V goes to iii rather than I, so the dominant never gets its resolution and the phrase settles on vi instead. Common enough in Japanese pop to have its own name there.",
+    "songs": []
+  },
+  {
+    "id": "canon-in-four-01",
+    "name": "Canon sequence in four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["hopeful", "uplifting", "nostalgic"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "The canon sequence straightened into 4/4 with IV V closing instead of ii V. The bass falls a fourth then rises a step, over and over, which is what drives it forward.",
+    "songs": []
+  },
+  {
+    "id": "three-chord-rock-01",
+    "name": "Three-chord rock",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["carefree", "driving", "joyful"],
+    "genres": ["rock", "punk"],
+    "instrument": "guitar",
+    "notes": "Tonic, dominant, subdominant, dominant, and it ends on V so it snaps back round. Nothing here needs a barre chord in a guitar key.",
+    "songs": []
+  },
+  {
+    "id": "power-ballad-01",
+    "name": "Power ballad",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V/7", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "slow",
+    "moods": ["yearning", "hopeful", "epic"],
+    "genres": ["rock", "pop"],
+    "instrument": "both",
+    "notes": "The axis with the V put over its own third, so the bass steps down by one note at a time from the tonic to the sixth. Keep that bass line audible or the whole point is lost.",
+    "songs": []
+  },
+  {
+    "id": "tonic-pedal-01",
+    "name": "Tonic pedal",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV/1", "beats": 4 },
+      { "numeral": "V/1", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["driving", "restless", "hopeful"],
+    "genres": ["rock", "indie"],
+    "instrument": "guitar",
+    "notes": "The bass holds the tonic while the chords above it change, so the harmony moves and the ground does not. On guitar keep the low open string ringing through all four bars.",
+    "songs": []
+  },
+  {
+    "id": "minor-rock-vamp-01",
+    "name": "Minor rock vamp",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["brooding", "driving", "defiant"],
+    "genres": ["rock", "indie"],
+    "instrument": "guitar",
+    "notes": "Down to bVI and back up through bVII rather than on to V, so it circles instead of cadencing. Natural minor throughout, with no leading tone to force a resolution.",
+    "songs": []
+  },
+  {
+    "id": "open-string-loop-01",
+    "name": "Open-string pop loop",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Isus2", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 2,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["gentle", "hopeful", "serene"],
+    "genres": ["indie", "pop"],
+    "instrument": "guitar",
+    "notes": "Two bars, and the sus2 leaves the tonic without a third so it sits somewhere between major and minor. Let the top two strings ring open through both chords.",
+    "songs": []
+  },
+  {
+    "id": "riff-rock-power-01",
+    "name": "Riff rock power chords",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I5", "beats": 4 },
+      { "numeral": "bIII5", "beats": 4 },
+      { "numeral": "IV5", "beats": 4 },
+      { "numeral": "I5", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["swaggering", "gritty", "driving"],
+    "genres": ["rock", "blues"],
+    "instrument": "guitar",
+    "notes": "The bIII borrowed against a major-leaning tonic is the blues-rock move, and power chords keep it ambiguous by leaving out every third. Slide between shapes on the same string pair.",
+    "songs": []
+  },
+  {
+    "id": "grunge-climb-01",
+    "name": "Grunge climb",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "bVI5", "beats": 4 },
+      { "numeral": "bVII5", "beats": 4 },
+      { "numeral": "i5", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F#",
+    "tempo": "mid",
+    "moods": ["defiant", "brooding", "gritty"],
+    "genres": ["rock", "punk"],
+    "instrument": "guitar",
+    "notes": "Two steps up to the tonic, which arrives on the third bar and stays for two. Starting away from home is what makes the landing feel earned.",
+    "songs": []
+  },
+  {
+    "id": "britpop-swagger-01",
+    "name": "Britpop swagger",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["swaggering", "carefree", "uplifting"],
+    "genres": ["rock", "indie"],
+    "instrument": "guitar",
+    "notes": "bVII in place of the dominant, with IV either side of it so the whole loop stays flat-side of the tonic. Strum it wide and slightly behind the beat.",
+    "songs": []
+  },
+  {
+    "id": "motown-groove-01",
+    "name": "Motown groove",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["joyful", "dancing", "bouncy"],
+    "genres": ["soul", "pop"],
+    "instrument": "both",
+    "notes": "Two bars rocking between I and IV, then ii7 V7 to reset. The half-bar changes at the start are what give it the forward lean.",
+    "songs": []
+  },
+  {
+    "id": "soul-ballad-six-01",
+    "name": "Soul ballad in six",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "iii", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "V", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "Ab",
+    "tempo": "slow",
+    "moods": ["romantic", "tender", "yearning"],
+    "genres": ["soul", "pop"],
+    "instrument": "piano",
+    "notes": "The iii in bar two is the tonic with its root swapped out, so the harmony darkens without really moving. Triplet feel, and lean on the first of each group of three.",
+    "songs": []
+  },
+  {
+    "id": "stadium-rock-01",
+    "name": "Stadium rock",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["triumphant", "driving", "epic"],
+    "genres": ["rock"],
+    "instrument": "guitar",
+    "notes": "Six bars of flat-seventh mixolydian, then a real V for two bars, which is the only chord with a leading tone in it. That contrast is what makes the last two bars feel like a lift.",
+    "songs": []
+  },
+  {
+    "id": "synth-pop-loop-01",
+    "name": "Synth-pop loop",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["brooding", "driving", "restless"],
+    "genres": ["electronic", "pop"],
+    "instrument": "both",
+    "notes": "Four natural-minor chords with the bass stepping down a third then a step then a step. Every chord shares two notes with its neighbour, so a pad can move a single voice at a time.",
+    "songs": []
+  },
+  {
+    "id": "deceptive-turn-01",
+    "name": "Deceptive turn",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "mid",
+    "moods": ["restless", "wistful", "dramatic"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "V resolves to vi instead of I, which is the deceptive cadence, and then it tries again. The loop never actually gets home, so it works better as a verse than a chorus.",
+    "songs": []
+  },
+  {
+    "id": "one-drop-01",
+    "name": "One drop",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "IV", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["carefree", "serene", "dancing"],
+    "genres": ["reggae", "pop"],
+    "instrument": "both",
+    "notes": "Two bars each on I and IV, with no dominant anywhere, so nothing pushes and the groove carries it. Chords on the offbeats only, and leave beat one empty.",
+    "songs": []
+  },
+  {
+    "id": "bridge-lift-01",
+    "name": "Bridge lift",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I/3", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["hopeful", "uplifting", "restless"],
+    "genres": ["pop", "soul"],
+    "instrument": "piano",
+    "notes": "Starting on IV rather than I is what makes it read as a departure from the verse. The I/3 keeps the bass falling by step on its way to ii.",
+    "songs": []
+  },
+  {
+    "id": "minor-axis-01",
+    "name": "Minor axis",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["brooding", "epic", "defiant"],
+    "genres": ["rock", "electronic"],
+    "instrument": "both",
+    "notes": "The same four chords as the major axis, read from the relative minor, which is why it feels like the serious version of the same tune. All natural minor, no dominant.",
+    "songs": []
+  },
+  {
+    "id": "suspended-alt-rock-01",
+    "name": "Suspended alt rock",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "Isus2", "beats": 4 },
+      { "numeral": "IVsus2", "beats": 4 },
+      { "numeral": "bVIIsus2", "beats": 4 },
+      { "numeral": "IVsus2", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["restless", "driving", "floating"],
+    "genres": ["rock", "indie"],
+    "instrument": "guitar",
+    "notes": "No thirds anywhere, so none of these chords declares itself major or minor and the whole loop stays open. Move one two-finger shape along the neck and let the top strings ring.",
+    "songs": []
+  },
+  {
+    "id": "piano-ballad-four-01",
+    "name": "Piano ballad four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Db",
+    "tempo": "slow",
+    "moods": ["tender", "wistful", "hopeful"],
+    "genres": ["pop", "soul"],
+    "instrument": "piano",
+    "notes": "The bass rises by thirds from the tonic to the sixth before V pulls it back. Two minor chords in the middle darken it without ever leaving the key.",
+    "songs": []
+  },
+  {
+    "id": "eight-bar-anthem-01",
+    "name": "Eight-bar anthem",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["uplifting", "epic", "hopeful"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "Four bars of the axis, then ii and IV push into two bars of V that never resolve inside the phrase. Written to run straight into a chorus starting on I.",
+    "songs": []
+  },
+  {
+    "id": "indie-waltz-01",
+    "name": "Indie waltz",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "iv", "beats": 3 },
+      { "numeral": "bVI", "beats": 3 },
+      { "numeral": "V", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "B",
+    "tempo": "slow",
+    "moods": ["melancholy", "wistful", "eerie"],
+    "genres": ["indie", "waltz"],
+    "instrument": "both",
+    "notes": "A minor waltz with a major V at the end, borrowed from harmonic minor so it can actually pull home. Keep the left hand to root on one and chord on two and three.",
+    "songs": []
+  },
+  {
+    "id": "plagal-vamp-01",
+    "name": "Plagal vamp",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "IV", "beats": 8 },
+      { "numeral": "I", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["serene", "solemn", "uplifting"],
+    "genres": ["gospel", "rock"],
+    "instrument": "both",
+    "notes": "IV falling to I is the plagal cadence, the amen ending, and looping it means arriving home every two bars without a dominant ever appearing. Good under a fade or an outro.",
+    "songs": []
+  }
+]

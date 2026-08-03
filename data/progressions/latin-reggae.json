@@ -1,0 +1,495 @@
+[
+  {
+    "id": "bossa-nova-01",
+    "name": "Bossa nova",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 8 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["serene", "romantic", "gentle"],
+    "genres": ["latin", "jazz"],
+    "instrument": "both",
+    "notes": "Two bars of a major seventh tonic, then a two-five that never quite arrives before the loop restarts. Play the chords on the offbeats against a steady bass on one and three.",
+    "songs": []
+  },
+  {
+    "id": "samba-turnaround-01",
+    "name": "Samba turnaround",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "fast",
+    "moods": ["joyful", "dancing", "frantic"],
+    "genres": ["latin", "jazz"],
+    "instrument": "both",
+    "notes": "The turnaround with VI made dominant so it drives into ii7 rather than sitting beside it. At samba tempo the chords go past quickly, so keep the voicings small.",
+    "songs": []
+  },
+  {
+    "id": "montuno-01",
+    "name": "Montuno",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "IV", "beats": 2 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["dancing", "joyful", "driving"],
+    "genres": ["latin"],
+    "instrument": "piano",
+    "notes": "Two chords a bar cycling through the primary three, which is the harmonic bed a montuno figure sits on. The piano part is an ostinato in octaves; the chords change under it without the pattern changing.",
+    "songs": []
+  },
+  {
+    "id": "salsa-cadence-01",
+    "name": "Salsa cadence",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "i", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["dancing", "dramatic", "swaggering"],
+    "genres": ["latin"],
+    "instrument": "both",
+    "notes": "A minor cadence with two bars of tonic at the end, which gives the percussion somewhere to stretch out. The V7 needs a raised seventh, so it is the one chord not from natural minor.",
+    "songs": []
+  },
+  {
+    "id": "cha-cha-turnaround-01",
+    "name": "Cha-cha turnaround",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "mid",
+    "moods": ["playful", "dancing", "carefree"],
+    "genres": ["latin", "jazz"],
+    "instrument": "both",
+    "notes": "The cadence lands in bar three, then VI7 immediately points back at ii7 to start again. Ending on a dominant is what keeps a dance floor moving through the repeat.",
+    "songs": []
+  },
+  {
+    "id": "bolero-01",
+    "name": "Bolero",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["romantic", "sultry", "dramatic"],
+    "genres": ["latin"],
+    "instrument": "both",
+    "notes": "Out to bVI and back through the dominant, slowly, with the tonic on both ends so it closes properly. Arpeggiate rather than block, and let the guitar carry the rhythm.",
+    "songs": []
+  },
+  {
+    "id": "argentine-tango-01",
+    "name": "Argentine tango",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["dramatic", "sultry", "menacing"],
+    "genres": ["latin", "waltz"],
+    "instrument": "piano",
+    "notes": "The Neapolitan a semitone above the tonic, dropping a tritone into V7. That is a harsher approach to the dominant than iv, and it is the sound the style is built on.",
+    "songs": []
+  },
+  {
+    "id": "rumba-flamenca-01",
+    "name": "Rumba flamenca",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "fast",
+    "moods": ["defiant", "sultry", "frantic"],
+    "genres": ["latin", "folk"],
+    "instrument": "guitar",
+    "notes": "Starting on bII and falling a semitone to the tonic puts the phrygian half-step in the strongest position in the bar. Rasgueado throughout, and keep the low string ringing.",
+    "songs": []
+  },
+  {
+    "id": "vals-criollo-01",
+    "name": "Vals criollo",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "iv", "beats": 3 },
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "V", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["wistful", "dancing", "yearning"],
+    "genres": ["latin", "waltz"],
+    "instrument": "both",
+    "notes": "A minor waltz that returns to the tonic in bar three and leaves the dominant hanging at the end. Faster than a European waltz, with the accent pushed off beat one.",
+    "songs": []
+  },
+  {
+    "id": "afro-cuban-six-eight-01",
+    "name": "Afro-Cuban six-eight",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 },
+      { "numeral": "bVI", "beats": 6 },
+      { "numeral": "V", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["driving", "mysterious", "dancing"],
+    "genres": ["latin"],
+    "instrument": "both",
+    "notes": "The descending minor line in a six-eight bell pattern, which is felt as two against three rather than as a jig. One chord per bar, and let the pulse fight the metre.",
+    "songs": []
+  },
+  {
+    "id": "minor-bossa-01",
+    "name": "Minor bossa",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i7", "beats": 4 },
+      { "numeral": "iv7", "beats": 4 },
+      { "numeral": "bVII7", "beats": 4 },
+      { "numeral": "bVImaj7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["sultry", "wistful", "serene"],
+    "genres": ["latin", "jazz"],
+    "instrument": "piano",
+    "notes": "Roots rising by fourths through the flat side of the key, sevenths on everything so the voicings overlap. Nothing resolves, which suits a loop that runs under a whole verse.",
+    "songs": []
+  },
+  {
+    "id": "latin-jazz-vamp-01",
+    "name": "Latin jazz vamp",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i7", "beats": 8 },
+      { "numeral": "IV7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["sultry", "driving", "dancing"],
+    "genres": ["latin", "jazz"],
+    "instrument": "both",
+    "notes": "Two bars each on a minor tonic and a dominant a fourth above, which is dorian rather than a two-five. The raised sixth in the IV7 is the note that keeps it from turning minor.",
+    "songs": []
+  },
+  {
+    "id": "baiao-01",
+    "name": "Baião",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["rustic", "dancing", "driving"],
+    "genres": ["latin", "folk"],
+    "instrument": "both",
+    "notes": "Mixolydian with bVII appearing twice, so the flattened seventh is the loudest thing in the loop. Northeastern Brazilian music leans on this scale the way Celtic music does.",
+    "songs": []
+  },
+  {
+    "id": "merengue-01",
+    "name": "Merengue",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["frantic", "joyful", "dancing"],
+    "genres": ["latin"],
+    "instrument": "both",
+    "notes": "Two bars a chord in a fast 2/4, so the harmony turns over slowly while the rhythm does not. Almost every merengue is this or a two-chord version of it.",
+    "songs": []
+  },
+  {
+    "id": "cumbia-01",
+    "name": "Cumbia",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 8 },
+      { "numeral": "V", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["dancing", "carefree", "driving"],
+    "genres": ["latin"],
+    "instrument": "both",
+    "notes": "Two chords, two bars each, and the major V gives the minor key its only leading tone. The whole style runs on this much harmony plus a rhythm that never stops.",
+    "songs": []
+  },
+  {
+    "id": "samba-de-roda-01",
+    "name": "Samba de roda",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["dancing", "frantic", "joyful"],
+    "genres": ["latin"],
+    "instrument": "both",
+    "notes": "Tonic and dominant trading every two bars of 2/4, which is as simple as harmony gets and leaves everything to the clapping. Built for a circle of people, so it has to be learnable in one pass.",
+    "songs": []
+  },
+  {
+    "id": "reggae-skank-01",
+    "name": "Reggae skank",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "V", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["carefree", "bouncy", "serene"],
+    "genres": ["reggae"],
+    "instrument": "guitar",
+    "notes": "Two chords, and every chord lands on the offbeat with beat one left empty. The skank is short and damped, so the space between the chops matters more than the chords do.",
+    "songs": []
+  },
+  {
+    "id": "rocksteady-01",
+    "name": "Rocksteady",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["romantic", "nostalgic", "gentle"],
+    "genres": ["reggae", "soul"],
+    "instrument": "both",
+    "notes": "Slower than ska and sweeter, with iii softening the step from tonic to subdominant. The bass line is the melody here, so leave it room and keep the chords on the upbeats.",
+    "songs": []
+  },
+  {
+    "id": "ska-01",
+    "name": "Ska",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "V", "beats": 2 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "fast",
+    "moods": ["frantic", "joyful", "bouncy"],
+    "genres": ["reggae", "punk"],
+    "instrument": "guitar",
+    "notes": "Two chords a bar at speed, tonic answered by IV then V. Every chord is a clipped upstroke on the offbeat, which is what separates ska from the same changes played straight.",
+    "songs": []
+  },
+  {
+    "id": "roots-reggae-minor-01",
+    "name": "Roots reggae minor",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "iv", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["brooding", "solemn", "defiant"],
+    "genres": ["reggae", "soul"],
+    "instrument": "both",
+    "notes": "All natural minor, ending on iv so the loop turns without a cadence. Roots reggae favours minor keys and avoids the dominant, which is why it sounds weighty rather than urgent.",
+    "songs": []
+  },
+  {
+    "id": "dub-vamp-01",
+    "name": "Dub vamp",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i7", "beats": 8 },
+      { "numeral": "iv7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["brooding", "sleazy", "mysterious"],
+    "genres": ["reggae", "electronic"],
+    "instrument": "both",
+    "notes": "Two minor sevenths, two bars each, with nothing pulling anywhere. Dub strips arrangements down and repeats them, so the harmony has to survive being the only constant.",
+    "songs": []
+  },
+  {
+    "id": "dub-one-chord-01",
+    "name": "Dub one chord",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I7", "beats": 16 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "slow",
+    "moods": ["sleazy", "carefree", "serene"],
+    "genres": ["reggae", "electronic"],
+    "instrument": "both",
+    "notes": "One dominant seventh for four bars. Everything interesting has to come from the bass line, the skank placement and whatever the mixing desk does, because the harmony is not going to help.",
+    "songs": []
+  },
+  {
+    "id": "reggae-bridge-01",
+    "name": "Reggae bridge",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["uplifting", "hopeful", "bouncy"],
+    "genres": ["reggae", "soul"],
+    "instrument": "both",
+    "notes": "Starting away from the tonic is what marks it out from the verse, and two bars of I at the end make the return obvious. Useful as a middle eight over a one-chord or two-chord song.",
+    "songs": []
+  },
+  {
+    "id": "reggaeton-loop-01",
+    "name": "Reggaeton loop",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "B",
+    "tempo": "mid",
+    "moods": ["driving", "sleazy", "dancing"],
+    "genres": ["latin", "electronic"],
+    "instrument": "both",
+    "notes": "Two chords climbing from below into two bars of tonic, so the loop arrives home halfway and sits there. Starting off the tonic is what makes a four-bar loop feel longer than it is.",
+    "songs": []
+  },
+  {
+    "id": "plena-01",
+    "name": "Plena",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["joyful", "rustic", "dancing"],
+    "genres": ["latin", "folk"],
+    "instrument": "both",
+    "notes": "Two bars a chord in 2/4, primary chords only, ending on V so the verse rolls straight into the next. Call-and-response singing sits on top, so the harmony stays out of the way.",
+    "songs": []
+  }
+]

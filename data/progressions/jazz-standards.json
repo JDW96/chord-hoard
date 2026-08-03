@@ -1,0 +1,513 @@
+[
+  {
+    "id": "sevenths-turnaround-01",
+    "name": "Sevenths turnaround",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "vi7", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "mid",
+    "moods": ["nostalgic", "serene", "playful"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "The one-six-two-five turnaround with a seventh on every chord, which is the default in jazz rather than an embellishment. Each root sits a fourth above the last, so the bass walks itself.",
+    "songs": []
+  },
+  {
+    "id": "rhythm-changes-a-01",
+    "name": "Rhythm changes A",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 2 },
+      { "numeral": "vi7", "beats": 2 },
+      { "numeral": "ii7", "beats": 2 },
+      { "numeral": "V7", "beats": 2 },
+      { "numeral": "iii7", "beats": 2 },
+      { "numeral": "VI7", "beats": 2 },
+      { "numeral": "ii7", "beats": 2 },
+      { "numeral": "V7", "beats": 2 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "fast",
+    "moods": ["bouncy", "carefree", "frantic"],
+    "genres": ["jazz", "showtune"],
+    "instrument": "piano",
+    "notes": "Two chords per bar, the turnaround twice with iii7 and a dominant VI7 the second time. Hundreds of bebop heads are written over this, so it is worth having under the fingers at speed.",
+    "songs": []
+  },
+  {
+    "id": "three-six-two-five-01",
+    "name": "Three-six-two-five",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "iii7", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["wistful", "restless", "nostalgic"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "Starting on iii7 rather than the tonic, with VI7 made major so it points harder at ii7. Four bars of pure approach, and the resolution happens after the loop ends.",
+    "songs": []
+  },
+  {
+    "id": "circle-of-dominants-01",
+    "name": "Circle of dominants",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "II7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "Imaj7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["swaggering", "playful", "carefree"],
+    "genres": ["jazz", "blues"],
+    "instrument": "both",
+    "notes": "Three dominant sevenths in a row, each resolving to the next, before the tonic finally arrives. Only V7 belongs to the key; the other two are borrowed to keep the chain going.",
+    "songs": []
+  },
+  {
+    "id": "standard-bridge-01",
+    "name": "Standard bridge",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "III7", "beats": 8 },
+      { "numeral": "VI7", "beats": 8 },
+      { "numeral": "II7", "beats": 8 },
+      { "numeral": "V7", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["restless", "swaggering", "dramatic"],
+    "genres": ["jazz", "showtune"],
+    "instrument": "piano",
+    "notes": "Two bars each on four dominants working round the circle back to V7. The tonic never appears, which is exactly why it functions as a bridge rather than a verse.",
+    "songs": []
+  },
+  {
+    "id": "tritone-turnaround-01",
+    "name": "Tritone substitution turnaround",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 2 },
+      { "numeral": "bIII7", "beats": 2 },
+      { "numeral": "ii7", "beats": 2 },
+      { "numeral": "bII7", "beats": 2 }
+    ],
+    "bars": 2,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["sleazy", "mischievous", "sultry"],
+    "genres": ["jazz"],
+    "instrument": "piano",
+    "notes": "bIII7 stands in for VI7 and bII7 for V7, each substitute sitting a tritone from the chord it replaces and sharing its two most important notes. The result is a bass line falling by semitone instead of by fourth.",
+    "songs": []
+  },
+  {
+    "id": "jazz-minor-two-five-01",
+    "name": "Jazz minor two-five",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "iidim", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "i7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["brooding", "sultry", "dramatic"],
+    "genres": ["jazz", "cinematic"],
+    "instrument": "piano",
+    "notes": "The minor cadence with a diminished chord on the second degree and a dominant on the fifth, resolving to a minor tonic held for two bars. Half the minor-key standards begin here.",
+    "songs": []
+  },
+  {
+    "id": "major-to-relative-minor-01",
+    "name": "Major to relative minor cycle",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "IVmaj7", "beats": 4 },
+      { "numeral": "iidim", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "i7", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["bittersweet", "wistful", "nostalgic"],
+    "genres": ["jazz", "showtune"],
+    "instrument": "piano",
+    "notes": "A major two-five-one in the first half, then the same cadence pointed at the relative minor in the second. Moving between a key and its relative minor is the commonest way a standard covers ground without a real modulation.",
+    "songs": []
+  },
+  {
+    "id": "bebop-blues-01",
+    "name": "Bebop blues",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "IV7", "beats": 4 },
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "v7", "beats": 2 },
+      { "numeral": "I7", "beats": 2 },
+      { "numeral": "IV7", "beats": 4 },
+      { "numeral": "#ivdim", "beats": 4 },
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "I7", "beats": 2 },
+      { "numeral": "VI7", "beats": 2 },
+      { "numeral": "ii7", "beats": 2 },
+      { "numeral": "V7", "beats": 2 }
+    ],
+    "bars": 12,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "fast",
+    "moods": ["frantic", "playful", "swaggering"],
+    "genres": ["jazz", "blues"],
+    "instrument": "piano",
+    "notes": "The twelve-bar with every gap filled: a two-five into bar five, a diminished passing chord in bar six, and a full turnaround across the last two bars. Same form as a plain blues, four times the chord changes.",
+    "songs": []
+  },
+  {
+    "id": "chromatic-descent-to-five-01",
+    "name": "Chromatic descent to five",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "vi7", "beats": 4 },
+      { "numeral": "bVI7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "slow",
+    "moods": ["sultry", "wistful", "bittersweet"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "bVI7 is a chromatic passing chord between vi7 and V7, so the bass drops a semitone twice in a row. It belongs to no key, and it works because the line is smooth rather than because the harmony is functional.",
+    "songs": []
+  },
+  {
+    "id": "chromatic-diminished-climb-01",
+    "name": "Chromatic diminished climb",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "#idim", "beats": 2 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "#iidim", "beats": 4 },
+      { "numeral": "iii7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["playful", "restless", "mischievous"],
+    "genres": ["jazz", "showtune"],
+    "instrument": "piano",
+    "notes": "Two diminished chords used purely to carry the bass up by semitone from the tonic to the third. Diminished chords are unstable in every direction, which is what makes them good at passing through.",
+    "songs": []
+  },
+  {
+    "id": "major-seventh-minor-four-01",
+    "name": "Major seventh with minor four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "IVmaj7", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "slow",
+    "moods": ["bittersweet", "tender", "yearning"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "IVmaj7 turning minor is the same chord with its third dropped a semitone, and that one note is the whole effect. It borrows from the parallel minor and then resolves straight home.",
+    "songs": []
+  },
+  {
+    "id": "jazz-ballad-eight-01",
+    "name": "Jazz ballad eight",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "IVmaj7", "beats": 4 },
+      { "numeral": "iii7", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "Imaj7", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "Ab",
+    "tempo": "slow",
+    "moods": ["romantic", "serene", "tender"],
+    "genres": ["jazz", "showtune"],
+    "instrument": "piano",
+    "notes": "Eight bars that state the tonic, move to IV, then take the long way home through a three-six-two-five. The last two bars sit on the tonic, which is where a singer breathes.",
+    "songs": []
+  },
+  {
+    "id": "two-feel-turnaround-01",
+    "name": "Two-feel turnaround",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I6", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "I6", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["carefree", "playful", "nostalgic"],
+    "genres": ["jazz", "blues"],
+    "instrument": "both",
+    "notes": "The added sixth was the standard tonic chord before the major seventh took over, and it sounds settled in a way maj7 does not. Two beats to the bar in the bass, hence the name.",
+    "songs": []
+  },
+  {
+    "id": "flat-side-descent-01",
+    "name": "Flat-side descent",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 4 },
+      { "numeral": "bVII7", "beats": 4 },
+      { "numeral": "bVImaj7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["brooding", "sultry", "dramatic"],
+    "genres": ["jazz", "cinematic"],
+    "instrument": "piano",
+    "notes": "Two chords borrowed from the parallel minor step the bass down whole tones from the tonic to the dominant. Everything is flat-side of the key until V7 turns it back round.",
+    "songs": []
+  },
+  {
+    "id": "dominant-sus-vamp-01",
+    "name": "Dominant sus vamp",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "V7sus4", "beats": 8 },
+      { "numeral": "V7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["floating", "restless", "mysterious"],
+    "genres": ["jazz", "electronic"],
+    "instrument": "piano",
+    "notes": "The sus4 holds the fourth where the third belongs, so the chord is a dominant with its tension postponed. Two bars of that, then two bars of the third arriving, and it never gets as far as the tonic.",
+    "songs": []
+  },
+  {
+    "id": "modal-jazz-vamp-01",
+    "name": "Modal jazz vamp",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i7", "beats": 16 },
+      { "numeral": "bVII7", "beats": 16 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["mysterious", "serene", "floating"],
+    "genres": ["jazz", "electronic"],
+    "instrument": "both",
+    "notes": "Four bars each on two chords, which is modal jazz doing the opposite of bebop: almost no harmonic motion so the soloist has room. Dorian over both, and the raised sixth is the note that matters.",
+    "songs": []
+  },
+  {
+    "id": "semitone-modal-shift-01",
+    "name": "Semitone modal shift",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i7", "beats": 16 },
+      { "numeral": "bii7", "beats": 16 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["mysterious", "unsettling", "floating"],
+    "genres": ["jazz"],
+    "instrument": "both",
+    "notes": "The same minor seventh chord shifted up a semitone and back, which moves the whole scale rather than changing a chord within one. There is no functional relationship between them; the effect comes from the shift itself.",
+    "songs": []
+  },
+  {
+    "id": "lydian-jazz-vamp-01",
+    "name": "Lydian jazz vamp",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 8 },
+      { "numeral": "II7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["dreamy", "floating", "hopeful"],
+    "genres": ["jazz", "cinematic"],
+    "instrument": "piano",
+    "notes": "II7 supplies the raised fourth that makes the scale lydian, and against a maj7 tonic it never wants to resolve anywhere. Two bars each, and voice the II7 above the tonic rather than below.",
+    "songs": []
+  },
+  {
+    "id": "mixolydian-jazz-vamp-01",
+    "name": "Mixolydian jazz vamp",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I7", "beats": 8 },
+      { "numeral": "bVII7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["swaggering", "carefree", "driving"],
+    "genres": ["jazz", "blues"],
+    "instrument": "both",
+    "notes": "A dominant seventh treated as home rather than as something needing resolution, which is what mixolydian does. bVII7 is a whole tone below and returns without any pull.",
+    "songs": []
+  },
+  {
+    "id": "minor-jazz-circle-01",
+    "name": "Minor jazz circle",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i7", "beats": 4 },
+      { "numeral": "iv7", "beats": 4 },
+      { "numeral": "bVII7", "beats": 4 },
+      { "numeral": "bIIImaj7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["sultry", "brooding", "restless"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "Roots rising by fourths through the flat side of the key, ending on the relative major. Sevenths on everything, so each chord shares three notes with the next.",
+    "songs": []
+  },
+  {
+    "id": "minor-jazz-blues-eight-01",
+    "name": "Minor jazz blues eight",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i7", "beats": 8 },
+      { "numeral": "iv7", "beats": 8 },
+      { "numeral": "i7", "beats": 8 },
+      { "numeral": "V7", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["mournful", "brooding", "sultry"],
+    "genres": ["jazz", "blues"],
+    "instrument": "both",
+    "notes": "The blues shape in minor across eight bars, two to a chord. The major V7 at the end is the only chord outside natural minor, and it is what turns the form round.",
+    "songs": []
+  },
+  {
+    "id": "jazz-waltz-01",
+    "name": "Jazz waltz",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 3 },
+      { "numeral": "vi7", "beats": 3 },
+      { "numeral": "ii7", "beats": 3 },
+      { "numeral": "V7", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["playful", "serene", "dancing"],
+    "genres": ["jazz", "waltz"],
+    "instrument": "piano",
+    "notes": "The standard turnaround in three, which swings differently from the same chords in four because the bar divides unevenly. Accent one and three rather than every beat.",
+    "songs": []
+  },
+  {
+    "id": "minor-jazz-waltz-01",
+    "name": "Minor jazz waltz",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i7", "beats": 3 },
+      { "numeral": "iv7", "beats": 3 },
+      { "numeral": "V7", "beats": 3 },
+      { "numeral": "i7", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["mysterious", "sultry", "dancing"],
+    "genres": ["jazz", "waltz"],
+    "instrument": "piano",
+    "notes": "A minor cadence in three, closing properly every four bars rather than circling. The V7 needs the raised seventh, so it is the only chord here that is not straight natural minor.",
+    "songs": []
+  },
+  {
+    "id": "slow-swing-ballad-01",
+    "name": "Slow swing ballad",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 12 },
+      { "numeral": "vi7", "beats": 12 },
+      { "numeral": "ii7", "beats": 12 },
+      { "numeral": "V7", "beats": 12 }
+    ],
+    "bars": 4,
+    "timeSig": "12/8",
+    "homeKey": "Db",
+    "tempo": "slow",
+    "moods": ["romantic", "sultry", "tender"],
+    "genres": ["jazz", "soul"],
+    "instrument": "piano",
+    "notes": "The turnaround written in 12/8 so the triplets are on the page rather than left to the drummer. One chord per bar at a tempo slow enough to hear every note of it.",
+    "songs": []
+  }
+]

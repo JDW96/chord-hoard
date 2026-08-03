@@ -1,5 +1,36 @@
 {
-  "note": "Manifest of progression batch files, fetched by js/ui/app.js. The empty progressions array keeps tools/validate.js happy (it validates every *.json in this directory as a batch).",
-  "files": ["seed.json"],
+  "note": "Manifest of progression batch files, fetched by js/ui/app.js. The empty progressions array keeps tools/validate.js happy (it validates every *.json in this directory as a batch). `collections` maps each file's basename to the label shown in the Hoard's Collection filter; entries are tagged with their collection at load time rather than carrying the field in the data.",
+  "files": [
+    "seed.json",
+    "diatonic-essentials.json",
+    "theatre.json",
+    "pop-rock.json",
+    "folk-celtic.json",
+    "blues-soul-gospel.json",
+    "jazz-standards.json",
+    "cinematic.json",
+    "latin-reggae.json",
+    "electronic-indie.json",
+    "country-americana.json",
+    "odd-metres-long-forms.json",
+    "modal-depth.json",
+    "comedy-novelty.json"
+  ],
+  "collections": {
+    "seed": "Assorted",
+    "diatonic-essentials": "Diatonic essentials",
+    "theatre": "Musical theatre",
+    "pop-rock": "Pop and rock",
+    "folk-celtic": "Folk and Celtic",
+    "blues-soul-gospel": "Blues, soul and gospel",
+    "jazz-standards": "Jazz and standards",
+    "cinematic": "Cinematic",
+    "latin-reggae": "Latin and reggae",
+    "electronic-indie": "Electronic and indie",
+    "country-americana": "Country and americana",
+    "odd-metres-long-forms": "Odd metres and long forms",
+    "modal-depth": "Modal depth",
+    "comedy-novelty": "Comedy and novelty"
+  },
   "progressions": []
 }

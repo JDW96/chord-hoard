@@ -1,7 +1,7 @@
 [
   {
     "id": "four-chord-anthem-01",
-    "name": "Anthem Engine",
+    "name": "Axis Progression",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -16,7 +16,7 @@
     "moods": ["hopeful", "uplifting", "joyful"],
     "genres": ["pop", "rock"],
     "instrument": "both",
-    "notes": "The four chords behind a thousand choruses, and they still work. Keep the strum steady and let the vi do the emotional dip — the IV lifts you straight back out.",
+    "notes": "The I-V-vi-IV loop behind a large share of pop choruses. Keep the strum steady: vi is the dip in the middle and IV lifts straight back out of it.",
     "songs": [
       { "title": "Let It Be", "artist": "The Beatles", "key": "C", "section": "verse" },
       { "title": "No Woman, No Cry", "artist": "Bob Marley & The Wailers", "key": "C", "section": "verse" },
@@ -25,7 +25,7 @@
   },
   {
     "id": "doo-wop-sway-01",
-    "name": "Malt-Shop Sway",
+    "name": "Doo-Wop",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 12 },
@@ -40,7 +40,7 @@
     "moods": ["romantic", "nostalgic", "tender"],
     "genres": ["pop", "soul"],
     "instrument": "both",
-    "notes": "The 1950s slow-dance in rolling 12/8 — count it in threes and arpeggiate rather than block. The add9 on the IV is a small modern touch; drop it for the full period costume.",
+    "notes": "The 1950s slow dance, one chord per bar of rolling 12/8. Count it in threes and arpeggiate rather than blocking the chords. The add9 on IV is a modern touch; drop it for the period sound.",
     "songs": [
       { "title": "Stand by Me", "artist": "Ben E. King", "key": "A", "section": "throughout" },
       { "title": "Every Breath You Take", "artist": "The Police", "key": "Ab", "section": "verse" },
@@ -49,7 +49,7 @@
   },
   {
     "id": "twelve-bar-roadhouse-01",
-    "name": "Roadhouse Twelve",
+    "name": "12-Bar Blues",
     "mode": "major",
     "numerals": [
       { "numeral": "I7", "beats": 16 },
@@ -67,7 +67,7 @@
     "moods": ["swaggering", "gritty", "carefree"],
     "genres": ["blues", "rock"],
     "instrument": "guitar",
-    "notes": "The 12-bar blues, dominant 7ths all the way through — that clash is the flavour, not a mistake. Shuffle the rhythm and hit the final V7 hard to throw you round again.",
+    "notes": "Dominant sevenths on all three chords, so every chord carries a flattened seventh against its own major third. That rub is the blues sound. Shuffle the rhythm and hit the closing V7 hard to turn the form round again.",
     "songs": [
       { "title": "Johnny B. Goode", "artist": "Chuck Berry", "key": "Bb", "section": "throughout" },
       { "title": "Hound Dog", "artist": "Elvis Presley", "key": "C", "section": "throughout" },
@@ -76,7 +76,7 @@
   },
   {
     "id": "heroic-fanfare-01",
-    "name": "Skyline Fanfare",
+    "name": "Heroic fanfare",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -92,12 +92,12 @@
     "moods": ["heroic", "triumphant", "epic"],
     "genres": ["cinematic", "rock"],
     "instrument": "both",
-    "notes": "The borrowed bVI and bVII are the superhero sound — big blocks, no apology. Let the sus4 hang for two full beats before it resolves; that's the cape catching the wind.",
+    "notes": "bVI and bVII are borrowed from the parallel minor, which is the superhero-soundtrack move. Play them as big blocks and let the sus4 hang for its full two beats before it resolves.",
     "songs": []
   },
   {
     "id": "kitchen-ceilidh-01",
-    "name": "Kitchen Ceilidh",
+    "name": "Ceilidh",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 6 },
@@ -113,12 +113,12 @@
     "moods": ["joyful", "dancing", "rustic"],
     "genres": ["folk", "celtic"],
     "instrument": "both",
-    "notes": "A jig in 6/8 — two big pulses per bar, not six little ones. The quick I-to-V flick in bar three is the kick of the heels; keep it light and keep it moving.",
+    "notes": "A jig in 6/8, so feel two big pulses per bar rather than six small ones. The quick I to V in bar three is the only place the harmony moves inside a bar; keep it light and keep it moving.",
     "songs": []
   },
   {
     "id": "nightlight-waltz-01",
-    "name": "Nightlight Waltz",
+    "name": "Slow waltz turnaround",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 3 },
@@ -133,14 +133,14 @@
     "moods": ["tender", "cozy", "serene"],
     "genres": ["lullaby", "pop"],
     "instrument": "piano",
-    "notes": "The old I–vi–ii–V turnaround slowed to a lullaby waltz. Root alone on beat one, the rest of the chord floating above on two and three — quieter than you think you should.",
+    "notes": "The I-vi-ii-V turnaround at lullaby speed, with each chord a step closer to the dominant. Root alone on beat one, the rest of the chord on two and three, quieter than feels natural.",
     "songs": [
       { "title": "Heart and Soul", "artist": "Hoagy Carmichael", "key": "C", "section": "throughout" }
     ]
   },
   {
     "id": "staircase-descent-01",
-    "name": "Staircase Descent",
+    "name": "Descending bass line",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -160,14 +160,14 @@
     "moods": ["nostalgic", "tender", "hopeful"],
     "genres": ["pop", "soul"],
     "instrument": "piano",
-    "notes": "The whole trick is the bass walking down one step per bar — make the left hand the melody and keep the right hand simple. The sus4 at the bottom of the stairs holds the door open.",
+    "notes": "The bass walks down one scale step per bar, which is what the slash chords are there to do. Make the left hand the melody and keep the right hand plain. The sus4 near the end delays the resolution by two beats.",
     "songs": [
       { "title": "Piano Man", "artist": "Billy Joel", "key": "C", "section": "verse" }
     ]
   },
   {
     "id": "sidewalk-strut-01",
-    "name": "Sidewalk Strut",
+    "name": "Show-tune strut",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 2 },
@@ -183,12 +183,12 @@
     "moods": ["playful", "mischievous", "nostalgic"],
     "genres": ["jazz", "showtune"],
     "instrument": "piano",
-    "notes": "Pure vintage strut — the #idim is a passing chord, so treat it like a stepping stone, two beats and gone. Land on the I6 with a wink; that added 6th is the raised eyebrow.",
+    "notes": "The #idim is a passing chord carrying the bass chromatically from I up to ii7, so give it its two beats and move on. The added sixth on the final chord stops it closing completely.",
     "songs": []
   },
   {
     "id": "borrowed-ache-01",
-    "name": "Borrowed Ache",
+    "name": "Borrowed minor four",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -203,12 +203,12 @@
     "moods": ["bittersweet", "wistful", "yearning"],
     "genres": ["pop", "indie"],
     "instrument": "both",
-    "notes": "Three gentle diatonic chords, then the iv — a minor chord borrowed from the parallel minor — hurts in exactly the right way. Give it the full bar and don't rush back to the I.",
+    "notes": "Three diatonic chords, then iv borrowed from the parallel minor, which flattens the sixth degree underneath a major key. Give it the full bar and let it sit before the loop returns to I.",
     "songs": []
   },
   {
     "id": "gospel-walk-up-01",
-    "name": "Chapel Walk-Up",
+    "name": "Gospel walk-up",
     "mode": "major",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -223,12 +223,12 @@
     "moods": ["uplifting", "hopeful", "solemn"],
     "genres": ["gospel", "soul"],
     "instrument": "piano",
-    "notes": "A gospel climb that never quite resolves — ending on the vi keeps the congregation leaning forward. Big open voicings, and leave air between the chords.",
+    "notes": "A climb that lands on vi rather than resolving, so the loop point stays open and keeps the room leaning forward. Big spread voicings, and leave air between the chords.",
     "songs": []
   },
   {
     "id": "andalusian-fall-01",
-    "name": "Spanish Fall",
+    "name": "Andalusian Cadence",
     "mode": "minor",
     "numerals": [
       { "numeral": "i", "beats": 4 },
@@ -243,7 +243,7 @@
     "moods": ["dramatic", "sultry", "defiant"],
     "genres": ["latin", "rock"],
     "instrument": "both",
-    "notes": "Four chords stepping straight downhill; the major V at the bottom is the whole trick. Accent it, pause on it, then let it snap you back to the top.",
+    "notes": "Four chords stepping down by step, with a major V at the bottom taken from harmonic minor. Accent that last chord and pause on it before it snaps you back to i.",
     "songs": [
       { "title": "Sultans of Swing", "artist": "Dire Straits", "key": "D", "section": "verse" },
       { "title": "Runaway", "artist": "Del Shannon", "key": "Bb", "section": "verse" },
@@ -252,7 +252,7 @@
   },
   {
     "id": "villains-tango-01",
-    "name": "Villain's Tango",
+    "name": "Minor tango",
     "mode": "minor",
     "numerals": [
       { "numeral": "i", "beats": 4 },
@@ -267,12 +267,12 @@
     "moods": ["menacing", "dramatic", "swaggering"],
     "genres": ["latin", "showtune"],
     "instrument": "piano",
-    "notes": "Stiff and deliberate — accent beats one and three like a tango and leave the offbeats empty. The V7 is where the villain smiles; hold it a touch too long.",
+    "notes": "The standard minor cadence, i to iv to V7 and home. Accent beats one and three and leave the offbeats empty. V7 needs a raised seventh from harmonic minor, so hold it before resolving.",
     "songs": []
   },
   {
     "id": "rolling-deck-shanty-01",
-    "name": "Rolling Deck",
+    "name": "Sea shanty",
     "mode": "minor",
     "numerals": [
       { "numeral": "i", "beats": 6 },
@@ -287,14 +287,14 @@
     "moods": ["rustic", "defiant", "driving"],
     "genres": ["shanty", "folk"],
     "instrument": "both",
-    "notes": "A shanty sway in 6/8 — no leading tone anywhere, which is why it sounds a few centuries old. Stamp on beat one and let the crew sing the rest.",
+    "notes": "Straight natural minor with no raised seventh anywhere, which is why it sounds older than functional harmony. Stamp on beat one of each 6/8 bar and let everyone else fill in the rest.",
     "songs": [
       { "title": "Drunken Sailor", "artist": "Traditional", "key": "D", "section": "throughout" }
     ]
   },
   {
     "id": "midnight-waltz-01",
-    "name": "Midnight Waltz",
+    "name": "Minor waltz",
     "mode": "minor",
     "numerals": [
       { "numeral": "i", "beats": 6 },
@@ -309,12 +309,12 @@
     "moods": ["eerie", "romantic", "dramatic"],
     "genres": ["waltz", "cinematic"],
     "instrument": "piano",
-    "notes": "Two bars per chord, one-two-three, and be theatrical about it — this is a candelabra-and-cobwebs waltz. The V7 twists the knife just before you swirl back to the i.",
+    "notes": "Two full bars per chord, so the harmony turns slowly under the one-two-three. bVI is the drop and the V7 pulls back to i on a raised seventh. Weight on beat one, and play it theatrically.",
     "songs": []
   },
   {
     "id": "power-chord-surge-01",
-    "name": "Wall of Fuzz",
+    "name": "Power-chord loop",
     "mode": "minor",
     "numerals": [
       { "numeral": "i5", "beats": 4 },
@@ -329,7 +329,7 @@
     "moods": ["defiant", "gritty", "driving"],
     "genres": ["rock", "punk"],
     "instrument": "guitar",
-    "notes": "All power chords, so there's no major or minor — just weight. Downstrokes only, palm-mute the verses and open it right up when the chorus hits.",
+    "notes": "Power chords have no third, so none of these are strictly major or minor and the whole loop reads as weight rather than colour. Downstrokes only, palm-mute the verse and open up for the chorus.",
     "songs": [
       { "title": "Numb", "artist": "Linkin Park", "key": "F#", "section": "throughout" },
       { "title": "Zombie", "artist": "The Cranberries", "key": "E", "section": "throughout" },
@@ -338,7 +338,7 @@
   },
   {
     "id": "trailer-thunder-01",
-    "name": "Trailer Thunder",
+    "name": "Epic film trailer",
     "mode": "minor",
     "numerals": [
       { "numeral": "i", "beats": 4 },
@@ -355,12 +355,12 @@
     "moods": ["epic", "brooding", "triumphant"],
     "genres": ["cinematic", "rock"],
     "instrument": "both",
-    "notes": "The four-chord epic loop with a two-bar tail — that major V at the end is the surprise flash of light before the title card. Octaves in the left hand for maximum drama.",
+    "notes": "The four-chord minor loop with a two-bar tail, and the major V at the end is the only chord outside natural minor. Octaves in the left hand, and let the last two bars be the loudest.",
     "songs": []
   },
   {
     "id": "smoke-rings-vamp-01",
-    "name": "Smoke Rings",
+    "name": "Late-night minor vamp",
     "mode": "minor",
     "numerals": [
       { "numeral": "i7", "beats": 4 },
@@ -374,12 +374,12 @@
     "moods": ["sultry", "brooding", "sleazy"],
     "genres": ["soul", "electronic"],
     "instrument": "both",
-    "notes": "A two-bar late-night loop — the 7ths do all the talking, so play soft and behind the beat. The maj7 at the end is the smoke ring; watch it drift before you loop.",
+    "notes": "A two-bar loop where the sevenths carry the harmony, so play soft and sit behind the beat. bVImaj7 is the brightest chord here and sets up the drop back to i7.",
     "songs": []
   },
   {
     "id": "klezmer-whirl-01",
-    "name": "Dizzy Wedding",
+    "name": "Klezmer dance",
     "mode": "minor",
     "numerals": [
       { "numeral": "i", "beats": 4 },
@@ -394,12 +394,12 @@
     "moods": ["frantic", "dancing", "mischievous"],
     "genres": ["klezmer", "folk"],
     "instrument": "both",
-    "notes": "Oom-pah it — bass note on the beat, chord stab off it — and speed up every time round like the band's being paid by the lap. Lean hard on that major V; it's the whole klezmer flavour.",
+    "notes": "Oom-pah it: bass note on the beat, chord stab off it. The major V against a minor i is the harmonic-minor sound the style is built on. Speed up a little every time round.",
     "songs": []
   },
   {
     "id": "mixolydian-highway-01",
-    "name": "Highway Shoulder",
+    "name": "Mixolydian vamp",
     "mode": "mixolydian",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -413,7 +413,7 @@
     "moods": ["swaggering", "carefree", "driving"],
     "genres": ["rock", "country"],
     "instrument": "guitar",
-    "notes": "The bVII is what makes it mixolydian — no leading tone, so it rolls forever without ever needing to arrive. Loose wrist, let the open strings ring.",
+    "notes": "bVII replaces the leading tone, so nothing pulls hard back to the tonic and the loop can run as long as you like. Loose wrist, and let the open strings ring through the changes.",
     "songs": [
       { "title": "Sweet Home Alabama", "artist": "Lynyrd Skynyrd", "key": "D", "section": "throughout" },
       { "title": "Gloria", "artist": "Them", "key": "E", "section": "throughout" },
@@ -422,7 +422,7 @@
   },
   {
     "id": "five-step-prowl-01",
-    "name": "Five-Step Prowl",
+    "name": "Dorian vamp in five",
     "mode": "dorian",
     "numerals": [
       { "numeral": "i7", "beats": 5 },
@@ -435,12 +435,12 @@
     "moods": ["mysterious", "restless", "driving"],
     "genres": ["jazz", "rock"],
     "instrument": "both",
-    "notes": "Count it three-plus-two and keep the pulse walking — the odd bar length is the prowl. Minor chord, major IV: that's dorian, cooler than sad.",
+    "notes": "Count it three plus two and keep the pulse walking so the odd bar length stops feeling like a stumble. A minor i under a major IV is the dorian marker, brighter than natural minor.",
     "songs": []
   },
   {
     "id": "dorian-simmer-01",
-    "name": "Slow Simmer",
+    "name": "Dorian two-chord groove",
     "mode": "dorian",
     "numerals": [
       { "numeral": "i", "beats": 4 },
@@ -453,7 +453,7 @@
     "moods": ["sultry", "swaggering", "dancing"],
     "genres": ["latin", "rock"],
     "instrument": "both",
-    "notes": "Two chords, all groove — the major IV against the minor i is the dorian brightness. Lock into a rhythm pattern and stay there; the discipline is the hook.",
+    "notes": "Two chords and all groove. The major IV raises the sixth degree, which is the one note separating dorian from natural minor. Lock into a single rhythm pattern and stay in it.",
     "songs": [
       { "title": "Oye Como Va", "artist": "Santana", "key": "A", "section": "throughout" },
       { "title": "Evil Ways", "artist": "Santana", "key": "G", "section": "throughout" }
@@ -461,7 +461,7 @@
   },
   {
     "id": "bonfire-singalong-01",
-    "name": "Bonfire Singalong",
+    "name": "Singalong fade-out",
     "mode": "mixolydian",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -476,7 +476,7 @@
     "moods": ["uplifting", "triumphant", "joyful"],
     "genres": ["rock", "pop"],
     "instrument": "both",
-    "notes": "The great fade-out progression — it can loop for four minutes and nobody minds. Build it a little every pass: add a harmony, add a tambourine, add the neighbours.",
+    "notes": "It resolves back to I every four bars, so it can loop indefinitely without anyone minding, which is why it turns up in fade-outs. Add one thing each pass: a harmony, a tambourine, another voice.",
     "songs": [
       { "title": "Hey Jude", "artist": "The Beatles", "key": "F", "section": "outro" },
       { "title": "Sympathy for the Devil", "artist": "The Rolling Stones", "key": "E", "section": "throughout" },
@@ -485,7 +485,7 @@
   },
   {
     "id": "lydian-drift-01",
-    "name": "Wide-Eyed Drift",
+    "name": "Lydian drift",
     "mode": "lydian",
     "numerals": [
       { "numeral": "I", "beats": 4 },
@@ -500,12 +500,12 @@
     "moods": ["dreamy", "floating", "hopeful"],
     "genres": ["cinematic", "indie"],
     "instrument": "both",
-    "notes": "The major II chord is the lydian magic — it sneaks in the sharpened 4th and everything floats an inch off the ground. Arpeggiate slowly and let the sus2 blur the edges.",
+    "notes": "The major II carries the raised fourth, and that one note is the whole lydian colour. Arpeggiate slowly and let the sus2 blur the tonic so nothing lands too firmly.",
     "songs": []
   },
   {
     "id": "phrygian-doorstep-01",
-    "name": "Serpent's Doorstep",
+    "name": "Phrygian vamp",
     "mode": "phrygian",
     "numerals": [
       { "numeral": "i", "beats": 4 },
@@ -520,7 +520,7 @@
     "moods": ["menacing", "unsettling", "gritty"],
     "genres": ["rock", "latin"],
     "instrument": "guitar",
-    "notes": "The bII a semitone above home is the phrygian threat — everything leans on that half-step. Play it low, palm-muted, and let the last i ring out like a locked door.",
+    "notes": "bII sits a semitone above the tonic and that half-step is the phrygian sound. Play it low and palm-muted, and let the closing i ring out.",
     "songs": []
   }
 ]

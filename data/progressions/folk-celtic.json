@@ -1,0 +1,513 @@
+[
+  {
+    "id": "mixolydian-reel-01",
+    "name": "Reel",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["dancing", "joyful", "driving"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "Reels run in straight fours at speed, and the bVII is what keeps them out of common-practice harmony. The V at the end is the only chord that pulls, so it marks the turn.",
+    "songs": []
+  },
+  {
+    "id": "slip-jig-01",
+    "name": "Slip jig",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 9 },
+      { "numeral": "bVII", "beats": 9 },
+      { "numeral": "bVI", "beats": 9 },
+      { "numeral": "bVII", "beats": 9 }
+    ],
+    "bars": 4,
+    "timeSig": "9/8",
+    "homeKey": "E",
+    "tempo": "fast",
+    "moods": ["dancing", "mysterious", "restless"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "Nine-eight, so three groups of three per bar and a lilt that never quite settles into a square dance. One chord per bar, and accent the first of each group.",
+    "songs": []
+  },
+  {
+    "id": "hornpipe-01",
+    "name": "Hornpipe",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["bouncy", "rustic", "playful"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "The three primary chords with the tonic returning in bar three, which is the plainest folk-dance shape there is. Dot the rhythm heavily; a hornpipe played straight turns into a reel.",
+    "songs": []
+  },
+  {
+    "id": "slow-air-01",
+    "name": "Slow air",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 8 },
+      { "numeral": "bVII", "beats": 8 },
+      { "numeral": "IV", "beats": 8 },
+      { "numeral": "i", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "slow",
+    "moods": ["mournful", "serene", "yearning"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "Two bars a chord with no dominant anywhere, so it breathes rather than moves. The major IV over a minor tonic is dorian, which is the sound of most old airs that are not simply minor.",
+    "songs": []
+  },
+  {
+    "id": "waulking-song-01",
+    "name": "Waulking song",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["rustic", "solemn", "driving"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "Work songs return to the tonic every other bar because the pattern has to survive being sung by people concentrating on something else. Strong on beat one, and let a room join in on the odd bars.",
+    "songs": []
+  },
+  {
+    "id": "bothy-ballad-01",
+    "name": "Bothy ballad",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "vi", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["rustic", "wistful", "nostalgic"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "Ending on vi rather than I leaves the verse open for the next one to start. Unaccompanied singers do this by instinct, so keep any accompaniment sparse enough to follow a voice.",
+    "songs": []
+  },
+  {
+    "id": "mazurka-01",
+    "name": "Mazurka",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "I", "beats": 6 }
+    ],
+    "bars": 8,
+    "timeSig": "3/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["dancing", "bouncy", "rustic"],
+    "genres": ["folk", "waltz"],
+    "instrument": "both",
+    "notes": "A waltz that accents beats two and three rather than one, which is the whole difference between a mazurka and a waltz. Eight bars with the tonic held across the last two.",
+    "songs": []
+  },
+  {
+    "id": "polka-01",
+    "name": "Polka",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["bouncy", "joyful", "dancing"],
+    "genres": ["folk", "klezmer"],
+    "instrument": "both",
+    "notes": "Two bars a chord in cut-down 2/4, alternating tonic and dominant and nothing else. The simplicity is structural: dancers need to hear the change coming.",
+    "songs": []
+  },
+  {
+    "id": "shanty-waltz-01",
+    "name": "Shanty waltz",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 },
+      { "numeral": "bVI", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["mournful", "rustic", "wistful"],
+    "genres": ["shanty", "folk"],
+    "instrument": "both",
+    "notes": "Down two steps and back up one, in three, with no leading tone anywhere. It circles rather than cadences, which suits a verse that has a lot of verses after it.",
+    "songs": []
+  },
+  {
+    "id": "old-time-drone-01",
+    "name": "Old-time drone",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "bVII", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["rustic", "driving", "carefree"],
+    "genres": ["folk", "country"],
+    "instrument": "guitar",
+    "notes": "Two chords, two bars each, and the flat seventh means there is no leading tone to make anything urgent. Old-time fiddle tunes sit on this for as long as the dance lasts.",
+    "songs": []
+  },
+  {
+    "id": "harp-air-01",
+    "name": "Harp air",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Isus2", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "Isus2", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["serene", "gentle", "floating"],
+    "genres": ["celtic", "lullaby"],
+    "instrument": "both",
+    "notes": "The sus2 replaces the third with the second, which on a plucked instrument lets the open strings do the work. Arpeggiate through the bar and let each chord overlap the next.",
+    "songs": []
+  },
+  {
+    "id": "dorian-jig-01",
+    "name": "Dorian jig",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "E",
+    "tempo": "fast",
+    "moods": ["dancing", "mysterious", "driving"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "A jig on a minor tonic with a major IV, which is dorian and accounts for a large share of the traditional repertoire. Two pulses a bar, and keep the chords short.",
+    "songs": []
+  },
+  {
+    "id": "strathspey-01",
+    "name": "Strathspey",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["rustic", "swaggering", "dancing"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "Tonic-heavy, returning home in bar three before vi leaves the phrase open for the next repeat. The strathspey snap lives in the rhythm, so play the chords flat and let the melody do it.",
+    "songs": []
+  },
+  {
+    "id": "border-ballad-01",
+    "name": "Border ballad",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "slow",
+    "moods": ["solemn", "mournful", "eerie"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "Out to bVI, up through bVII, home to i, all within natural minor. Ballads that run to thirty verses need a shape that closes every four bars, and this closes without a dominant.",
+    "songs": []
+  },
+  {
+    "id": "wassail-01",
+    "name": "Wassail",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "V", "beats": 6 },
+      { "numeral": "vi", "beats": 6 },
+      { "numeral": "IV", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["joyful", "rustic", "uplifting"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "The axis chords in a 6/8 lilt, one to a bar, which is about as singable as harmony gets. Written to be shouted in a doorway, so pitch it low enough for everyone.",
+    "songs": []
+  },
+  {
+    "id": "fiddle-drone-01",
+    "name": "Fiddle drone",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "v", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["mysterious", "rustic", "driving"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "The minor v instead of a major V is the giveaway that this predates functional harmony. Nothing has a leading tone, so the tonic is where it is by weight rather than by pull.",
+    "songs": []
+  },
+  {
+    "id": "pastoral-01",
+    "name": "Pastoral",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "slow",
+    "moods": ["serene", "gentle", "nostalgic"],
+    "genres": ["folk", "cinematic"],
+    "instrument": "both",
+    "notes": "IV before vi means the bass rises a step into the minor chord rather than dropping into it, which keeps it from turning sad. Fingerpick it and let the bass move on its own.",
+    "songs": []
+  },
+  {
+    "id": "shape-note-01",
+    "name": "Shape-note harmony",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I5", "beats": 4 },
+      { "numeral": "IV5", "beats": 4 },
+      { "numeral": "I5", "beats": 4 },
+      { "numeral": "V5", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["solemn", "rustic", "uplifting"],
+    "genres": ["gospel", "folk"],
+    "instrument": "both",
+    "notes": "Open fifths with no thirds, which is how shape-note singing gets its hollow sound. Sing it loud and slightly flat of centre; polish is not the point.",
+    "songs": []
+  },
+  {
+    "id": "carol-01",
+    "name": "Carol",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "I", "beats": 3 }
+    ],
+    "bars": 8,
+    "timeSig": "3/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["joyful", "solemn", "nostalgic"],
+    "genres": ["folk", "gospel"],
+    "instrument": "both",
+    "notes": "Eight bars in three, primary chords only, closing on a full cadence so each verse ends properly shut. Keep the tempo walkable, because carols were processional before they were seasonal.",
+    "songs": []
+  },
+  {
+    "id": "dorian-reel-01",
+    "name": "Dorian reel",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 2 },
+      { "numeral": "bVII", "beats": 2 },
+      { "numeral": "i", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "i", "beats": 2 },
+      { "numeral": "bVII", "beats": 2 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "B",
+    "tempo": "fast",
+    "moods": ["driving", "dancing", "restless"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "Two chords a bar at reel speed, returning to the tonic every other change so it stays anchored. The major IV in bar two is the dorian brightness against everything else.",
+    "songs": []
+  },
+  {
+    "id": "folk-lullaby-01",
+    "name": "Folk lullaby",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "vi", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "V", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "Eb",
+    "tempo": "slow",
+    "moods": ["tender", "cozy", "serene"],
+    "genres": ["lullaby", "folk"],
+    "instrument": "both",
+    "notes": "The doo-wop chords slowed into a 6/8 rocking pulse, which is roughly the tempo of walking a child around a room. One chord per bar, and never resolve it firmly.",
+    "songs": []
+  },
+  {
+    "id": "phrygian-lament-01",
+    "name": "Phrygian lament",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F#",
+    "tempo": "slow",
+    "moods": ["mournful", "eerie", "solemn"],
+    "genres": ["folk", "cinematic"],
+    "instrument": "both",
+    "notes": "bII a semitone above the tonic is what makes it phrygian rather than minor, and coming home from bVI keeps the half-step audible at both ends. Slow, with the bass held long.",
+    "songs": []
+  },
+  {
+    "id": "folk-march-01",
+    "name": "Folk march",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "mid",
+    "moods": ["driving", "triumphant", "rustic"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "Ending on IV rather than V sends it round again without the jolt a dominant would give. Four square bars at walking pace, chords flat on the beat.",
+    "songs": []
+  },
+  {
+    "id": "ceilidh-waltz-01",
+    "name": "Ceilidh waltz",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "vi", "beats": 3 },
+      { "numeral": "iii", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["dancing", "nostalgic", "gentle"],
+    "genres": ["celtic", "waltz"],
+    "instrument": "both",
+    "notes": "The first half of the canon sequence on its own, which drops a fourth then a fourth again and leaves you on iii. Bass on one, chord on two and three.",
+    "songs": []
+  },
+  {
+    "id": "mouth-music-01",
+    "name": "Mouth music",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 2 },
+      { "numeral": "bVII", "beats": 2 },
+      { "numeral": "i", "beats": 2 },
+      { "numeral": "bVII", "beats": 2 },
+      { "numeral": "bVI", "beats": 2 },
+      { "numeral": "bVII", "beats": 2 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "F",
+    "tempo": "fast",
+    "moods": ["frantic", "dancing", "driving"],
+    "genres": ["celtic", "folk"],
+    "instrument": "both",
+    "notes": "One chord per bar of 2/4 at dance tempo, which is fast enough that the harmony has to be almost nothing. Sung for dancing when no instruments were available, so it works unaccompanied.",
+    "songs": []
+  }
+]

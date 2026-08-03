@@ -1,0 +1,505 @@
+[
+  {
+    "id": "honky-tonk-01",
+    "name": "Honky-tonk",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["carefree", "rustic", "swaggering"],
+    "genres": ["country", "blues"],
+    "instrument": "both",
+    "notes": "Two bars sitting on the tonic before IV and V arrive in the last two, so most of the loop is home. Ending on V pulls it straight back round.",
+    "songs": []
+  },
+  {
+    "id": "train-beat-01",
+    "name": "Train beat",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "fast",
+    "moods": ["driving", "carefree", "bouncy"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "Half-bar changes for three bars, then a whole bar of tonic to land on. The snare is running sixteenths underneath, so the chords need to be short and out of the way.",
+    "songs": []
+  },
+  {
+    "id": "bluegrass-standard-01",
+    "name": "Bluegrass standard",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "fast",
+    "moods": ["joyful", "driving", "rustic"],
+    "genres": ["country", "folk"],
+    "instrument": "guitar",
+    "notes": "The three primary chords with the tonic back in bar three and a dominant seventh to turn it round. G and A are the standard bluegrass keys because the open strings do the work.",
+    "songs": []
+  },
+  {
+    "id": "country-waltz-01",
+    "name": "Country waltz",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["nostalgic", "wistful", "tender"],
+    "genres": ["country", "waltz"],
+    "instrument": "both",
+    "notes": "Primary chords in three, ending on the dominant so the verse keeps turning. Bass note on one, chord on two and three, and let the pedal steel do the rest.",
+    "songs": []
+  },
+  {
+    "id": "outlaw-country-01",
+    "name": "Outlaw country",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["defiant", "gritty", "brooding"],
+    "genres": ["country", "rock"],
+    "instrument": "guitar",
+    "notes": "Natural minor with no dominant, so it closes by weight rather than by pull. The iv in bar three is the only chord that moves the bass off the flat side.",
+    "songs": []
+  },
+  {
+    "id": "bakersfield-shuffle-01",
+    "name": "Bakersfield shuffle",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I7", "beats": 8 },
+      { "numeral": "IV7", "beats": 4 },
+      { "numeral": "I7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["swaggering", "gritty", "driving"],
+    "genres": ["country", "blues"],
+    "instrument": "guitar",
+    "notes": "A blues shape with dominant sevenths, played clean and bright rather than dirty. Telecaster country took the blues chords and left the blues tone behind.",
+    "songs": []
+  },
+  {
+    "id": "mountain-modal-01",
+    "name": "Mountain modal",
+    "mode": "dorian",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["rustic", "mysterious", "solemn"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "A minor tonic with a major IV, which is dorian and accounts for a lot of the older Appalachian repertoire. bIII is the relative major passing through on the way.",
+    "songs": []
+  },
+  {
+    "id": "country-gospel-01",
+    "name": "Country gospel",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["uplifting", "solemn", "hopeful"],
+    "genres": ["country", "gospel"],
+    "instrument": "both",
+    "notes": "Adding a flat seventh to the tonic turns it into a dominant pointing at IV, which is one finger of difference and a whole change of direction. IV back to I closes it plagally.",
+    "songs": []
+  },
+  {
+    "id": "cowboy-descent-01",
+    "name": "Cowboy descent",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V/7", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["wistful", "nostalgic", "yearning"],
+    "genres": ["country", "folk"],
+    "instrument": "guitar",
+    "notes": "The bass steps down from the tonic through the leading tone into vi, then V catches it. On guitar the slash chord is usually just an open shape with a different bass string picked out.",
+    "songs": []
+  },
+  {
+    "id": "country-two-step-01",
+    "name": "Country two-step",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["dancing", "bouncy", "carefree"],
+    "genres": ["country"],
+    "instrument": "both",
+    "notes": "Two bars a chord in a quick 2/4, ending on IV so the phrase leans forward. Dancers need to hear the change a bar early, which is why the harmony is this predictable.",
+    "songs": []
+  },
+  {
+    "id": "murder-ballad-01",
+    "name": "Murder ballad",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "bVI", "beats": 3 },
+      { "numeral": "bIII", "beats": 3 },
+      { "numeral": "bVII", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "A",
+    "tempo": "slow",
+    "moods": ["mournful", "eerie", "menacing"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "The minor axis in three, which circles rather than cadencing so a long narrative can run over it. No leading tone anywhere, so nothing sounds like it is about to end.",
+    "songs": []
+  },
+  {
+    "id": "western-swing-01",
+    "name": "Western swing",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I6", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "ii7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["playful", "swaggering", "dancing"],
+    "genres": ["country", "jazz"],
+    "instrument": "both",
+    "notes": "A jazz turnaround played by a country band, with a sixth on the tonic and a dominant VI7 driving into ii7. Western swing borrowed the chords and kept the fiddles.",
+    "songs": []
+  },
+  {
+    "id": "slide-guitar-vamp-01",
+    "name": "Slide guitar vamp",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["rustic", "swaggering", "carefree"],
+    "genres": ["country", "blues"],
+    "instrument": "guitar",
+    "notes": "Two bars of tonic, then IV and bVII in the last two, so the flat seventh is the last thing heard before the loop turns. In open tuning all three chords are one finger straight across the strings.",
+    "songs": []
+  },
+  {
+    "id": "country-ballad-turn-01",
+    "name": "Country ballad turn",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["bittersweet", "tender", "melancholy"],
+    "genres": ["country", "soul"],
+    "instrument": "both",
+    "notes": "IV turning minor drops one note by a semitone, borrowed from the parallel minor, and that is the entire emotional event. Give the iv its full bar before resolving.",
+    "songs": []
+  },
+  {
+    "id": "highway-four-01",
+    "name": "Highway four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["hopeful", "restless", "driving"],
+    "genres": ["country", "rock"],
+    "instrument": "both",
+    "notes": "V goes to vi rather than home, which is the deceptive cadence, so the loop keeps moving instead of arriving. Four bars, one chord each, nothing hidden.",
+    "songs": []
+  },
+  {
+    "id": "old-time-banjo-01",
+    "name": "Old-time banjo",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "G",
+    "tempo": "fast",
+    "moods": ["rustic", "bouncy", "joyful"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "Two bars a chord in 2/4, closing plagally from IV rather than through the dominant. Clawhammer tunes repeat for as long as the dance lasts, so the shape has to bear repetition.",
+    "songs": []
+  },
+  {
+    "id": "bluegrass-minor-01",
+    "name": "Bluegrass minor",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "B",
+    "tempo": "fast",
+    "moods": ["driving", "solemn", "defiant"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "Minor tonic with the relative major and the flat seventh either side, and no dominant at all. At speed the tonic returning in bar four is what makes it drive rather than wander.",
+    "songs": []
+  },
+  {
+    "id": "country-blues-twelve-01",
+    "name": "Country blues twelve",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I7", "beats": 16 },
+      { "numeral": "IV7", "beats": 8 },
+      { "numeral": "I7", "beats": 8 },
+      { "numeral": "V7", "beats": 8 },
+      { "numeral": "I7", "beats": 8 }
+    ],
+    "bars": 12,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["wistful", "carefree", "gritty"],
+    "genres": ["country", "blues"],
+    "instrument": "guitar",
+    "notes": "The twelve-bar without the turnaround, ending on two bars of tonic so each verse closes properly. Country blues players sang alone, so the form did not need to hand off to a band.",
+    "songs": []
+  },
+  {
+    "id": "pedal-steel-ballad-01",
+    "name": "Pedal steel ballad",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["tender", "melancholy", "nostalgic"],
+    "genres": ["country"],
+    "instrument": "both",
+    "notes": "Home, relative minor, subdominant, home, with no dominant to sharpen it. The steel bends between the chords, so leave the changes plain and let the slides carry the feeling.",
+    "songs": []
+  },
+  {
+    "id": "cajun-waltz-01",
+    "name": "Cajun waltz",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "V", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["rustic", "dancing", "nostalgic"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "Two chords, two bars each, in three. Accordion and fiddle traditions keep the harmony this bare because both instruments are busy playing the tune and the ornaments at once.",
+    "songs": []
+  },
+  {
+    "id": "americana-six-eight-01",
+    "name": "Americana six-eight",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "vi", "beats": 6 },
+      { "numeral": "V", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["yearning", "hopeful", "rustic"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "IV before vi means the bass rises into the minor chord rather than falling into it, which keeps the loop from sagging. Two pulses a bar, strummed rather than picked.",
+    "songs": []
+  },
+  {
+    "id": "rockabilly-01",
+    "name": "Rockabilly",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I7", "beats": 4 },
+      { "numeral": "IV7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 },
+      { "numeral": "I7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["frantic", "swaggering", "bouncy"],
+    "genres": ["country", "rock"],
+    "instrument": "guitar",
+    "notes": "The primary chords all made dominant sevenths, at speed, with a slapped bass underneath. Four bars rather than twelve, which is what happened when the blues met a two-minute single.",
+    "songs": []
+  },
+  {
+    "id": "country-lament-01",
+    "name": "Country lament",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["mournful", "melancholy", "yearning"],
+    "genres": ["country", "folk"],
+    "instrument": "both",
+    "notes": "Climbing away from the tonic and stopping on bVII, so the loop never comes home inside the phrase. Everything stays in natural minor, which keeps it plain rather than dramatic.",
+    "songs": []
+  },
+  {
+    "id": "nashville-walk-down-01",
+    "name": "Nashville walk-down",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "V/7", "beats": 2 },
+      { "numeral": "vi", "beats": 2 },
+      { "numeral": "I/5", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "I/3", "beats": 2 },
+      { "numeral": "ii", "beats": 2 },
+      { "numeral": "V", "beats": 2 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["nostalgic", "gentle", "hopeful"],
+    "genres": ["country", "pop"],
+    "instrument": "both",
+    "notes": "The bass walks down the whole scale two beats at a time, and three of the eight chords are inversions put there to supply the missing steps. Play the bass line first and fit the chords to it.",
+    "songs": []
+  },
+  {
+    "id": "barn-dance-01",
+    "name": "Barn dance",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "V", "beats": 6 },
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "IV", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["joyful", "dancing", "rustic"],
+    "genres": ["country", "celtic"],
+    "instrument": "both",
+    "notes": "One chord a bar in a fast six, tonic on the odd bars so the caller always knows where they are. Ending on IV rolls it into the repeat without a full stop.",
+    "songs": []
+  }
+]

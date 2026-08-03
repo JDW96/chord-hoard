@@ -1,34 +1,61 @@
-/* app.css — Chord Hoard. Dark, warm, dragon's-hoard gold — but tasteful.
+/* app.css — Chord Hoard. Neutral surfaces, one pastel-blue accent, chord
+   symbols carrying the contrast. Light and dark both first-class: the
+   palette follows the device via prefers-color-scheme, and :root[data-theme]
+   is reserved for a manual override.
    Mobile-first (designed at 360×780), works at desktop widths and in
    780×360 landscape. No frameworks. */
 
 /* ------------------------------------------------------------------ */
 /* Tokens                                                              */
+/*                                                                     */
+/* Light is the base declaration; the dark block below overrides only  */
+/* the colours. Nothing outside these two blocks may hardcode a colour */
+/* — if a rule needs one that isn't here, add a token rather than a    */
+/* hex, or it will be invisible in one of the two modes.               */
 /* ------------------------------------------------------------------ */
 
 :root {
-  /* Colour — deep warm charcoal, parchment text, one gold accent. */
-  --bg: #1c1712;
-  --bg-raised: #262019;
-  --bg-sunken: #15110d;
-  --bg-sheet: #2b2319;
-  --line: #3b3227;
-  --line-soft: #2e271d;
+  color-scheme: light dark;
 
-  --ink: #f2e8d5;
-  --ink-dim: #b5a78d;
-  --ink-faint: #877a63;
+  /* Surfaces — near-neutral, a hair warm so it isn't clinical. */
+  --bg: #fafaf8;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f1f1ee;
+  --bg-sheet: #ffffff;
+  --line: #d8d8d1;
+  --line-soft: #e4e4de;
 
-  --gold: #e3a83e;
-  --gold-bright: #f0be5e;
-  --gold-dim: #9c7426;
-  --gold-wash: rgba(227, 168, 62, 0.14);
+  --ink: #191917;
+  --ink-dim: #56564f;
+  --ink-faint: #71716c;
+
+  /* Accent — interface only. Harmonic function has its own ramps. */
+  --accent: #1d5fa8;
+  --accent-bright: #17508f;
+  --accent-dim: #7ba3d2;
+  --accent-wash: #e6f1fb;
+  --on-accent: #ffffff;
+
+  /* Translucent bars sit over scrolling content, so they need the page
+     colour with alpha rather than a surface token. */
+  --header-bg: rgba(250, 250, 248, 0.92);
+  --tabbar-bg: rgba(241, 241, 238, 0.96);
+
+  /* Diagrams. Key separators are true black in light mode: on white keys
+     a grey hairline disappears at the sizes we render. */
+  --key-white: #ffffff;
+  --key-black: #3a3a34;
+  --key-line: #000000;
+  --key-press: #8fe0c0;
+  --key-root: #3fbf95;
+  --key-label: #56564f;
 
   /* Complexity levels: easy → hard. */
-  --lv-1: #79b06a;
-  --lv-2: #d8b84a;
-  --lv-3: #dd8b45;
-  --lv-4: #d4645a;
+  --lv-1: #639922;
+  --lv-2: #ba7517;
+  --lv-3: #d85a30;
+  --lv-4: #a32d2d;
+  --on-level: #ffffff;
 
   /* Type scale — chord symbols are the hero. */
   --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
@@ -57,10 +84,60 @@
 
   --tap: 44px; /* minimum touch target */
 
+  /* Diagram widths. The SVGs have a viewBox and no width/height, so the cell
+     decides the size and the shape follows from the viewBox. Guitar grids are
+     100×120, keyboards are roughly 198×83, which is why the two need separate
+     widths to end up looking like the same weight of thing. */
+  --diagram-guitar-w: 12rem;
+  --diagram-piano-w: min(24rem, 82vw);
+  --diagram-piano-hero-w: min(28rem, 92vw);
+
   --header-h: 3.25rem;
   --tabbar-h: 3.5rem;
 
-  --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Dark. Colour tokens only — sizes, spacing and type are shared. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111112;
+    --bg-raised: #1a1a1c;
+    --bg-sunken: #0b0b0c;
+    --bg-sheet: #1a1a1c;
+    --line: #34343a;
+    --line-soft: #2a2a2c;
+
+    --ink: #f2f2ef;
+    --ink-dim: #a8a8a3;
+    --ink-faint: #8c8c88;
+
+    --accent: #9fc4ee;
+    --accent-bright: #c2daf5;
+    --accent-dim: #5d7fa5;
+    --accent-wash: rgba(159, 196, 238, 0.14);
+    --on-accent: #0a1a2b;
+
+    --header-bg: rgba(17, 17, 18, 0.92);
+    --tabbar-bg: rgba(11, 11, 12, 0.96);
+
+    /* Dark mode already has contrast between the keys and the page, so
+       the separator matches the background rather than fighting it. */
+    --key-white: #f7f7f4;
+    --key-black: #33333a;
+    --key-line: #111112;
+    --key-press: #7fd8b6;
+    --key-root: #2fb98d;
+    --key-label: #a8a8a3;
+
+    --lv-1: #97c459;
+    --lv-2: #ef9f27;
+    --lv-3: #f0997b;
+    --lv-4: #e24b4a;
+    --on-level: #16160f;
+
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -88,7 +165,7 @@ body {
 }
 
 a {
-  color: var(--gold-bright);
+  color: var(--accent-bright);
 }
 
 button {
@@ -124,7 +201,7 @@ h1, h2, h3 {
   min-height: var(--header-h);
   padding: env(safe-area-inset-top, 0px) max(var(--sp-4), env(safe-area-inset-right, 0px)) 0
     max(var(--sp-4), env(safe-area-inset-left, 0px));
-  background: rgba(28, 23, 18, 0.92);
+  background: var(--header-bg);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line-soft);
 }
@@ -141,7 +218,7 @@ h1, h2, h3 {
 }
 
 .app-name a::first-letter {
-  color: var(--gold);
+  color: var(--accent);
 }
 
 .instrument-toggle {
@@ -163,8 +240,8 @@ h1, h2, h3 {
 }
 
 .instrument-toggle button.active {
-  background: var(--gold);
-  color: #221a0e;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 /* ------------------------------------------------------------------ */
@@ -194,7 +271,7 @@ h1, h2, h3 {
   min-height: var(--tabbar-h);
   padding: var(--sp-1) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px)
     env(safe-area-inset-left, 0px);
-  background: rgba(21, 17, 13, 0.96);
+  background: var(--tabbar-bg);
   backdrop-filter: blur(8px);
   border-top: 1px solid var(--line-soft);
 }
@@ -222,7 +299,7 @@ h1, h2, h3 {
 }
 
 .tabbar a.active {
-  color: var(--gold);
+  color: var(--accent);
 }
 
 /* ------------------------------------------------------------------ */
@@ -249,9 +326,9 @@ button.chip {
 }
 
 .chip.selected {
-  background: var(--gold-wash);
-  border-color: var(--gold);
-  color: var(--gold-bright);
+  background: var(--accent-wash);
+  border-color: var(--accent);
+  color: var(--accent-bright);
 }
 
 .chip.static {
@@ -264,8 +341,8 @@ button.chip {
   display: inline-block;
   padding: 1px var(--sp-2);
   border-radius: var(--radius-pill);
-  background: var(--gold-wash);
-  color: var(--gold-bright);
+  background: var(--accent-wash);
+  color: var(--accent-bright);
   font-size: var(--fs-xs);
 }
 
@@ -286,7 +363,7 @@ button.chip {
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.03em;
-  color: #1d150c;
+  color: var(--on-level);
 }
 
 .badge.small {
@@ -307,7 +384,7 @@ button.badge-btn {
 
 .chip.lv-1.selected, .chip.lv-2.selected, .chip.lv-3.selected,
 .chip.lv-4.selected {
-  color: #1d150c;
+  color: var(--on-level);
   border-color: transparent;
 }
 
@@ -340,7 +417,7 @@ button.badge-btn {
 .search-box:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -357,8 +434,8 @@ a:focus-visible {
 }
 
 .filter-toggle.has-active {
-  border-color: var(--gold);
-  color: var(--gold-bright);
+  border-color: var(--accent);
+  color: var(--accent-bright);
 }
 
 .filter-sheet {
@@ -398,7 +475,7 @@ a:focus-visible {
   min-height: var(--tap);
   padding: 0 var(--sp-4);
   border-radius: var(--radius-sm);
-  color: var(--gold-bright);
+  color: var(--accent-bright);
   font-weight: 600;
 }
 
@@ -423,20 +500,31 @@ a:focus-visible {
   }
 }
 
+/* The left edge is a complexity stripe, coloured from the card's own
+   lv-* class. Square on that side: a rounded corner would clip it. */
 .card {
   display: block;
   padding: var(--sp-4);
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius);
+  border-left: 3px solid var(--line);
+  border-radius: 0 var(--radius) var(--radius) 0;
   background: var(--bg-raised);
   color: var(--ink);
   text-decoration: none;
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
+.card.lv-1 { border-left-color: var(--lv-1); }
+.card.lv-2 { border-left-color: var(--lv-2); }
+.card.lv-3 { border-left-color: var(--lv-3); }
+.card.lv-4 { border-left-color: var(--lv-4); }
+
+/* Three sides only — the shorthand would repaint the complexity stripe. */
 .card:hover,
 .card:focus-visible {
-  border-color: var(--gold-dim);
+  border-top-color: var(--accent-dim);
+  border-right-color: var(--accent-dim);
+  border-bottom-color: var(--accent-dim);
 }
 
 .card:active {
@@ -457,7 +545,7 @@ a:focus-visible {
 
 .card-numerals {
   margin: var(--sp-2) 0 0;
-  color: var(--gold);
+  color: var(--accent);
   font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -527,15 +615,15 @@ a:focus-visible {
   min-height: var(--tap);
   padding: 0 var(--sp-4);
   border-radius: var(--radius-pill);
-  background: var(--gold);
-  color: #221a0e;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
   text-decoration: none;
   transition: background-color 0.15s ease;
 }
 
 .perform-btn:hover {
-  background: var(--gold-bright);
+  background: var(--accent-bright);
 }
 
 .detail-head {
@@ -589,7 +677,7 @@ a:focus-visible {
 }
 
 .chord-numeral {
-  color: var(--gold);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -600,15 +688,15 @@ a:focus-visible {
 .capo-hint {
   margin: 0 0 var(--sp-4);
   padding: var(--sp-3) var(--sp-4);
-  border-left: 3px solid var(--gold);
+  border-left: 3px solid var(--accent);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: var(--gold-wash);
+  background: var(--accent-wash);
   color: var(--ink);
   font-size: var(--fs-sm);
 }
 
 .capo-hint strong {
-  color: var(--gold-bright);
+  color: var(--accent-bright);
 }
 
 .key-picker,
@@ -658,13 +746,13 @@ a:focus-visible {
 
 .key-btn.home {
   border-style: dashed;
-  border-color: var(--gold-dim);
+  border-color: var(--accent-dim);
 }
 
 .key-btn.selected {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: #221a0e;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
 .diagram-strip {
@@ -675,14 +763,23 @@ a:focus-visible {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Every cell states its own width, so all the guitar grids match each other
+   and all the keyboards match each other. Sizing the SVG instead left the
+   flex row to resolve a width from an element that has only a viewBox, which
+   it did inconsistently between the two shapes. */
 .diagram-cell {
   flex: 0 0 auto;
+  width: var(--diagram-guitar-w);
   margin: 0;
   padding: var(--sp-2);
   border: 1px solid var(--line-soft);
   border-radius: var(--radius);
   background: var(--bg-raised);
   text-align: center;
+}
+
+.diagram-cell.piano {
+  width: var(--diagram-piano-w);
 }
 
 .diagram-cell figcaption {
@@ -693,20 +790,75 @@ a:focus-visible {
 
 .diagram-svg svg {
   display: block;
-  max-width: 9rem;
+  width: 100%;
   height: auto;
 }
 
-.diagram-cell.piano .diagram-svg svg {
-  max-width: 13rem;
+/* ------------------------------------------------------------------ */
+/* Diagram theming                                                     */
+/*                                                                     */
+/* diagrams.js emits classed shapes carrying no colour of their own,   */
+/* so every fill and stroke is decided here and follows the mode. The  */
+/* old diagrams drew keys as outlines over the page colour, which read */
+/* as negative space rather than as a keyboard.                        */
+/* ------------------------------------------------------------------ */
+
+.chord-diagram {
+  color: var(--ink);
 }
 
+.chord-diagram--piano .key {
+  stroke: var(--key-line);
+  stroke-width: 1;
+}
+
+.chord-diagram--piano .key.white {
+  fill: var(--key-white);
+}
+
+.chord-diagram--piano .key.black {
+  fill: var(--key-black);
+}
+
+/* Order matters: pressed beats the plain white/black fill, and root
+   beats pressed. */
+.chord-diagram--piano .key.pressed {
+  fill: var(--key-press);
+}
+
+.chord-diagram--piano .key.root {
+  fill: var(--key-root);
+}
+
+/* A slash bass is a pressed note that happens to be underneath
+   everything, so it keeps the pressed fill and gains a heavier edge. */
+.chord-diagram--piano .key.bass {
+  stroke-width: 2.5;
+}
+
+.chord-diagram--piano .note-label {
+  fill: var(--key-label);
+}
+
+/* Guitar grids: strings and frets recede, dots and barres carry the ink. */
+.chord-diagram--guitar .string,
+.chord-diagram--guitar .fret {
+  stroke: var(--line);
+}
+
+.chord-diagram--guitar .fret-label,
+.chord-diagram--guitar .title {
+  fill: var(--ink-faint);
+}
+
+/* Fills the cell and keeps the guitar grid's proportions, so a missing shape
+   leaves a hole the same size as the diagram that should have been there. */
 .diagram-missing {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 9rem;
-  height: 7rem;
+  width: 100%;
+  aspect-ratio: 5 / 6;
   color: var(--ink-faint);
   font-size: var(--fs-xs);
 }
@@ -824,7 +976,7 @@ a.chip {
 }
 
 .chord-hero-quality {
-  color: var(--gold);
+  color: var(--accent);
   font-weight: 600;
   margin-top: var(--sp-1);
 }
@@ -848,21 +1000,20 @@ a.chip {
 }
 
 .chord-note.root {
-  border-color: var(--gold);
-  color: var(--gold-bright);
+  border-color: var(--accent);
+  color: var(--accent-bright);
 }
 
+/* The keyboard is the hero on the Chords and Scales tabs, so it gets more
+   room than the same diagram does in a scrolling strip. */
 .lib-piano-cell {
   margin: 0;
-}
-
-.lib-piano svg {
-  max-width: 16rem;
+  width: var(--diagram-piano-hero-w);
 }
 
 .diagram-missing.wide {
   width: auto;
-  height: auto;
+  aspect-ratio: auto;
   padding: var(--sp-4);
   text-align: left;
   font-size: var(--fs-sm);
@@ -903,7 +1054,7 @@ a.chip {
 
 .dest-card:hover,
 .dest-card:focus-visible {
-  border-color: var(--gold-dim);
+  border-color: var(--accent-dim);
 }
 
 .dest-symbol {
@@ -912,7 +1063,7 @@ a.chip {
 }
 
 .dest-numeral {
-  color: var(--gold);
+  color: var(--accent);
   font-size: var(--fs-sm);
   font-weight: 700;
 }
@@ -967,7 +1118,7 @@ a.chip {
 
 .reveal-btn:hover,
 .reveal-btn:focus-visible {
-  border-color: var(--gold-dim);
+  border-color: var(--accent-dim);
   color: var(--ink);
 }
 
@@ -1029,11 +1180,11 @@ a.chip {
 
 .degree-cell:hover,
 .degree-cell:focus-visible {
-  border-color: var(--gold-dim);
+  border-color: var(--accent-dim);
 }
 
 .degree-numeral {
-  color: var(--gold);
+  color: var(--accent);
   font-size: var(--fs-sm);
   font-weight: 700;
 }
@@ -1066,7 +1217,7 @@ a.chip {
 
 .visitor-card:hover,
 .visitor-card:focus-visible {
-  border-color: var(--gold-dim);
+  border-color: var(--accent-dim);
 }
 
 .visitor-head {
@@ -1099,8 +1250,8 @@ a.chord-note.note-link {
 
 a.chord-note.note-link:hover,
 a.chord-note.note-link:focus-visible {
-  border-color: var(--gold-dim);
-  color: var(--gold-bright);
+  border-color: var(--accent-dim);
+  color: var(--accent-bright);
 }
 
 .scale-notes .chord-note.root {
@@ -1173,7 +1324,7 @@ body[data-route="perform"] .tabbar {
 }
 
 .wake-dot {
-  color: var(--gold-dim);
+  color: var(--accent-dim);
   font-size: 0.55rem;
   padding-right: var(--sp-1);
 }
@@ -1216,7 +1367,7 @@ body[data-route="perform"] .tabbar {
 }
 
 .perform-numeral {
-  color: var(--gold-dim);
+  color: var(--accent-dim);
   font-weight: 700;
 }
 
@@ -1247,9 +1398,9 @@ body[data-route="perform"] .tabbar {
 .coming-soon-tag {
   display: inline-block;
   padding: var(--sp-1) var(--sp-3);
-  border: 1px solid var(--gold-dim);
+  border: 1px solid var(--accent-dim);
   border-radius: var(--radius-pill);
-  color: var(--gold-bright);
+  color: var(--accent-bright);
   font-size: var(--fs-sm);
   font-weight: 600;
 }

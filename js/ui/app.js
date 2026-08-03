@@ -24,6 +24,7 @@ import * as scalesLib from "./scales-lib.js";
 
 export const state = {
   vocab: null, // parsed data/vocab.json
+  collectionLabels: {}, // collection key → display label, from the manifest
   entries: [], // all progression entries, load order
   byId: new Map(), // id → entry
   instrument: "guitar", // "guitar" | "piano" — header toggle, persisted
@@ -192,8 +193,20 @@ async function loadData() {
     files.map((file) => fetchJSON("data/progressions/" + file))
   );
   state.vocab = vocab;
-  state.entries = batches.flat();
+  state.collectionLabels = (!Array.isArray(manifest) && manifest.collections) || {};
+  // Which themed file an entry came from is derived here rather than stored on
+  // all 349 entries. Load order is manifest order, so the Collection filter
+  // lists them in the order the manifest sets rather than alphabetically.
+  state.entries = batches.flatMap((batch, i) => {
+    const collection = files[i].replace(/\.json$/, "");
+    return batch.map((entry) => ({ ...entry, collection }));
+  });
   state.byId = new Map(state.entries.map((entry) => [entry.id, entry]));
+}
+
+/** Display label for a collection key, falling back to the key itself. */
+export function collectionLabel(key) {
+  return (state.collectionLabels && state.collectionLabels[key]) || key;
 }
 
 // ---------------------------------------------------------------------------

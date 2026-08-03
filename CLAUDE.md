@@ -29,7 +29,9 @@ chords, and explanatory notes should teach gently without jargon walls.
 - Name: **Chord Hoard**. Favourites are called **pins** ("pin it to your hoard").
 - Offline-first PWA, deployed to GitHub Pages (phase 5). Shareable URL, installable,
   works with zero data once cached.
-- ~300 progressions in v1, generated in themed batches. Musical-theatre range matters:
+- ~350 progressions in v1, generated in themed batches. (Raised from ~300 on
+  2026-08-03: the themed batch list ran to twelve rather than the eight originally
+  assumed, and Jack chose to keep every theme rather than fold any together.) Musical-theatre range matters:
   everything from "silly song about cheese-making" to "epic space opera" — but tags and
   copy should speak to songwriters generally, not just theatre.
 - Song examples: 2–3 **famous, high-confidence** songs per progression (key + section).
@@ -217,8 +219,8 @@ numerals can be P1 in C and P3 in Eb — and capo suggestions can lower the guit
 
 ## Feature set (v1)
 
-Search/filter by mood, genre, mode, bars, time signature, tempo, instrument, computed
-complexity, and playability profile ("only chords I've marked playable" / "all playable
+Search/filter by collection, mood, genre, mode, bars, time signature, tempo, instrument,
+computed complexity, and playability profile ("only chords I've marked playable" / "all playable
 except exactly one, for practice"). Progression cards: numerals + named chords in the
 chosen key, transpose control, capo indicator, guitar + piano diagrams, notes, songs,
 pin button (records the key). Chord library: browse by root/quality, piano diagram +
@@ -259,7 +261,10 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
 1. Repo workflow: replace manual drag-upload with proper pushes — GitHub Desktop on
    Jack's machine, or git run locally via an on-computer session. [workflow, anytime]
 2. Rename ALL progressions per the naming rule above; rewrite all `notes` per the voice
-   rules. [phase 3 prep — must land before mass generation]
+   rules. [phase 3 prep, DONE 2026-08-03] All 24 seeds renamed and rewritten; ids left
+   untouched so nothing referencing them breaks. The rules now also live in
+   `data/schema.md` so each generated batch is written against them rather than
+   against the older seed entries.
 3. Key selector: circle-of-fifths wheel showing each key's accidentals
    (e.g. "E: F♯ C♯ G♯ D♯"). Memorisation aid. [phase 2.5, TODO]
 4. Hoard/detail chord diagrams: uniform size, bigger, tappable → full-size popup, plus
@@ -269,15 +274,41 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
 6. "Sounds like / common variations" section linking similar progressions. [phase 3]
 7. Chord-swap advice with tappable swaps, each stating its impact. [phase 4 — builder]
 8. Chords tab "where next?" blurbs: functional not cute. [phase 2.5, DONE 2026-08-03]
-9. Design overhaul: current brown background + negative-space piano diagram is hard to
-   read. Brainstorm options with Jack; chords must POP; must work in light AND dark
-   mode. [phase 2.5, TODO — design proposals first, then implement]
+9. Design overhaul. [phase 2.5, repaint DONE 2026-08-03, function tinting TODO]
+   Three directions were mocked up for Jack; he chose function colour on a neutral
+   chassis, with the gold dropped for a pastel blue. What landed:
+   - Palette rebuilt around light/dark. Light is the base `:root` declaration, dark
+     overrides colours only under `prefers-color-scheme: dark`, and
+     `:root[data-theme="light"|"dark"]` is reserved for a manual override that has no
+     UI yet. Every colour in the app now lives in those two blocks — no rule outside
+     them may hardcode a hex, or it goes invisible in one mode.
+   - Gold retired. `--gold*` renamed `--accent*`; the accent is interface-only, which
+     leaves colour free to mean harmonic function later.
+   - Piano diagrams draw real keys. They used to be outlines over the page colour,
+     which read as negative space. `diagrams.js` now emits classed shapes carrying no
+     colour attributes at all and `css/app.css` owns the palette. Keys are larger
+     (whiteW 12→14, whiteH 56→64) and light mode separates them with true black,
+     because a grey hairline on a white key vanishes at this size.
+   - Complexity moved onto the card's left edge as a stripe. `hoard.js` puts the
+     `lv-*` class on the card as well as the badge; `.card:hover` sets three border
+     sides rather than the shorthand so it cannot repaint the stripe.
+   Still to do: tint each chord by harmonic function (tonic teal, subdominant purple,
+   dominant amber, borrowed coral — blue is reserved for the interface, so subdominant
+   moved off it). Needs an engine module classifying a numeral's function, wired into
+   the Hoard, Chords and Scales tabs, with a toggle defaulting to on.
 10. Instrument toggle rescoped: hidden on Chords/Scales/Build via
     `body[data-route]` in CSS, where it changed nothing. [phase 2.5, DONE 2026-08-03]
 11. Scales tab scale-note chips are now links that make that note the tonic, keeping
     the mode, with a hint line. [phase 2.5, DONE 2026-08-03]
 12. Scales tab copy rewritten; headings are now "Chords in this scale" and
     "Borrowed chords". [phase 2.5, DONE 2026-08-03]
+
+13. Song examples: deferred to one pass at the end of phase 3, agreed 2026-08-03.
+    Generating them inline was producing almost none, because the bar is famous plus
+    high-confidence on progression AND key AND section together, and most entries fail
+    it from memory alone. Do the whole library in one sweep with web verification once
+    the ~300 exist, so the research happens once and the standard stays even. Until
+    then every generated entry ships `"songs": []`. [phase 3 tail]
 
 ### Chord explanation copy (phase 2.5, agreed with Jack 2026-08-03)
 
@@ -311,11 +342,31 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       scale library, performance mode + wake lock
 - [~] **Phase 2.5** ← **current** — design & UX polish. Done: items 8, 10, 11, 12
       (chord explanation copy, shared copy table, instrument toggle scope, scale-note
-      links). Remaining: 3 (circle of fifths), 4 (diagrams), 5 (capo mode),
-      9 (design overhaul)
-- [ ] **Phase 3** — library generation to ~300 in themed batches (each batch validated;
-      dedicated musical-theatre mood batches: patter, 11-o'clock number, villain song,
-      torch ballad, opening number… tagged with general-purpose mood words)
+      links) and the item 9 repaint (light/dark palette, pastel-blue accent, real
+      piano keys, complexity stripe). Remaining: 3 (circle of fifths), 4 (diagrams),
+      5 (capo mode), 9's function tinting
+- [~] **Phase 3** ← **current** — library generation to ~350 in themed batches of ~25,
+      one file per batch, `node tools/validate.js` after each. All twelve batches
+      landed 2026-08-03 at 25 each, library at 349: theatre · pop-rock · folk-celtic ·
+      blues-soul-gospel · diatonic-essentials · jazz-standards · cinematic ·
+      latin-reggae · electronic-indie · country-americana · odd-metres-long-forms ·
+      modal-depth · comedy-novelty. Only the song-examples pass (backlog item 13)
+      remains before phase 3 closes.
+      The Hoard has a **Collection** filter over these batches. The collection is
+      derived at load time from the manifest filename in `js/ui/app.js`, never
+      stored on entries, and its display label comes from the `collections` map in
+      `data/progressions/index.json`. Adding a batch means adding it to `files`,
+      `collections` and the sw.js precache list; nothing in the UI needs touching.
+      `diatonic-essentials.json` is the reference batch, added at Jack's request
+      2026-08-03: the plain major and minor diatonic progressions, mostly triads in
+      easy keys, so the fundamentals are covered before the library goes exotic. It
+      is the only batch that also carries the two diatonic diminished chords
+      (`viidim` in major, `iidim` in minor) and the natural-minor `v`. Keep it plain
+      if it is ever extended.
+      Each batch must spread time signatures and bar counts deliberately, because the
+      dedupe rule (mode + numeral sequence + timeSig) bites harder as the library grows.
+      Song examples are DEFERRED to a single pass at the end (see backlog item 13) —
+      generate with `"songs": []` and do not stop to verify them mid-batch.
 - [ ] **Phase 4** — pins, playability profiles, song builder, dynamic builder
       (moves.json), PWA/service worker, export/import
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
@@ -323,9 +374,13 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
 
 ## Workflow rules for agents
 
-1. `node tools/validate.js && node tools/test-engine.js` must pass after ANY change to
-   `data/` or `js/engine/`. `node tools/test-copy.js` must pass after any change to
-   `js/ui/chord-copy.js`. Never commit red.
+1. `node tools/test-all.js` runs every check in order and stops at the first failure.
+   Run it before any commit; never commit red. Individually: `validate.js` after ANY
+   change to `data/`, `test-engine.js` after any change to `js/engine/`,
+   `test-copy.js` after any change to `js/ui/chord-copy.js`, `test-diagrams.js` after
+   any change to `js/ui/diagrams.js` or `data/guitar-chords.json`.
+   Note for agents: Jack is on Windows PowerShell 5.1, which has no `&&` operator.
+   Chain commands with `;` or use the single script above.
 2. Validation must check: schema completeness, numeral parse, beats arithmetic, vocab
    membership, id uniqueness, dedupe (same mode + numeral sequence + timeSig = dupe),
    every entry realizes + transposes in all 12 keys without throwing, song keys valid.

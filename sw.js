@@ -2,7 +2,7 @@
    Bump CACHE_VERSION whenever any precached file changes, so returning
    visitors pick up the new build. */
 
-const CACHE_VERSION = 'chordhoard-v2';
+const CACHE_VERSION = 'chordhoard-v4';
 
 const PRECACHE = [
   './',
@@ -28,6 +28,19 @@ const PRECACHE = [
   './data/guitar-chords.json',
   './data/progressions/index.json',
   './data/progressions/seed.json',
+  './data/progressions/theatre.json',
+  './data/progressions/pop-rock.json',
+  './data/progressions/folk-celtic.json',
+  './data/progressions/blues-soul-gospel.json',
+  './data/progressions/diatonic-essentials.json',
+  './data/progressions/jazz-standards.json',
+  './data/progressions/cinematic.json',
+  './data/progressions/latin-reggae.json',
+  './data/progressions/electronic-indie.json',
+  './data/progressions/country-americana.json',
+  './data/progressions/odd-metres-long-forms.json',
+  './data/progressions/modal-depth.json',
+  './data/progressions/comedy-novelty.json',
   './icons/apple-touch-icon.png',
   './icons/icon-192.png',
   './icons/icon-512.png',

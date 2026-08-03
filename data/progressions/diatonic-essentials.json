@@ -1,0 +1,506 @@
+[
+  {
+    "id": "one-four-five-01",
+    "name": "One-four-five",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["joyful", "hopeful", "rustic"],
+    "genres": ["folk", "pop"],
+    "instrument": "both",
+    "notes": "The three primary chords in order. Between them I, IV and V contain every note of the major scale, which is why so much music needs nothing else. V to I at the end is the full cadence.",
+    "songs": []
+  },
+  {
+    "id": "one-five-four-01",
+    "name": "One-five-four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["carefree", "uplifting", "bouncy"],
+    "genres": ["rock", "folk"],
+    "instrument": "both",
+    "notes": "The same three chords with V before IV, so it ends on the plagal IV to I rather than a full cadence. That makes the arrival softer and less final than one-four-five.",
+    "songs": []
+  },
+  {
+    "id": "one-four-five-four-01",
+    "name": "One-four-five-four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["driving", "carefree", "swaggering"],
+    "genres": ["rock", "blues"],
+    "instrument": "guitar",
+    "notes": "Out to V then back down through IV, so the loop never resolves and rolls straight into the next repeat. Ending on IV is what keeps a riff turning rather than stopping.",
+    "songs": []
+  },
+  {
+    "id": "diatonic-two-five-one-01",
+    "name": "Diatonic two-five-one",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["hopeful", "serene", "gentle"],
+    "genres": ["pop", "folk"],
+    "instrument": "both",
+    "notes": "ii and V share two notes, so ii acts as a softer approach to the dominant than IV does. This is the plain-triad version of the cadence jazz dresses up with sevenths.",
+    "songs": []
+  },
+  {
+    "id": "one-six-two-five-01",
+    "name": "One-six-two-five",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["nostalgic", "tender", "hopeful"],
+    "genres": ["pop", "jazz"],
+    "instrument": "both",
+    "notes": "Each chord moves to one whose root is a fourth above, so the bass walks a chain of fifths back to the dominant. The standard turnaround for getting from the end of a section to the start of the next.",
+    "songs": []
+  },
+  {
+    "id": "one-four-two-five-01",
+    "name": "One-four-two-five",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["gentle", "hopeful", "serene"],
+    "genres": ["pop", "folk"],
+    "instrument": "both",
+    "notes": "IV and ii do the same job of setting up the dominant, and using both in a row approaches V twice from slightly different angles. ii is IV with the sixth degree in place of the fourth.",
+    "songs": []
+  },
+  {
+    "id": "one-three-six-four-01",
+    "name": "One-three-six-four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["wistful", "bittersweet", "hopeful"],
+    "genres": ["pop", "indie"],
+    "instrument": "both",
+    "notes": "The bass rises in thirds through the two minor chords before IV catches it. iii shares two notes with I and two with vi, which is why the first half barely seems to move.",
+    "songs": []
+  },
+  {
+    "id": "one-six-three-four-01",
+    "name": "One-six-three-four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["melancholy", "wistful", "tender"],
+    "genres": ["indie", "pop"],
+    "instrument": "both",
+    "notes": "Two minor chords back to back in the middle, and no dominant anywhere, so it stays overcast for the whole four bars. IV at the end lifts it just enough to start again.",
+    "songs": []
+  },
+  {
+    "id": "stepwise-rise-01",
+    "name": "Stepwise rise",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["hopeful", "uplifting", "restless"],
+    "genres": ["pop", "cinematic"],
+    "instrument": "both",
+    "notes": "The first four chords of the scale in order, so the bass climbs one step per bar. It builds tension purely by rising, with no dominant involved at all.",
+    "songs": []
+  },
+  {
+    "id": "descending-four-01",
+    "name": "Descending four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["wistful", "carefree", "nostalgic"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "The bass falls by step from the sixth degree to the fourth across the last three bars. Ending below where it started is what makes it feel like a settling rather than an arrival.",
+    "songs": []
+  },
+  {
+    "id": "four-one-five-six-01",
+    "name": "Four-one-five-six",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["restless", "yearning", "dramatic"],
+    "genres": ["pop", "rock"],
+    "instrument": "both",
+    "notes": "Starting on IV means the tonic arrives in bar two rather than bar one, so the phrase feels like it began before you came in. V to vi at the end is the deceptive cadence.",
+    "songs": []
+  },
+  {
+    "id": "one-five-two-four-01",
+    "name": "One-five-two-four",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["hopeful", "restless", "gentle"],
+    "genres": ["indie", "pop"],
+    "instrument": "both",
+    "notes": "The dominant lands in bar two and then gets walked away from rather than resolved. Putting V early and IV last inverts the usual order and takes most of the push out of it.",
+    "songs": []
+  },
+  {
+    "id": "one-three-four-one-01",
+    "name": "One-three-four-one",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["serene", "gentle", "solemn"],
+    "genres": ["folk", "gospel"],
+    "instrument": "both",
+    "notes": "iii is the tonic chord with its root replaced by the seventh degree, so bar two is a shading of bar one rather than a move away. IV to I closes it plagally.",
+    "songs": []
+  },
+  {
+    "id": "two-five-one-six-01",
+    "name": "Two-five-one-six",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["bittersweet", "nostalgic", "restless"],
+    "genres": ["jazz", "pop"],
+    "instrument": "both",
+    "notes": "The cadence resolves in bar three, then vi immediately unsettles it again so the loop has somewhere to go. Starting on ii puts the resolution in the middle rather than at the end.",
+    "songs": []
+  },
+  {
+    "id": "leading-tone-turn-01",
+    "name": "Leading-tone turn",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "viidim", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["unsettling", "dramatic", "restless"],
+    "genres": ["cinematic", "showtune"],
+    "instrument": "piano",
+    "notes": "viidim is the only diminished chord the major scale produces on its own, built on the leading tone. Here it carries the bass down by step from the tonic, and it is unstable enough that it cannot be lingered on.",
+    "songs": []
+  },
+  {
+    "id": "diatonic-circle-of-fifths-01",
+    "name": "Diatonic circle of fifths",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "viidim", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["hopeful", "solemn", "nostalgic"],
+    "genres": ["jazz", "gospel"],
+    "instrument": "piano",
+    "notes": "Every chord in the key, once each, each moving to the one a fourth above it. It is the strongest root movement available and it uses the whole scale, so it works as a reference for how the seven chords relate.",
+    "songs": []
+  },
+  {
+    "id": "natural-minor-cadence-01",
+    "name": "Natural minor cadence",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "v", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["solemn", "mournful", "rustic"],
+    "genres": ["folk", "celtic"],
+    "instrument": "both",
+    "notes": "One-four-five with everything minor, which is what natural minor actually produces. Without a raised seventh the v has no leading tone, so it settles onto i rather than pulling to it.",
+    "songs": []
+  },
+  {
+    "id": "harmonic-minor-turn-01",
+    "name": "Harmonic minor turn",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["dramatic", "brooding", "defiant"],
+    "genres": ["folk", "klezmer"],
+    "instrument": "both",
+    "notes": "The major V raises the seventh degree, giving the key a leading tone it does not otherwise have. Compare it against the natural minor cadence to hear what that one note does.",
+    "songs": []
+  },
+  {
+    "id": "minor-two-five-one-01",
+    "name": "Minor two-five-one",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iidim", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["dramatic", "eerie", "solemn"],
+    "genres": ["cinematic", "showtune"],
+    "instrument": "piano",
+    "notes": "The chord on the second degree of a minor key is diminished, so the minor two-five uses a diminished ii where the major version uses a plain one. It leans into V harder as a result.",
+    "songs": []
+  },
+  {
+    "id": "minor-plagal-cadence-01",
+    "name": "Minor plagal cadence",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "v", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["mournful", "solemn", "serene"],
+    "genres": ["folk", "gospel"],
+    "instrument": "both",
+    "notes": "iv falling to i twice over, with a minor v in between rather than a dominant. Everything stays inside natural minor, so it closes without ever raising the seventh.",
+    "songs": []
+  },
+  {
+    "id": "minor-three-four-01",
+    "name": "Minor three-four",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["brooding", "rustic", "wistful"],
+    "genres": ["folk", "rock"],
+    "instrument": "both",
+    "notes": "bIII is the relative major sitting inside the minor key, so bar two brightens without leaving. iv pulls it back down and i closes it.",
+    "songs": []
+  },
+  {
+    "id": "minor-four-to-flat-three-01",
+    "name": "Minor four to flat three",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["yearning", "driving", "bittersweet"],
+    "genres": ["rock", "indie"],
+    "instrument": "both",
+    "notes": "Each root sits a fourth above the last, so it is the circle of fifths read in minor. It ends on bIII, the relative major, which is a long way from where it started.",
+    "songs": []
+  },
+  {
+    "id": "minor-circle-01",
+    "name": "Minor circle",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["brooding", "epic", "restless"],
+    "genres": ["rock", "cinematic"],
+    "instrument": "both",
+    "notes": "Down a step, up a fourth, up a fourth, which walks through four of the seven natural-minor chords. No dominant, so the loop circles rather than closing.",
+    "songs": []
+  },
+  {
+    "id": "minor-five-six-seven-01",
+    "name": "Minor five-six-seven",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "v", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["mysterious", "restless", "driving"],
+    "genres": ["rock", "folk"],
+    "instrument": "both",
+    "notes": "The minor v keeps the flattened seventh in play, then bVI and bVII climb back toward the tonic from below. Ending on bVII sets up a return to i without ever using a leading tone.",
+    "songs": []
+  },
+  {
+    "id": "minor-lift-to-five-01",
+    "name": "Minor lift to five",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "V" , "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["dramatic", "yearning", "defiant"],
+    "genres": ["rock", "cinematic"],
+    "instrument": "both",
+    "notes": "Three natural-minor chords and then a major V, which raises the seventh degree only at the last moment. That single chromatic note is what makes the return to i feel inevitable.",
+    "songs": []
+  }
+]

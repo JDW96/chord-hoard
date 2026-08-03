@@ -1,0 +1,505 @@
+[
+  {
+    "id": "nursery-rhyme-01",
+    "name": "Nursery rhyme",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["playful", "gentle", "joyful"],
+    "genres": ["lullaby", "folk"],
+    "instrument": "both",
+    "notes": "Tonic and dominant alternating and nothing else, which is the smallest amount of harmony that still counts as harmony. Nearly every song a child learns first is built from these two chords.",
+    "songs": []
+  },
+  {
+    "id": "playground-song-01",
+    "name": "Playground song",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["joyful", "playful", "bouncy"],
+    "genres": ["lullaby", "pop"],
+    "instrument": "both",
+    "notes": "One minor chord in bar two to stop it being entirely primary, then a full cadence home. Closing properly every four bars matters when the singers need to know when to breathe.",
+    "songs": []
+  },
+  {
+    "id": "round-01",
+    "name": "Round",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "IV", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "I", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["joyful", "gentle", "carefree"],
+    "genres": ["folk", "lullaby"],
+    "instrument": "both",
+    "notes": "Primary chords in three, closing on the tonic so a second voice can start on top of it. Rounds need harmony this plain because every bar has to work against every other bar.",
+    "songs": []
+  },
+  {
+    "id": "music-box-01",
+    "name": "Music box",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "vi", "beats": 3 },
+      { "numeral": "ii", "beats": 3 },
+      { "numeral": "V", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "F",
+    "tempo": "slow",
+    "moods": ["tender", "nostalgic", "eerie"],
+    "genres": ["lullaby", "cinematic"],
+    "instrument": "piano",
+    "notes": "The turnaround in three at a tempo slow enough to hear the mechanism. Play it in the top two octaves with no bass at all and it stops being sweet.",
+    "songs": []
+  },
+  {
+    "id": "kazoo-march-01",
+    "name": "Kazoo march",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "F",
+    "tempo": "fast",
+    "moods": ["silly", "bouncy", "frantic"],
+    "genres": ["showtune", "klezmer"],
+    "instrument": "both",
+    "notes": "Two bars a chord in a quick 2/4, ending on V so it never gets to finish. Ridiculous instruments need harmony that stays out of the way and keeps marching.",
+    "songs": []
+  },
+  {
+    "id": "oom-pah-in-six-01",
+    "name": "Oom-pah in six",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "V", "beats": 6 },
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "V", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["silly", "bouncy", "joyful"],
+    "genres": ["klezmer", "folk"],
+    "instrument": "both",
+    "notes": "Tonic and dominant in a fast six, bass note on the first pulse and chord on the second. The joke is the relentlessness, so do not vary it.",
+    "songs": []
+  },
+  {
+    "id": "novelty-polka-01",
+    "name": "Novelty polka",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "C",
+    "tempo": "fast",
+    "moods": ["silly", "playful", "dancing"],
+    "genres": ["klezmer", "showtune"],
+    "instrument": "both",
+    "notes": "A two-five-one in 2/4, two bars a chord, which is a polka being slightly more sophisticated than it needs to be. That gap is where the comedy sits.",
+    "songs": []
+  },
+  {
+    "id": "silly-waltz-01",
+    "name": "Silly waltz",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "vi", "beats": 3 },
+      { "numeral": "IV", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["playful", "mischievous", "bouncy"],
+    "genres": ["showtune", "waltz"],
+    "instrument": "both",
+    "notes": "The axis chords in three, which makes an extremely familiar loop sound like it is wearing a hat. Overplay the first beat of every bar.",
+    "songs": []
+  },
+  {
+    "id": "clown-waltz-01",
+    "name": "Clown waltz",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "iv", "beats": 3 },
+      { "numeral": "V7", "beats": 3 },
+      { "numeral": "i", "beats": 3 }
+    ],
+    "bars": 4,
+    "timeSig": "3/4",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["mischievous", "eerie", "dramatic"],
+    "genres": ["showtune", "cinematic"],
+    "instrument": "piano",
+    "notes": "A complete minor cadence in three, closing every four bars. Comic and sinister are the same progression at different tempos, which is most of what makes clowns unsettling.",
+    "songs": []
+  },
+  {
+    "id": "circus-gallop-01",
+    "name": "Circus gallop",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "iv", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["frantic", "mischievous", "dancing"],
+    "genres": ["klezmer", "showtune"],
+    "instrument": "both",
+    "notes": "Minor tonic and a major dominant traded at speed in 2/4, with iv arriving late to stop it closing. The raised seventh in the V is what gives it the sideshow snap.",
+    "songs": []
+  },
+  {
+    "id": "comedy-chase-two-01",
+    "name": "Comedy chase",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "2/4",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["frantic", "mischievous", "driving"],
+    "genres": ["showtune", "cinematic"],
+    "instrument": "piano",
+    "notes": "The descending minor line at double speed in 2/4, which turns something dramatic into something ridiculous. Two bars a chord, and accelerate every time round.",
+    "songs": []
+  },
+  {
+    "id": "cartoon-sneak-01",
+    "name": "Cartoon sneak",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "slow",
+    "moods": ["mischievous", "menacing", "playful"],
+    "genres": ["cinematic", "showtune"],
+    "instrument": "piano",
+    "notes": "The Neapolitan a semitone above the tonic, stepped onto and straight back off. Play it low and staccato with long gaps and it becomes tiptoeing.",
+    "songs": []
+  },
+  {
+    "id": "snicker-01",
+    "name": "Snicker",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "iidim", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "B",
+    "tempo": "mid",
+    "moods": ["mischievous", "eerie", "unsettling"],
+    "genres": ["showtune", "cinematic"],
+    "instrument": "piano",
+    "notes": "The diminished chord on the second degree resolving straight to the tonic instead of through the dominant, which leaves the cadence half-finished on purpose. It sounds like getting away with something.",
+    "songs": []
+  },
+  {
+    "id": "wrong-note-01",
+    "name": "Wrong note",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "Iaug", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "iv", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "mid",
+    "moods": ["mischievous", "unsettling", "silly"],
+    "genres": ["showtune", "jazz"],
+    "instrument": "piano",
+    "notes": "Two chords that each alter one note of an ordinary triad: the augmented raises the fifth, and the minor iv flattens the third. Both sound like a mistake until they resolve.",
+    "songs": []
+  },
+  {
+    "id": "silly-walk-01",
+    "name": "Silly walk",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "#idim", "beats": 2 },
+      { "numeral": "ii", "beats": 2 },
+      { "numeral": "#iidim", "beats": 2 },
+      { "numeral": "iii", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["playful", "mischievous", "bouncy"],
+    "genres": ["showtune", "jazz"],
+    "instrument": "piano",
+    "notes": "Diminished chords wedged between the scale steps so the bass climbs by semitone for six beats. Every second chord is a passing chord, which is what gives it the exaggerated stride.",
+    "songs": []
+  },
+  {
+    "id": "novelty-rag-01",
+    "name": "Novelty rag",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "VI7", "beats": 4 },
+      { "numeral": "II7", "beats": 4 },
+      { "numeral": "V7", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "fast",
+    "moods": ["playful", "bouncy", "carefree"],
+    "genres": ["showtune", "jazz"],
+    "instrument": "piano",
+    "notes": "A plain tonic followed by three dominants chained round the circle of fifths. Two of them are borrowed, which is what makes it sound like a period pastiche rather than a key.",
+    "songs": []
+  },
+  {
+    "id": "toy-piano-01",
+    "name": "Toy piano",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "ii", "beats": 4 },
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "ii", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["playful", "gentle", "cozy"],
+    "genres": ["lullaby", "electronic"],
+    "instrument": "piano",
+    "notes": "Two chords a step apart, sharing one note, with no dominant to give it any direction. It rocks rather than travels, which is why it suits something small and mechanical.",
+    "songs": []
+  },
+  {
+    "id": "whistling-tune-01",
+    "name": "Whistling tune",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 6 },
+      { "numeral": "IV", "beats": 6 },
+      { "numeral": "V", "beats": 6 },
+      { "numeral": "IV", "beats": 6 }
+    ],
+    "bars": 4,
+    "timeSig": "6/8",
+    "homeKey": "F",
+    "tempo": "mid",
+    "moods": ["carefree", "joyful", "cozy"],
+    "genres": ["folk", "showtune"],
+    "instrument": "both",
+    "notes": "Primary chords in a strolling six, ending on IV so it loops without stopping. Easy to whistle over because the tonic is only ever a step or two away.",
+    "songs": []
+  },
+  {
+    "id": "slapstick-sting-01",
+    "name": "Slapstick sting",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "fast",
+    "moods": ["silly", "triumphant", "frantic"],
+    "genres": ["showtune", "rock"],
+    "instrument": "both",
+    "notes": "Two chords borrowed from the parallel minor climbing back to a major tonic, which is the heroic-fanfare move played too fast to take seriously. Hit all four chords hard.",
+    "songs": []
+  },
+  {
+    "id": "stop-time-novelty-01",
+    "name": "Stop-time novelty",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "V7", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "mid",
+    "moods": ["playful", "mischievous", "carefree"],
+    "genres": ["showtune", "blues"],
+    "instrument": "both",
+    "notes": "Two bars each on tonic and dominant, with the band hitting beat one and leaving the rest of the bar empty. All the comedy happens in the silence, so the harmony gets out of the way.",
+    "songs": []
+  },
+  {
+    "id": "patter-in-five-01",
+    "name": "Patter in five",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 5 },
+      { "numeral": "IV", "beats": 5 },
+      { "numeral": "V", "beats": 5 },
+      { "numeral": "I", "beats": 5 }
+    ],
+    "bars": 4,
+    "timeSig": "5/4",
+    "homeKey": "C",
+    "tempo": "fast",
+    "moods": ["frantic", "playful", "restless"],
+    "genres": ["showtune", "jazz"],
+    "instrument": "piano",
+    "notes": "The three primary chords in bars of five, so a singer running out of breath also has to count. Group it three plus two and put the change on the downbeat every time.",
+    "songs": []
+  },
+  {
+    "id": "lurching-seven-01",
+    "name": "Lurching seven",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 7 },
+      { "numeral": "bVI", "beats": 7 },
+      { "numeral": "V", "beats": 7 },
+      { "numeral": "i", "beats": 7 }
+    ],
+    "bars": 4,
+    "timeSig": "7/8",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["silly", "unsettling", "menacing"],
+    "genres": ["klezmer", "cinematic"],
+    "instrument": "both",
+    "notes": "A complete minor cadence in seven quavers a bar, grouped three-two-two so it lands awkwardly every time. Comic monsters walk like this.",
+    "songs": []
+  },
+  {
+    "id": "spooky-song-01",
+    "name": "Spooky song",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["eerie", "mischievous", "playful"],
+    "genres": ["lullaby", "cinematic"],
+    "instrument": "both",
+    "notes": "Natural minor for three bars and then a major V, so the only chromatic note arrives right at the end. Children's spooky songs are almost always this, because it is frightening without being unpleasant.",
+    "songs": []
+  },
+  {
+    "id": "comedy-fanfare-01",
+    "name": "Comedy fanfare",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 2 },
+      { "numeral": "IV", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "vi", "beats": 2 },
+      { "numeral": "ii", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "fast",
+    "moods": ["triumphant", "silly", "bouncy"],
+    "genres": ["showtune", "folk"],
+    "instrument": "both",
+    "notes": "Six half-bar chords crammed in before a full bar of tonic, with a deceptive cadence to vi and a two-five to get out of it. An entire heroic build happens in three bars, and compressing something grand is usually funnier than deflating it.",
+    "songs": []
+  },
+  {
+    "id": "big-finish-01",
+    "name": "Big finish",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "I", "beats": 8 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["triumphant", "epic", "joyful"],
+    "genres": ["showtune", "rock"],
+    "instrument": "both",
+    "notes": "Two borrowed chords climbing into two bars of tonic, which is the standard way to end a number louder than it started. Everything holds on the last chord until someone stops it.",
+    "songs": []
+  }
+]

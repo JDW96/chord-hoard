@@ -10,7 +10,7 @@ exactly this order:
 ```json
 {
   "id": "andalusian-fall-01",          // unique, kebab-case, stable forever (pins reference it)
-  "name": "Spanish Fall",              // evocative 2–3 word title
+  "name": "Andalusian Cadence",        // canonical name if one exists, else descriptive
   "mode": "minor",                     // major | minor | dorian | mixolydian | lydian | phrygian
   "numerals": [                        // the progression itself, in order
     { "numeral": "i", "beats": 4 },    // beats are counted in the time signature's unit
@@ -46,6 +46,21 @@ exactly this order:
   must be one of the `sections` vocab values. Omit songs rather than guess.
 - No complexity field — the engine computes complexity per key/instrument.
 - No duplicate (mode + numeral sequence + timeSig) combos across the library.
+  **Beats are not part of the key.** `I(8) IV(8)` and `I(4) IV(4)` are the same
+  entry as far as the validator is concerned, and so are a 12-bar and a 14-bar
+  blues that happen to hit the same chords in the same order. Changing how long
+  a chord lasts, or how many bars the form runs to, does not make a new
+  progression: only a different chord sequence, mode or time signature does.
+  This is the mistake that generated batches keep making, so check the sequence
+  itself against the library rather than the shape of the entry.
+- `name`: use the canonical name where the progression has one, in title case
+  (`12-Bar Blues`, `Doo-Wop`, `Axis Progression`, `Andalusian Cadence`,
+  `Jazz 2-5-1`, `Ceilidh`). Otherwise describe it in sentence case
+  (`Heroic fanfare`, `Descending bass line`, `Phrygian vamp`). Descriptive beats
+  evocative: no `Villain's Tango`-style titles.
+- `notes`: no em-dashes, and no "it's not X, it's Y" constructions. Lead with the
+  theory fact that makes the progression what it is, then how to play it. Cut
+  anything that is neither. See the copy voice rules in CLAUDE.md.
 
 ## Roman numeral grammar
 

@@ -1,0 +1,517 @@
+[
+  {
+    "id": "chromatic-mediant-lift-01",
+    "name": "Chromatic mediant lift",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "bIII", "beats": 8 },
+      { "numeral": "bVI", "beats": 8 },
+      { "numeral": "I", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["epic", "mysterious", "heroic"],
+    "genres": ["cinematic"],
+    "instrument": "both",
+    "notes": "Roots a third apart with no shared function, which is what a chromatic mediant is. Each chord shares one note with the last, so the move sounds like a change of light rather than a change of key.",
+    "songs": []
+  },
+  {
+    "id": "two-chord-tension-01",
+    "name": "Two-chord tension",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 16 },
+      { "numeral": "bII", "beats": 16 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "slow",
+    "moods": ["menacing", "unsettling", "brooding"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "both",
+    "notes": "Four bars each on chords a semitone apart, which is the smallest possible move and the most uncomfortable. Nothing resolves, so it works under a scene that has not happened yet.",
+    "songs": []
+  },
+  {
+    "id": "ostinato-minor-01",
+    "name": "Minor ostinato",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["driving", "brooding", "restless"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "both",
+    "notes": "The tonic returns every other bar, so the loop pulses rather than travels. Written to sit under dialogue for as long as needed and to build by adding layers, not chords.",
+    "songs": []
+  },
+  {
+    "id": "heroic-climb-01",
+    "name": "Heroic climb",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "V/7", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I/5", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["heroic", "triumphant", "epic"],
+    "genres": ["cinematic", "rock"],
+    "instrument": "both",
+    "notes": "Eight bars of the axis with the tonic inverted twice so the bass keeps moving under it. Film scores prefer inversions here because a static root makes the same chords sound like a pop song.",
+    "songs": []
+  },
+  {
+    "id": "suspended-drift-01",
+    "name": "Suspended drift",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Isus2", "beats": 8 },
+      { "numeral": "IVmaj7", "beats": 8 },
+      { "numeral": "vi7", "beats": 8 },
+      { "numeral": "IVmaj7", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "Eb",
+    "tempo": "slow",
+    "moods": ["floating", "dreamy", "serene"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "piano",
+    "notes": "No dominant and no plain triad, so nothing in eight bars ever declares itself finished. Two bars a chord at a slow tempo, with the sustain held right through the changes.",
+    "songs": []
+  },
+  {
+    "id": "dread-semitone-01",
+    "name": "Dread semitone",
+    "mode": "phrygian",
+    "numerals": [
+      { "numeral": "i", "beats": 8 },
+      { "numeral": "bII", "beats": 4 },
+      { "numeral": "i", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "slow",
+    "moods": ["menacing", "eerie", "unsettling"],
+    "genres": ["cinematic"],
+    "instrument": "both",
+    "notes": "Two bars of tonic before bII arrives a semitone above and is pushed straight back down. The half-step above the tonic is the most threatening interval available in a mode.",
+    "songs": []
+  },
+  {
+    "id": "lydian-wonder-01",
+    "name": "Lydian wonder",
+    "mode": "lydian",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "II", "beats": 8 },
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "V", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "Bb",
+    "tempo": "slow",
+    "moods": ["dreamy", "hopeful", "floating"],
+    "genres": ["cinematic"],
+    "instrument": "both",
+    "notes": "The major II carries the raised fourth, and returning to I between statements keeps the mode audible rather than letting it sound like a key change. The standard sound for looking up at something.",
+    "songs": []
+  },
+  {
+    "id": "trailer-braams-01",
+    "name": "Trailer hits",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i5", "beats": 8 },
+      { "numeral": "bVI5", "beats": 4 },
+      { "numeral": "bVII5", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "slow",
+    "moods": ["epic", "menacing", "driving"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "both",
+    "notes": "Power chords with no thirds, so nothing carries emotional information and the weight does all the work. Two bars on the tonic, then two chords in the last bar to set up the next hit.",
+    "songs": []
+  },
+  {
+    "id": "clockwork-tension-01",
+    "name": "Clockwork tension",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 5 },
+      { "numeral": "bVI", "beats": 5 },
+      { "numeral": "bVII", "beats": 5 },
+      { "numeral": "V", "beats": 5 }
+    ],
+    "bars": 4,
+    "timeSig": "5/4",
+    "homeKey": "G",
+    "tempo": "mid",
+    "moods": ["restless", "unsettling", "driving"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "both",
+    "notes": "Five beats to the bar, so the loop never lines up with a four-square pulse and stays slightly wrong. Count it three plus two and keep the accent on beat one only.",
+    "songs": []
+  },
+  {
+    "id": "elegy-01",
+    "name": "Elegy",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 8 },
+      { "numeral": "v", "beats": 8 },
+      { "numeral": "bVI", "beats": 8 },
+      { "numeral": "bIII", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "B",
+    "tempo": "slow",
+    "moods": ["mournful", "solemn", "melancholy"],
+    "genres": ["cinematic"],
+    "instrument": "both",
+    "notes": "A minor v rather than a dominant, so there is no leading tone anywhere and nothing insists on resolving. Two bars a chord, and let the bass move only when it has to.",
+    "songs": []
+  },
+  {
+    "id": "wide-open-plains-01",
+    "name": "Wide open plains",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "V/7", "beats": 8 },
+      { "numeral": "IV/1", "beats": 8 },
+      { "numeral": "I", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "F",
+    "tempo": "slow",
+    "moods": ["serene", "hopeful", "nostalgic"],
+    "genres": ["cinematic", "country"],
+    "instrument": "both",
+    "notes": "Both middle chords are inversions, so the bass moves by a single step and then back. Open fifths in the left hand and a melody built from the pentatonic scale is the rest of the recipe.",
+    "songs": []
+  },
+  {
+    "id": "descending-chromatic-bass-01",
+    "name": "Descending chromatic bass",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "V/7", "beats": 4 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "slow",
+    "moods": ["brooding", "melancholy", "dramatic"],
+    "genres": ["cinematic", "showtune"],
+    "instrument": "piano",
+    "notes": "The bass falls tonic, leading tone, flat seventh, flat sixth, so it drops by semitone then whole tone. The V in second position exists purely to supply that chromatic step.",
+    "songs": []
+  },
+  {
+    "id": "rising-fourths-01",
+    "name": "Rising fourths",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "iv", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 },
+      { "numeral": "bIII", "beats": 6 },
+      { "numeral": "bVI", "beats": 6 },
+      { "numeral": "i", "beats": 6 }
+    ],
+    "bars": 6,
+    "timeSig": "6/8",
+    "homeKey": "E",
+    "tempo": "mid",
+    "moods": ["epic", "yearning", "driving"],
+    "genres": ["cinematic", "celtic"],
+    "instrument": "both",
+    "notes": "Five consecutive moves up a fourth before the tonic returns, which is the longest chain natural minor allows. Six bars rather than eight, so the phrase closes a bar earlier than expected.",
+    "songs": []
+  },
+  {
+    "id": "unresolved-question-01",
+    "name": "Unresolved question",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "iii", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "Vsus4", "beats": 8 }
+    ],
+    "bars": 5,
+    "timeSig": "4/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["restless", "yearning", "unsettling"],
+    "genres": ["cinematic", "indie"],
+    "instrument": "piano",
+    "notes": "Five bars, with the last two held on a sus4 that never gets its third. An odd bar count plus an unresolved chord leaves the phrase hanging in two directions at once.",
+    "songs": []
+  },
+  {
+    "id": "night-approach-01",
+    "name": "Night approach",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "iidim", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "F#",
+    "tempo": "slow",
+    "moods": ["eerie", "menacing", "mysterious"],
+    "genres": ["cinematic"],
+    "instrument": "piano",
+    "notes": "The diminished chord on the second degree is unstable in every direction, and putting it just before V makes the dominant sound like the only way out. Low register, quiet, no rush.",
+    "songs": []
+  },
+  {
+    "id": "hopeful-dawn-01",
+    "name": "Hopeful dawn",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "vi", "beats": 8 },
+      { "numeral": "IV", "beats": 8 },
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "I", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "A",
+    "tempo": "slow",
+    "moods": ["hopeful", "uplifting", "serene"],
+    "genres": ["cinematic"],
+    "instrument": "both",
+    "notes": "Starting on the relative minor and arriving at the tonic in bar five, so the brightening is structural rather than decorative. The last bar splits so the cadence lands inside it.",
+    "songs": []
+  },
+  {
+    "id": "military-drums-01",
+    "name": "Military build",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 8 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "V", "beats": 4 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bIII", "beats": 4 },
+      { "numeral": "bVI", "beats": 4 },
+      { "numeral": "V", "beats": 4 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "D",
+    "tempo": "mid",
+    "moods": ["driving", "menacing", "epic"],
+    "genres": ["cinematic"],
+    "instrument": "both",
+    "notes": "Two bars of tonic to establish the pulse, then the same four-bar answer twice with bIII added the second time. Ending on V both times keeps it turning over without ever settling.",
+    "songs": []
+  },
+  {
+    "id": "glass-arpeggio-01",
+    "name": "Glass arpeggio",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 },
+      { "numeral": "bVI", "beats": 6 },
+      { "numeral": "bVII", "beats": 6 },
+      { "numeral": "i", "beats": 6 },
+      { "numeral": "bIII", "beats": 6 }
+    ],
+    "bars": 6,
+    "timeSig": "6/8",
+    "homeKey": "C",
+    "tempo": "fast",
+    "moods": ["restless", "driving", "mysterious"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "piano",
+    "notes": "Six bars of running quavers where the harmony changes every bar and the figure does not. Minimalist scores work this way: the pattern stays put and the chord underneath moves.",
+    "songs": []
+  },
+  {
+    "id": "aug-unease-01",
+    "name": "Augmented unease",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "I", "beats": 4 },
+      { "numeral": "Iaug", "beats": 4 },
+      { "numeral": "vi", "beats": 4 },
+      { "numeral": "IV", "beats": 4 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "Ab",
+    "tempo": "slow",
+    "moods": ["unsettling", "eerie", "dreamy"],
+    "genres": ["cinematic", "showtune"],
+    "instrument": "piano",
+    "notes": "The augmented chord raises the fifth of the tonic by a semitone, which then steps up again into the sixth of vi. One note moving is the entire event, and it is enough to make the ground feel unstable.",
+    "songs": []
+  },
+  {
+    "id": "pastoral-drift-01",
+    "name": "Pastoral drift",
+    "mode": "mixolydian",
+    "numerals": [
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "bVII", "beats": 4 },
+      { "numeral": "IV", "beats": 4 },
+      { "numeral": "I", "beats": 8 },
+      { "numeral": "v", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "E",
+    "tempo": "slow",
+    "moods": ["serene", "nostalgic", "gentle"],
+    "genres": ["cinematic", "folk"],
+    "instrument": "both",
+    "notes": "Mixolydian with a minor v at the end, so the two chords that would normally pull home are both missing their leading tone. Nothing pushes, which is the point.",
+    "songs": []
+  },
+  {
+    "id": "villain-theme-01",
+    "name": "Villain theme",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bVI", "beats": 2 },
+      { "numeral": "V", "beats": 2 },
+      { "numeral": "i", "beats": 4 },
+      { "numeral": "bII", "beats": 2 },
+      { "numeral": "V", "beats": 2 }
+    ],
+    "bars": 4,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "mid",
+    "moods": ["menacing", "dramatic", "brooding"],
+    "genres": ["cinematic", "showtune"],
+    "instrument": "piano",
+    "notes": "Half-bar changes in bars two and four, with bVI answered by bII the second time round. Both are approaches to the same dominant, and the Neapolitan is the sharper of the two.",
+    "songs": []
+  },
+  {
+    "id": "slow-reveal-01",
+    "name": "Slow reveal",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "IV", "beats": 8 },
+      { "numeral": "I/3", "beats": 8 },
+      { "numeral": "ii", "beats": 8 },
+      { "numeral": "I", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "Db",
+    "tempo": "slow",
+    "moods": ["hopeful", "tender", "serene"],
+    "genres": ["cinematic"],
+    "instrument": "piano",
+    "notes": "The tonic arrives twice, once inverted in bar three and once in root position at the end, so the same chord functions as a passing point and then as an arrival. No dominant anywhere.",
+    "songs": []
+  },
+  {
+    "id": "waltz-of-the-lost-01",
+    "name": "Waltz of the lost",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "bVI", "beats": 3 },
+      { "numeral": "iidim", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "i", "beats": 3 },
+      { "numeral": "iv", "beats": 3 },
+      { "numeral": "V", "beats": 3 },
+      { "numeral": "i", "beats": 3 }
+    ],
+    "bars": 8,
+    "timeSig": "3/4",
+    "homeKey": "G",
+    "tempo": "slow",
+    "moods": ["eerie", "melancholy", "dreamy"],
+    "genres": ["cinematic", "waltz"],
+    "instrument": "piano",
+    "notes": "Eight bars in three that cadence twice, the first time through a diminished ii. Music-box waltzes use this because it sounds finished repeatedly without ever going anywhere new.",
+    "songs": []
+  },
+  {
+    "id": "distant-memory-01",
+    "name": "Distant memory",
+    "mode": "major",
+    "numerals": [
+      { "numeral": "Imaj7", "beats": 8 },
+      { "numeral": "bVIImaj7", "beats": 8 },
+      { "numeral": "IVmaj7", "beats": 8 },
+      { "numeral": "Imaj7", "beats": 8 }
+    ],
+    "bars": 8,
+    "timeSig": "4/4",
+    "homeKey": "C",
+    "tempo": "slow",
+    "moods": ["nostalgic", "dreamy", "wistful"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "piano",
+    "notes": "Major sevenths throughout and a borrowed bVII, so every chord is soft-edged and one of them is not from the key. Two bars each, with the pedal held long enough that the changes blur.",
+    "songs": []
+  },
+  {
+    "id": "chase-in-seven-01",
+    "name": "Chase in seven",
+    "mode": "minor",
+    "numerals": [
+      { "numeral": "i", "beats": 7 },
+      { "numeral": "bVII", "beats": 7 },
+      { "numeral": "bVI", "beats": 7 },
+      { "numeral": "V", "beats": 7 }
+    ],
+    "bars": 4,
+    "timeSig": "7/8",
+    "homeKey": "A",
+    "tempo": "fast",
+    "moods": ["frantic", "driving", "unsettling"],
+    "genres": ["cinematic", "electronic"],
+    "instrument": "both",
+    "notes": "Seven quavers to the bar, grouped two-two-three, which keeps the pulse from ever feeling settled. The chords are the plain minor descent; all the tension is in the metre.",
+    "songs": []
+  }
+]

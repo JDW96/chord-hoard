@@ -6,11 +6,12 @@
 // currently selected instrument, and cached in app.js's ratingCache.
 
 import { formatDisplay } from "../engine/numeral.js";
-import { state, renderIn, ratingIn } from "./app.js";
+import { state, renderIn, ratingIn, collectionLabel } from "./app.js";
 import { el, clear, prettySymbol, capitalise, levelClass } from "./util.js";
 
 // Module-level UI state so search/filters survive a trip into a detail view.
 const filters = {
+  collection: new Set(), // themed batch the entry was loaded from
   mood: new Set(),
   genre: new Set(),
   mode: new Set(),
@@ -36,6 +37,7 @@ function haystackFor(entry) {
     const rendered = renderIn(entry, entry.homeKey);
     hay = [
       entry.name,
+      collectionLabel(entry.collection),
       entry.moods.join(" "),
       entry.genres.join(" "),
       rendered.distinctChords.map((c) => c.symbol).join(" "),
@@ -61,6 +63,7 @@ function entryLevel(entry) {
 // ---------------------------------------------------------------------------
 
 function matchesFilters(entry) {
+  if (filters.collection.size && !filters.collection.has(entry.collection)) return false;
   if (filters.mood.size && !entry.moods.some((m) => filters.mood.has(m))) return false;
   if (filters.genre.size && !entry.genres.some((g) => filters.genre.has(g))) return false;
   if (filters.mode.size && !filters.mode.has(entry.mode)) return false;
@@ -88,6 +91,7 @@ function results() {
 function activeFilterCount() {
   const levelCount = ladder().filter((lv) => filters.level.has(lv)).length;
   return (
+    filters.collection.size +
     filters.mood.size +
     filters.genre.size +
     filters.mode.size +
@@ -106,6 +110,9 @@ function optionsFromData() {
   const byVocab = (values, vocabList) =>
     vocabList.filter((v) => values.includes(v));
   return {
+    // Not vocab-controlled and not sorted: the manifest's order is the order
+    // the collections were built in, which is more useful than alphabetical.
+    collection: collect((e) => [e.collection]),
     mood: byVocab(collect((e) => e.moods), state.vocab.moods),
     genre: byVocab(collect((e) => e.genres), state.vocab.genres),
     mode: byVocab(collect((e) => [e.mode]), state.vocab.modes),
@@ -217,6 +224,7 @@ export function render(container) {
 function buildSheet(sheet) {
   const opts = optionsFromData();
   const groups = [
+    ["collection", "Collection", opts.collection, collectionLabel],
     ["mood", "Mood", opts.mood, capitalise],
     ["genre", "Genre", opts.genre, capitalise],
     ["mode", "Mode", opts.mode, capitalise],
@@ -299,7 +307,12 @@ function card(entry) {
 
   return el(
     "a",
-    { className: "card", href: "#/prog/" + encodeURIComponent(entry.id) },
+    {
+      // The level also rides on the card itself so the edge stripe can be
+      // coloured in CSS without the badge having to carry the whole signal.
+      className: "card " + levelClass(rating.level),
+      href: "#/prog/" + encodeURIComponent(entry.id),
+    },
     el(
       "div",
       { className: "card-top" },

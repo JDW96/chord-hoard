@@ -1,8 +1,11 @@
 // diagrams.js — guitar chord grids and piano keyboard diagrams as SVG strings.
 //
 // Pure module: no DOM APIs, every export returns a self-contained
-// <svg>…</svg> string. All strokes and fills use currentColor plus CSS
-// classes (dot, barre, pressed, root, bass, …) so the app can theme them.
+// <svg>…</svg> string. Guitar grids draw in currentColor with CSS classes
+// (dot, barre, nut, fret, string, …) refining them. Piano keys carry classes
+// only (key, white, black, pressed, root, bass, note-label) and no colour
+// attributes at all, so css/app.css owns the whole keyboard palette and it
+// follows light/dark mode.
 // Music facts come from the engine; nothing musical is reimplemented here
 // beyond laying dots on strings and keys.
 
@@ -164,10 +167,10 @@ export function guitarChordSVG(voicing, { title } = {}) {
 // Piano keyboard
 
 const P = {
-  whiteW: 12,
-  whiteH: 56,
-  blackW: 7,
-  blackH: 34,
+  whiteW: 14,
+  whiteH: 64,
+  blackW: 8.5,
+  blackH: 40,
   x0: 1,
   y0: 1,
 };
@@ -192,10 +195,16 @@ function keyCentreX(semitone) {
 function keyboardSVG(octaves, marks, ariaLabel) {
   const { whiteW, whiteH, blackW, blackH, x0, y0 } = P;
   const width = octaves * 7 * whiteW + 2 * x0;
-  const labelY = y0 + whiteH + 10;
-  const height = labelY + 7;
+  const labelY = y0 + whiteH + 11;
+  const height = labelY + 8;
   const total = octaves * 12;
   const parts = [];
+
+  // Shapes carry classes and no colour: css/app.css decides every fill and
+  // stroke, so the keyboard reads as a keyboard in both light and dark.
+  // Do not reintroduce fill/stroke attributes here — tools/test-diagrams.js
+  // counts the words "pressed", "root" and "bass" across the whole string,
+  // so any attribute value containing one would break the counts.
 
   // White keys first, black keys on top of them.
   for (let s = 0; s < total; s += 1) {
@@ -205,10 +214,9 @@ function keyboardSVG(octaves, marks, ariaLabel) {
     const x = x0 + (octave * 7 + WHITE_INDEX[pc]) * whiteW;
     const mark = marks.get(s);
     const classes = ["key", "white", ...(mark ? mark.classes : [])];
-    const fill = mark ? `fill="currentColor" fill-opacity="0.35"` : `fill="none"`;
     parts.push(
       `<rect x="${x}" y="${y0}" width="${whiteW}" height="${whiteH}" ` +
-        `${fill} stroke="currentColor" stroke-width="1" class="${classes.join(" ")}"/>`
+        `class="${classes.join(" ")}"/>`
     );
   }
   for (let s = 0; s < total; s += 1) {
@@ -217,10 +225,8 @@ function keyboardSVG(octaves, marks, ariaLabel) {
     const x = keyCentreX(s) - blackW / 2;
     const mark = marks.get(s);
     const classes = ["key", "black", ...(mark ? mark.classes : [])];
-    const opacity = mark ? `fill-opacity="0.55" ` : ``;
     parts.push(
       `<rect x="${x}" y="${y0}" width="${blackW}" height="${blackH}" ` +
-        `fill="currentColor" ${opacity}stroke="currentColor" stroke-width="1" ` +
         `class="${classes.join(" ")}"/>`
     );
   }
@@ -230,8 +236,7 @@ function keyboardSVG(octaves, marks, ariaLabel) {
     if (!mark.label) continue;
     parts.push(
       `<text x="${keyCentreX(s)}" y="${labelY}" text-anchor="middle" ` +
-        `font-size="6.5" fill="currentColor" class="note-label">` +
-        `${escapeXml(mark.label)}</text>`
+        `font-size="7.5" class="note-label">${escapeXml(mark.label)}</text>`
     );
   }
 
