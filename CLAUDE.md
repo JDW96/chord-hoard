@@ -360,21 +360,37 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
      (`fn-tonic`/`fn-subdominant`/`fn-dominant`/`fn-borrowed`) directly.
      Colours: tonic teal, subdominant purple, dominant amber, borrowed coral
      (blue stays reserved for the interface accent). Text colour only, no
-     background pills, to keep the neutral chassis. Wired into exactly the
-     three views the backlog named — Hoard cards (numerals + chord names,
-     built as interleaved tinted spans via a new `interleave()` helper in
-     util.js rather than one joined string), the Chords tab's "where next?"
-     destination cards, and the Scales tab's diatonic grid and borrowed-chord
-     list — deliberately not the detail or performance views. A header icon
-     button (four coloured dots, doubling as a tiny legend) toggles it via
-     `body[data-tint="off"]`; the toggle is CSS-only (the `.fn-*` classes are
-     always in the DOM, the toggle just flips whether they paint), so no
-     re-render is needed and it's instant. Persisted to
-     `chordhoard.functionTint`, defaulting on. The `.fn-*` rules are
-     deliberately the LAST block in app.css: several of the elements they tint
-     (`.dest-numeral`, `.degree-numeral`, `.degree-symbol`, `.visitor-symbol`)
-     already set their own `color` at equal specificity, and source order is
-     what breaks the tie.
+     background pills, to keep the neutral chassis. Wired into all five
+     chord-bearing views — Hoard cards (numerals + chord names, built as
+     interleaved tinted spans via a new `interleave()` helper in util.js
+     rather than one joined string), the Chords tab's "where next?"
+     destination cards, the Scales tab's diatonic grid and borrowed-chord
+     list, the detail view's chord-by-chord strip, and performance mode's
+     grid. First cut (2026-08-15 AM) shipped Hoard/Chords/Scales only and
+     Jack asked the same day for detail + performance too, since clicking a
+     card into its detail page or performance mode was the obvious next
+     thing to try and the colour just vanished there. In performance mode
+     the tint follows the chord's real harmonic function, not the
+     capo-mode played shape — the function doesn't change under a capo,
+     only which shape your hands make, confirmed by a jsdom check that
+     toggling capo mode leaves every cell's `fn-*` class untouched.
+     A header icon button (four coloured dots, doubling as a tiny legend)
+     toggles it via `body[data-tint="off"]`; the toggle is CSS-only (the
+     `.fn-*` classes are always in the DOM, the toggle just flips whether
+     they paint), so no re-render is needed and it's instant. Persisted to
+     `chordhoard.functionTint`, defaulting on. `js/ui/function-tint.js` also
+     exports `legendCaption()` — "Colour: Tonic · Subdominant · Dominant ·
+     Borrowed", each word in its own colour — the actual key explaining what
+     the tint means, since the header icon alone wasn't legible as one
+     (Jack's second same-day note). One shared component, placed once per
+     view near where the tinted chords first appear; performance mode gets
+     a `.perform-legend` variant sized into a `.perform-topbar` wrapper (so
+     `layout()`'s fit-to-viewport height math still measures the right
+     element). The `.fn-*` rules are deliberately the LAST block in
+     app.css: several of the elements they tint (`.dest-numeral`,
+     `.degree-numeral`, `.degree-symbol`, `.visitor-symbol`, `.chord-numeral`,
+     `.perform-numeral`) already set their own `color` at equal specificity,
+     and source order is what breaks the tie.
 10. Instrument toggle rescoped: hidden on Chords/Scales/Build via
     `body[data-route]` in CSS, where it changed nothing. [phase 2.5, DONE 2026-08-03]
 11. Scales tab scale-note chips are now links that make that note the tonic, keeping

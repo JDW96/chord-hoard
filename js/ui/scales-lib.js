@@ -20,7 +20,7 @@ import { DIATONIC_NUMERALS } from "../engine/harmony.js";
 import { pianoScaleSVG } from "./diagrams.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { chordHref } from "./chords-lib.js";
-import { tintClass } from "./function-tint.js";
+import { tintClass, legendCaption } from "./function-tint.js";
 import { copyFor, borrowedFor, copyBlock, revealList } from "./chord-copy.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { el, prettySymbol, prettyNote, capitalise } from "./util.js";
@@ -243,6 +243,7 @@ export function render(container, params) {
         { className: "where-next-lead" },
         "Seven chords built from these seven notes. Tap one to open it."
       ),
+      legendCaption(),
       grid
     )
   );

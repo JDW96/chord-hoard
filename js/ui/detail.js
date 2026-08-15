@@ -9,6 +9,7 @@ import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
 import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
 import { chordHref } from "./chord-link.js";
+import { tintClass, legendCaption } from "./function-tint.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { state, renderIn, ratingIn } from "./app.js";
 import {
@@ -157,15 +158,16 @@ export function render(container, params) {
     // ---- Big chord-by-chord strip ---------------------------------------
     const strip = el("div", { className: "chord-strip" });
     rendered.chords.forEach((chord, i) => {
+      const cls = tintClass(chord.numeral, tonic, entry.mode);
       strip.appendChild(
         el(
           "div",
           { className: "chord-block" },
-          el("div", { className: "chord-symbol" }, prettySymbol(chord.symbol)),
+          el("div", { className: "chord-symbol " + cls }, prettySymbol(chord.symbol)),
           el(
             "div",
             { className: "chord-sub" },
-            el("span", { className: "chord-numeral" }, chord.display),
+            el("span", { className: "chord-numeral " + cls }, chord.display),
             el("span", { className: "chord-beats" }, `${chord.beats} beats`)
           ),
           showPerChord
@@ -179,6 +181,7 @@ export function render(container, params) {
       );
     });
     body.appendChild(strip);
+    body.appendChild(legendCaption());
 
     // ---- Key selector ----------------------------------------------------
     // The wheel IS the key selector now (backlog item 3 follow-up, agreed

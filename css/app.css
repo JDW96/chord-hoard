@@ -1606,6 +1606,13 @@ body[data-route="perform"] .tabbar {
   overflow: hidden;
 }
 
+/* Wraps .perform-strip + .perform-legend so perform.js's fit-to-viewport
+   layout() has one element to measure the fixed "chrome" height from,
+   instead of having to know the legend exists. */
+.perform-topbar {
+  flex: 0 0 auto;
+}
+
 .perform-strip {
   flex: 0 0 auto;
   display: flex;
@@ -1833,4 +1840,26 @@ body[data-tint="off"] .fn-subdominant,
 body[data-tint="off"] .fn-dominant,
 body[data-tint="off"] .fn-borrowed {
   color: inherit;
+}
+
+/* The legend (js/ui/function-tint.js's legendCaption()) — the one place
+   that spells out what the four colours mean, reused everywhere a tinted
+   chord appears rather than leaving people to guess. */
+.fn-legend {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+}
+
+.fn-legend span {
+  font-weight: 600;
+}
+
+/* Performance mode's variant sits under the strip instead of inline with a
+   section heading, so it's smaller and tighter to match the strip's own
+   dimmed, minimal-chrome styling. */
+.perform-legend {
+  margin: 0;
+  padding: 0 var(--sp-2) var(--sp-1) var(--sp-1);
+  font-size: 0.65rem;
 }

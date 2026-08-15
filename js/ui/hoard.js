@@ -6,7 +6,7 @@
 // currently selected instrument, and cached in app.js's ratingCache.
 
 import { state, renderIn, ratingIn, collectionLabel } from "./app.js";
-import { tintClass } from "./function-tint.js";
+import { tintClass, legendCaption } from "./function-tint.js";
 import { el, clear, interleave, prettySymbol, capitalise, levelClass } from "./util.js";
 
 // Module-level UI state so search/filters survive a trip into a detail view.
@@ -175,6 +175,7 @@ export function render(container) {
       { className: "hoard" },
       el("div", { className: "search-row" }, search, filterBtn),
       sheet,
+      legendCaption(),
       count,
       list
     )

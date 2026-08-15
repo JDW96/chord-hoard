@@ -15,6 +15,7 @@ import { parseNote, pitchClass } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
 import { state, renderIn } from "./app.js";
 import { chosenTonic, tonicsFor, isMajorFamily } from "./detail.js";
+import { tintClass, legendCaption } from "./function-tint.js";
 import { el, clear, prettySymbol, prettyNote } from "./util.js";
 
 /** "Am"/"Em"/"Dm" → "A"/"E"/"D" — capo.suggest()'s playAs already carries the
@@ -133,6 +134,9 @@ export function render(container, params) {
     infoSpan,
     wakeDot
   );
+  // Wrapped with the legend so layout() has one element to measure the
+  // fixed "chrome" height from (see .perform-topbar in app.css).
+  const topBar = el("div", { className: "perform-topbar" }, strip, legendCaption("perform-legend"));
 
   // ---- Chord grid ----------------------------------------------------------
   const grid = el("div", { className: "perform-grid" });
@@ -142,15 +146,19 @@ export function render(container, params) {
     chords.forEach((chord, i) => {
       const playedChord = playedChords ? playedChords[i] : null;
       const big = capoMode && playedChord ? playedChord : chord;
+      // Tint by the real sounding chord's function, not the capo-played
+      // shape — the harmonic function doesn't change under a capo, just
+      // which shape your hands make.
+      const cls = tintClass(chord.numeral, tonic, entry.mode);
       grid.appendChild(
         el(
           "div",
           { className: "perform-cell" },
-          el("div", { className: "perform-symbol" }, prettySymbol(big.symbol)),
+          el("div", { className: "perform-symbol " + cls }, prettySymbol(big.symbol)),
           el(
             "div",
             { className: "perform-sub" },
-            el("span", { className: "perform-numeral" }, chord.display),
+            el("span", { className: "perform-numeral " + cls }, chord.display),
             el("span", { className: "perform-beats" }, `${chord.beats}`),
             capoMode && playedChord
               ? el("span", { className: "perform-sounds" }, `sounds ${prettySymbol(chord.symbol)}`)
@@ -162,7 +170,7 @@ export function render(container, params) {
   }
   buildGrid();
 
-  const root = el("section", { className: "perform-full" }, strip, grid);
+  const root = el("section", { className: "perform-full" }, topBar, grid);
   container.appendChild(root);
 
   // ---- Fit-to-viewport ------------------------------------------------------
@@ -186,7 +194,7 @@ export function render(container, params) {
 
     // First guess from cell geometry, then shrink until nothing overflows.
     const cellW = w / cols;
-    const cellH = (h - strip.offsetHeight) / rows;
+    const cellH = (h - topBar.offsetHeight) / rows;
     let fs = Math.min(cellH * 0.42, (cellW * 1.55) / Math.max(2, longest));
     fs = Math.max(14, fs);
     root.style.setProperty("--perform-fs", fs + "px");
