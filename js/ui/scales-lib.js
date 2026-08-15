@@ -13,13 +13,14 @@
 // chords that turn up in this mode most often. Explanations for both chord
 // lists come from chord-copy.js, shared with the chord library.
 
-import { parseNote, pitchClass, formatNoteDisplay } from "../engine/theory.js";
+import { parseNote, pitchClass } from "../engine/theory.js";
 import { realize } from "../engine/chords.js";
 import { formatDisplay } from "../engine/numeral.js";
 import { pianoScaleSVG } from "./diagrams.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { chordHref } from "./chords-lib.js";
 import { copyFor, borrowedFor, copyBlock, revealList } from "./chord-copy.js";
+import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { el, prettySymbol, prettyNote, capitalise } from "./util.js";
 
 // ---------------------------------------------------------------------------
@@ -129,25 +130,38 @@ export function render(container, params) {
   const section = el("section", { className: "scales-lib" });
 
   // ---- Tonic picker ---------------------------------------------------------
-  const tonicRow = el("div", {
-    className: "key-row",
-    attrs: { role: "group", "aria-label": "Choose a tonic" },
-  });
-  for (const t of tonicsForMode(mode)) {
-    tonicRow.appendChild(
-      el(
-        "a",
-        {
-          className: "key-btn" + (t === tonic ? " selected" : ""),
-          href: hrefFor(t, mode.id),
-          attrs: { "aria-current": t === tonic ? "true" : undefined },
-        },
-        formatNoteDisplay(parseNote(t))
-      )
-    );
+  // The wheel IS the tonic picker now (backlog item 3 follow-up, agreed
+  // with Jack 2026-08-15) — it covers exactly the same tonics the flat
+  // button row used to, so the row was removed rather than kept alongside
+  // it. Only the ring matching the current mode's family is tappable; the
+  // other ring is shown for context.
+  const wheelHost = el("div", { className: "wheel-svg" });
+  wheelHost.innerHTML = wheelSVG({ family: mode.family, activeTonic: tonic });
+  function jumpToWedge(ev) {
+    const w = ev.target.closest("[data-tonic]");
+    if (w) window.location.hash = hrefFor(w.getAttribute("data-tonic"), mode.id);
   }
+  wheelHost.addEventListener("click", jumpToWedge);
+  wheelHost.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" || ev.key === " ") {
+      ev.preventDefault();
+      jumpToWedge(ev);
+    }
+  });
+
   section.appendChild(
-    el("div", { className: "lib-picker" }, el("h3", {}, "Tonic"), tonicRow)
+    el(
+      "div",
+      { className: "lib-picker" },
+      el("h3", {}, "Tonic"),
+      wheelHost,
+      el("p", { className: "wheel-caption" }, captionFor(tonic, mode.family)),
+      el(
+        "p",
+        { className: "wheel-hint" },
+        "Outer ring is major, inner ring is its relative minor. Tap a key to jump there."
+      )
+    )
   );
 
   // ---- Mode picker ------------------------------------------------------------

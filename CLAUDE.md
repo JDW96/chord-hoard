@@ -266,7 +266,38 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
    `data/schema.md` so each generated batch is written against them rather than
    against the older seed entries.
 3. Key selector: circle-of-fifths wheel showing each key's accidentals
-   (e.g. "E: F♯ C♯ G♯ D♯"). Memorisation aid. [phase 2.5, TODO]
+   (e.g. "E: F♯ C♯ G♯ D♯"). Memorisation aid. [phase 2.5, DONE 2026-08-15]
+   `js/ui/circle-of-fifths.js` is a pure data + SVG module (no DOM, matching
+   diagrams.js's pattern): 12 positions in true ascending-fifths order,
+   major tonic on the outer ring and its true relative minor on the inner
+   ring at the same position, using exactly the app's 12 locked tonic
+   spellings. `accidentalsFor()` computes each key's sharps/flats by
+   realising its seven diatonic chords through the engine (never
+   hardcoded), in standard key-signature order (F C G D A E B / B E A D G
+   C F), not scale-degree order. Only the ring matching the current mode's
+   family is tappable (carries `data-tonic` + `role="button"`); the other
+   ring is shown dim, for context, like a printed circle-of-fifths poster.
+   A caption below the wheel reads e.g. "E major / C♯ minor — F♯ C♯ G♯ D♯",
+   updating live as wedges are tapped.
+   Originally shipped alongside the flat key-button rows; Jack asked the
+   same day to drop the rows since the wheel's active ring already covers
+   the exact same 12 tonics — `key-row`/`key-btn` stay in `css/app.css`
+   (chords-lib.js's root picker still uses them) but detail.js and
+   scales-lib.js no longer render one. The wheel picked up the row's "home
+   key" dashed-border treatment as a `home` wedge class so that information
+   wasn't lost. Wiring differs by view: detail.js reuses the same
+   `chooseTonic()` the row used to call; scales-lib.js sets `location.hash`
+   since that view is link-driven.
+   Also fixed the same day: the detail view's capo-suggestion line used to
+   sit ABOVE the key picker and only render when `capo.suggest()` returned
+   a hint, so tapping a wedge could change that block's height and shove
+   the wheel around mid-tap — annoying when picking several keys in a row.
+   It now lives inside `.key-picker`, after the wheel, and always renders
+   ("Capo N — play as X" or "No capo needed"), so its height is constant
+   and it can never move anything else on the page.
+   Verified end to end with a jsdom-driven boot of the real app (not just
+   unit tests) since no headless browser is reachable from
+   this sandbox.
 4. Hoard/detail chord diagrams: uniform size, bigger, tappable → full-size popup, plus
    a button through to the Chords tab. [phase 2.5, DONE 2026-08-15, done together
    with item 14] Scoped to the detail view's "Chord shapes" strip — Hoard cards
@@ -407,9 +438,9 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
 - [~] **Phase 2.5** ← **current** — design & UX polish. Done: items 8, 10, 11, 12
       (chord explanation copy, shared copy table, instrument toggle scope, scale-note
       links), 4 + 14 (diagram popup + voicing cycling, DONE 2026-08-15), 5 (capo
-      mode, DONE 2026-08-15), and the item 9 repaint (light/dark palette,
-      pastel-blue accent, real piano keys, complexity stripe). Remaining: 3
-      (circle of fifths), 9's function tinting
+      mode, DONE 2026-08-15), 3 (circle-of-fifths wheel, DONE 2026-08-15), and the
+      item 9 repaint (light/dark palette, pastel-blue accent, real piano keys,
+      complexity stripe). Remaining: 9's function tinting
 - [x] **Phase 3** — library generation to ~350 in themed batches of ~25, one file per
       batch, `node tools/validate.js` after each. All twelve batches landed
       2026-08-03 at 25 each, library at 349: theatre · pop-rock · folk-celtic ·

@@ -92,6 +92,7 @@
   --diagram-piano-w: min(26rem, 84vw);
   --diagram-piano-hero-w: min(28rem, 92vw);
   --diagram-popup-w: min(26rem, 88vw);
+  --wheel-w: min(20rem, 88vw);
 
   --header-h: 3.25rem;
   --tabbar-h: 3.5rem;
@@ -700,6 +701,24 @@ a:focus-visible {
   color: var(--accent-bright);
 }
 
+/* Nested at the end of .key-picker (below the wheel) rather than standalone
+   above it, and always rendered — see detail.js. A constant-height line
+   here means tapping the wheel can never change the layout above or below
+   it, which the old conditional placement did. */
+.key-picker .capo-hint {
+  margin: var(--sp-3) 0 0;
+}
+
+.capo-hint-none {
+  border-left-color: var(--line);
+  background: transparent;
+  color: var(--ink-dim);
+}
+
+.capo-hint-none strong {
+  color: var(--ink-dim);
+}
+
 .key-picker,
 .diagrams,
 .notes,
@@ -894,6 +913,99 @@ a:focus-visible {
 .chord-diagram--guitar .fret-label,
 .chord-diagram--guitar .title {
   fill: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ */
+/* Circle-of-fifths key wheel (backlog item 3) — a memorisation aid     */
+/* alongside the plain key-button rows in the detail view and the      */
+/* Scales tab, not a replacement for them. Only the ring matching the  */
+/* current mode's family is tappable; the other ring is shown dim, for */
+/* context, like a printed circle-of-fifths poster.                    */
+/* ------------------------------------------------------------------ */
+
+.wheel-svg {
+  width: var(--wheel-w);
+  max-width: 100%;
+  margin: var(--sp-3) auto 0;
+}
+
+.wheel-svg svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wheel-ring {
+  fill: none;
+  stroke: var(--line-soft);
+}
+
+.wheel-dot {
+  fill: var(--bg-raised);
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.wheel-label {
+  fill: var(--ink-dim);
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.wheel-wedge.muted .wheel-dot {
+  fill: none;
+  stroke: none;
+}
+
+.wheel-wedge.muted .wheel-label {
+  fill: var(--ink-faint);
+  font-weight: 400;
+}
+
+.wheel-wedge.interactive {
+  cursor: pointer;
+}
+
+.wheel-wedge.interactive:hover .wheel-dot,
+.wheel-wedge.interactive:focus-visible .wheel-dot {
+  stroke: var(--accent-dim);
+}
+
+.wheel-wedge.interactive:focus-visible {
+  outline: none;
+}
+
+.wheel-wedge.interactive.selected .wheel-dot {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.wheel-wedge.interactive.selected .wheel-label {
+  fill: var(--on-accent);
+}
+
+/* A dashed ring marks the entry's home key, same idea as the old key-btn's
+   dashed border, so it's still visible at a glance once you've tapped
+   elsewhere on the wheel. */
+.wheel-wedge.interactive.home .wheel-dot {
+  stroke: var(--accent-dim);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+.wheel-caption {
+  margin: var(--sp-2) 0 0;
+  text-align: center;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.wheel-hint {
+  margin: var(--sp-1) 0 0;
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
 }
 
 /* Fills the cell and keeps the guitar grid's proportions, so a missing shape

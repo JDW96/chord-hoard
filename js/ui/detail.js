@@ -4,12 +4,12 @@
 // Key selection is remembered per progression in localStorage under
 // "chordhoard.keychoice" as an object of id → tonic.
 
-import { parseNote, formatNoteDisplay } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
 import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
 import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
 import { chordHref } from "./chord-link.js";
+import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { state, renderIn, ratingIn } from "./app.js";
 import {
   el,
@@ -180,49 +180,57 @@ export function render(container, params) {
     });
     body.appendChild(strip);
 
-    // ---- Capo hint (guitar only) ----------------------------------------
+    // ---- Key selector ----------------------------------------------------
+    // The wheel IS the key selector now (backlog item 3 follow-up, agreed
+    // with Jack 2026-08-15): it covers exactly the same 12 tonics as the
+    // flat button row used to, so the row was removed rather than kept
+    // alongside it.
+    function chooseTonic(t) {
+      tonic = t;
+      rememberTonic(entry, t);
+      draw();
+    }
+
+    const family = isMajorFamily(entry) ? "major" : "minor";
+    const wheelHost = el("div", { className: "wheel-svg" });
+    wheelHost.innerHTML = wheelSVG({ family, activeTonic: tonic, homeTonic: entry.homeKey });
+    wheelHost.addEventListener("click", (ev) => {
+      const w = ev.target.closest("[data-tonic]");
+      if (w) chooseTonic(w.getAttribute("data-tonic"));
+    });
+    wheelHost.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      const w = ev.target.closest("[data-tonic]");
+      if (w) {
+        ev.preventDefault();
+        chooseTonic(w.getAttribute("data-tonic"));
+      }
+    });
+
+    // Capo status (guitar only) now lives here, grouped with the key it's
+    // actually about, and always renders one line or the other — it used
+    // to appear only when a capo was worth suggesting, which meant tapping
+    // a wedge could change this block's height and shove the wheel around
+    // mid-tap. A constant-height line fixes that at the root rather than
+    // just moving the jump somewhere less noticeable.
+    let capoLine = null;
     if (state.instrument === "guitar") {
       const hint = capo.suggest(rendered.chords, tonic, !isMajorFamily(entry));
-      if (hint) {
-        body.appendChild(
-          el(
+      capoLine = hint
+        ? el(
             "p",
             { className: "capo-hint" },
             el("strong", {}, `Capo ${hint.capo} — play as ${hint.playAs}`),
             " · " + hint.note
           )
-        );
-      }
+        : el(
+            "p",
+            { className: "capo-hint capo-hint-none" },
+            el("strong", {}, "No capo needed"),
+            ` · ${prettyNote(tonic)} is already open-friendly on guitar.`
+          );
     }
 
-    // ---- Key selector ----------------------------------------------------
-    const keyRow = el("div", { className: "key-row", attrs: { role: "group", "aria-label": "Choose a key" } });
-    for (const t of tonicsFor(entry)) {
-      keyRow.appendChild(
-        el(
-          "button",
-          {
-            type: "button",
-            className:
-              "key-btn" +
-              (t === tonic ? " selected" : "") +
-              (t === entry.homeKey ? " home" : ""),
-            attrs: {
-              "aria-pressed": String(t === tonic),
-              title: t === entry.homeKey ? "Home key" : undefined,
-            },
-            on: {
-              click: () => {
-                tonic = t;
-                rememberTonic(entry, t);
-                draw();
-              },
-            },
-          },
-          formatNoteDisplay(parseNote(t))
-        )
-      );
-    }
     body.appendChild(
       el(
         "div",
@@ -235,7 +243,14 @@ export function render(container, params) {
             ? el("span", { className: "home-note" }, ` · home key is ${prettyNote(entry.homeKey)}`)
             : el("span", { className: "home-note" }, " · this is the home key")
         ),
-        keyRow
+        wheelHost,
+        el("p", { className: "wheel-caption" }, captionFor(tonic, family)),
+        el(
+          "p",
+          { className: "wheel-hint" },
+          "Outer ring is major, inner ring is its relative minor. Tap a key to jump there."
+        ),
+        capoLine
       )
     );
 
