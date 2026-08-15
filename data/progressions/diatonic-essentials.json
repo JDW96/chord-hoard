@@ -17,7 +17,9 @@
     "genres": ["folk", "pop"],
     "instrument": "both",
     "notes": "The three primary chords in order. Between them I, IV and V contain every note of the major scale, which is why so much music needs nothing else. V to I at the end is the full cadence.",
-    "songs": []
+    "songs": [
+      { "title": "La Bamba", "artist": "Ritchie Valens", "key": "C", "section": "throughout" }
+    ]
   },
   {
     "id": "one-five-four-01",
@@ -57,7 +59,10 @@
     "genres": ["rock", "blues"],
     "instrument": "guitar",
     "notes": "Out to V then back down through IV, so the loop never resolves and rolls straight into the next repeat. Ending on IV is what keeps a riff turning rather than stopping.",
-    "songs": []
+    "songs": [
+      { "title": "Wild Thing", "artist": "The Troggs", "key": "A", "section": "throughout" },
+      { "title": "Twist and Shout", "artist": "The Beatles", "key": "D", "section": "throughout" }
+    ]
   },
   {
     "id": "diatonic-two-five-one-01",
@@ -97,7 +102,9 @@
     "genres": ["pop", "jazz"],
     "instrument": "both",
     "notes": "Each chord moves to one whose root is a fourth above, so the bass walks a chain of fifths back to the dominant. The standard turnaround for getting from the end of a section to the start of the next.",
-    "songs": []
+    "songs": [
+      { "title": "I Got Rhythm", "artist": "George Gershwin", "key": "Bb", "section": "verse" }
+    ]
   },
   {
     "id": "one-four-two-five-01",
@@ -137,7 +144,9 @@
     "genres": ["pop", "indie"],
     "instrument": "both",
     "notes": "The bass rises in thirds through the two minor chords before IV catches it. iii shares two notes with I and two with vi, which is why the first half barely seems to move.",
-    "songs": []
+    "songs": [
+      { "title": "Someone Like You", "artist": "Adele", "key": "A", "section": "verse" }
+    ]
   },
   {
     "id": "one-six-three-four-01",
@@ -381,7 +390,9 @@
     "genres": ["cinematic", "showtune"],
     "instrument": "piano",
     "notes": "The chord on the second degree of a minor key is diminished, so the minor two-five uses a diminished ii where the major version uses a plain one. It leans into V harder as a result.",
-    "songs": []
+    "songs": [
+      { "title": "Autumn Leaves", "artist": "Nat King Cole", "key": "Gm", "section": "verse" }
+    ]
   },
   {
     "id": "minor-plagal-cadence-01",

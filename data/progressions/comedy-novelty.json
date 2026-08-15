@@ -17,7 +17,11 @@
     "genres": ["lullaby", "folk"],
     "instrument": "both",
     "notes": "Tonic and dominant alternating and nothing else, which is the smallest amount of harmony that still counts as harmony. Nearly every song a child learns first is built from these two chords.",
-    "songs": []
+    "songs": [
+      { "title": "Interjections!", "artist": "Schoolhouse Rock!", "key": "D", "section": "verse" },
+      { "title": "Where Everybody Knows Your Name", "artist": "Gary Portnoy", "key": "Bb", "section": "verse" },
+      { "title": "Everything Is Awesome", "artist": "Tegan and Sara", "key": "F", "section": "chorus" }
+    ]
   },
   {
     "id": "playground-song-01",
@@ -37,7 +41,9 @@
     "genres": ["lullaby", "pop"],
     "instrument": "both",
     "notes": "One minor chord in bar two to stop it being entirely primary, then a full cadence home. Closing properly every four bars matters when the singers need to know when to breathe.",
-    "songs": []
+    "songs": [
+      { "title": "Keyboard Cat", "artist": "Charlie Schmidt", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "round-01",
@@ -57,7 +63,9 @@
     "genres": ["folk", "lullaby"],
     "instrument": "both",
     "notes": "Primary chords in three, closing on the tonic so a second voice can start on top of it. Rounds need harmony this plain because every bar has to work against every other bar.",
-    "songs": []
+    "songs": [
+      { "title": "Wreck-It Ralph", "artist": "Buckner and Garcia", "key": "C", "section": "chorus" }
+    ]
   },
   {
     "id": "music-box-01",
@@ -137,7 +145,10 @@
     "genres": ["klezmer", "showtune"],
     "instrument": "both",
     "notes": "A two-five-one in 2/4, two bars a chord, which is a polka being slightly more sophisticated than it needs to be. That gap is where the comedy sits.",
-    "songs": []
+    "songs": [
+      { "title": "Scooby-Doo, Where Are You!", "artist": "Larry Markes", "key": "A", "section": "verse" },
+      { "title": "The Chicken Song", "artist": "Philip Pope", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "silly-waltz-01",
@@ -157,7 +168,9 @@
     "genres": ["showtune", "waltz"],
     "instrument": "both",
     "notes": "The axis chords in three, which makes an extremely familiar loop sound like it is wearing a hat. Overplay the first beat of every bar.",
-    "songs": []
+    "songs": [
+      { "title": "Four Chord Song", "artist": "Axis of Awesome", "key": "D", "section": "chorus" }
+    ]
   },
   {
     "id": "clown-waltz-01",
@@ -340,7 +353,9 @@
     "genres": ["lullaby", "electronic"],
     "instrument": "piano",
     "notes": "Two chords a step apart, sharing one note, with no dominant to give it any direction. It rocks rather than travels, which is why it suits something small and mechanical.",
-    "songs": []
+    "songs": [
+      { "title": "Gonna Be My Day", "artist": "My Little Pony: Friendship Is Magic", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "whistling-tune-01",
@@ -360,7 +375,9 @@
     "genres": ["folk", "showtune"],
     "instrument": "both",
     "notes": "Primary chords in a strolling six, ending on IV so it loops without stopping. Easy to whistle over because the tonic is only ever a step or two away.",
-    "songs": []
+    "songs": [
+      { "title": "Interplanet Janet", "artist": "Schoolhouse Rock!", "key": "C", "section": "chorus" }
+    ]
   },
   {
     "id": "slapstick-sting-01",
@@ -380,7 +397,9 @@
     "genres": ["showtune", "rock"],
     "instrument": "both",
     "notes": "Two chords borrowed from the parallel minor climbing back to a major tonic, which is the heroic-fanfare move played too fast to take seriously. Hit all four chords hard.",
-    "songs": []
+    "songs": [
+      { "title": "Super Mario Odyssey (Announcement Trailer Theme)", "artist": "Nintendo", "key": "C", "section": "intro" }
+    ]
   },
   {
     "id": "stop-time-novelty-01",
@@ -398,7 +417,11 @@
     "genres": ["showtune", "blues"],
     "instrument": "both",
     "notes": "Two bars each on tonic and dominant, with the band hitting beat one and leaving the rest of the bar empty. All the comedy happens in the silence, so the harmony gets out of the way.",
-    "songs": []
+    "songs": [
+      { "title": "Supercalifragilisticexpialidocious", "artist": "Richard M. Sherman and Robert B. Sherman", "key": "Bb", "section": "chorus" },
+      { "title": "Do-Re-Mi", "artist": "Rodgers and Hammerstein", "key": "C", "section": "verse" },
+      { "title": "Infernal Galop (Can-Can)", "artist": "Jacques Offenbach", "key": "G", "section": "chorus" }
+    ]
   },
   {
     "id": "patter-in-five-01",
@@ -500,6 +523,8 @@
     "genres": ["showtune", "rock"],
     "instrument": "both",
     "notes": "Two borrowed chords climbing into two bars of tonic, which is the standard way to end a number louder than it started. Everything holds on the last chord until someone stops it.",
-    "songs": []
+    "songs": [
+      { "title": "We're All in This Together", "artist": "High School Musical Cast", "key": "F#", "section": "chorus" }
+    ]
   }
 ]

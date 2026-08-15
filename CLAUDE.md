@@ -308,7 +308,46 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
     high-confidence on progression AND key AND section together, and most entries fail
     it from memory alone. Do the whole library in one sweep with web verification once
     the ~300 exist, so the research happens once and the standard stays even. Until
-    then every generated entry ships `"songs": []`. [phase 3 tail]
+    then every generated entry ships `"songs": []`. [phase 3 tail, DONE 2026-08-15]
+    Swept all 14 files. Verification matched real chord/section data (mostly via
+    Hooktheory TheoryTab and Wikipedia) against each entry's actual `numerals`/`mode`,
+    never `homeKey`. Result: 102 of 349 entries (29%) carry 1-3 songs, 159 song
+    credits total. Coverage is intentionally uneven: diatonic/pop/electronic batches
+    landed 20-75% (these progressions are extremely well documented), while
+    odd-metres-long-forms landed 0/25 and modal-depth/cinematic landed under 10% —
+    both bars (exact functional progression AND exact section) are genuinely hard to
+    clear for borrowed-chord-heavy, modal, or metre-driven entries, so most of those
+    correctly ship empty rather than padded. Coverage revisit is a fair v1.x task if
+    Jack wants to push it further with a fresh web-search budget, particularly on
+    country-americana (only 12%, hit tool-access limits mid-sweep rather than a real
+    shortage of songs) and modal-depth/jazz-standards.
+
+## Feedback backlog — added 2026-08-03, not yet phased
+
+14. Chord diagrams clickable to cycle through the other voicings on file, and the
+    chosen voicing remembered for next time. Storage is per chord symbol, not per
+    progression, so picking an easier F once fixes it everywhere. `chordhoard.*`
+    key, same export/import as pins. Supersedes the "tappable → popup" half of
+    backlog item 4; do them together.
+15. Settings cog, first job being a manual light/dark override. The plumbing is
+    already there: `:root[data-theme="light"|"dark"]` is declared in `css/app.css`
+    and the dark block is written as `:root:not([data-theme="light"])`, so the
+    override works the moment something sets the attribute. Needs the control, a
+    `chordhoard.theme` key, and a "follow system" third state that clears it.
+16. Performance view grid is wrong for long progressions. It currently reflows to
+    3×3 and squeezes chords past readability once there are more than eight.
+    Jack's proposal: fix the grid at TWO columns always and add rows as needed, so
+    four chords are 2×2, eight are 2×4, ten are 2×5, and any shortfall is drawn as
+    empty cells rather than reflowing. Chord size then shrinks predictably with row
+    count instead of jumping when the column count changes. Applies to short
+    progressions too: a two-chord entry sits on the same 2×2 base with two blanks.
+17. Pentatonic and blues scales in the Scales tab, plus guitar position cheat
+    sheets (CAGED shapes across the neck) for soloing, plus a recommended soloing
+    scale flagged on each progression. Two design notes before starting: these are
+    not modes, so they do not belong in `vocab.json`'s `modes` list and need their
+    own concept in the engine; and the recommended scale should be COMPUTED from
+    the progression's pitch classes rather than stored on 349 entries, with a
+    stored override field only if the computation turns out to be wrong often.
 
 ### Chord explanation copy (phase 2.5, agreed with Jack 2026-08-03)
 
@@ -345,13 +384,14 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       links) and the item 9 repaint (light/dark palette, pastel-blue accent, real
       piano keys, complexity stripe). Remaining: 3 (circle of fifths), 4 (diagrams),
       5 (capo mode), 9's function tinting
-- [~] **Phase 3** ← **current** — library generation to ~350 in themed batches of ~25,
-      one file per batch, `node tools/validate.js` after each. All twelve batches
-      landed 2026-08-03 at 25 each, library at 349: theatre · pop-rock · folk-celtic ·
+- [x] **Phase 3** — library generation to ~350 in themed batches of ~25, one file per
+      batch, `node tools/validate.js` after each. All twelve batches landed
+      2026-08-03 at 25 each, library at 349: theatre · pop-rock · folk-celtic ·
       blues-soul-gospel · diatonic-essentials · jazz-standards · cinematic ·
       latin-reggae · electronic-indie · country-americana · odd-metres-long-forms ·
-      modal-depth · comedy-novelty. Only the song-examples pass (backlog item 13)
-      remains before phase 3 closes.
+      modal-depth · comedy-novelty. Song-examples pass (backlog item 13) closed
+      2026-08-15: 102 of 349 entries carry verified songs (159 credits) — see
+      backlog item 13 for the coverage breakdown and where to push further if wanted.
       The Hoard has a **Collection** filter over these batches. The collection is
       derived at load time from the manifest filename in `js/ui/app.js`, never
       stored on entries, and its display label comes from the `collections` map in
@@ -365,8 +405,6 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       if it is ever extended.
       Each batch must spread time signatures and bar counts deliberately, because the
       dedupe rule (mode + numeral sequence + timeSig) bites harder as the library grows.
-      Song examples are DEFERRED to a single pass at the end (see backlog item 13) —
-      generate with `"songs": []` and do not stop to verify them mid-batch.
 - [ ] **Phase 4** — pins, playability profiles, song builder, dynamic builder
       (moves.json), PWA/service worker, export/import
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)

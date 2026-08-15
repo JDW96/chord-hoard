@@ -197,7 +197,10 @@
     "genres": ["celtic", "folk"],
     "instrument": "both",
     "notes": "The standard mixolydian loop in a jig lilt, one chord to the bar. Traditional dance music lives here because a mode with no leading tone can repeat forever without demanding an ending.",
-    "songs": []
+    "songs": [
+      { "title": "Sweet Child O' Mine", "artist": "Guns N' Roses", "key": "C#", "section": "intro" },
+      { "title": "Royals", "artist": "Lorde", "key": "D", "section": "chorus" }
+    ]
   },
   {
     "id": "dominant-mixolydian-01",
@@ -257,7 +260,10 @@
     "genres": ["folk", "waltz"],
     "instrument": "both",
     "notes": "bVII on both even bars, so the mode is stated twice per phrase and the loop leans flat-side throughout. Ending away from the tonic keeps the waltz turning.",
-    "songs": []
+    "songs": [
+      { "title": "Thunderstruck", "artist": "AC/DC", "key": "B", "section": "chorus" },
+      { "title": "Sweet Home Alabama", "artist": "Lynyrd Skynyrd", "key": "D", "section": "chorus" }
+    ]
   },
   {
     "id": "lydian-cadence-01",

@@ -17,7 +17,11 @@
     "genres": ["pop", "rock"],
     "instrument": "both",
     "notes": "The doo-wop changes at a plain 4/4 walking pace. Each chord moves to one that shares two notes with it, which is why it never sounds like an effort.",
-    "songs": []
+    "songs": [
+      { "title": "Complicated", "artist": "Avril Lavigne", "key": "C", "section": "verse" },
+      { "title": "Earth Angel", "artist": "The Penguins", "key": "Ab", "section": "verse" },
+      { "title": "Duke of Earl", "artist": "Gene Chandler", "key": "F", "section": "throughout" }
+    ]
   },
   {
     "id": "minor-start-axis-01",
@@ -37,7 +41,9 @@
     "genres": ["pop", "indie"],
     "instrument": "both",
     "notes": "The same four chords as the axis, rotated to start on vi, which puts the minor chord in the strong position and reads as sadder without changing a note. The I in bar three is the moment it turns.",
-    "songs": []
+    "songs": [
+      { "title": "One of Us", "artist": "Joan Osborne", "key": "A", "section": "verse" }
+    ]
   },
   {
     "id": "royal-road-01",
@@ -57,7 +63,9 @@
     "genres": ["pop", "indie"],
     "instrument": "both",
     "notes": "V goes to iii rather than I, so the dominant never gets its resolution and the phrase settles on vi instead. Common enough in Japanese pop to have its own name there.",
-    "songs": []
+    "songs": [
+      { "title": "Fortnight", "artist": "Taylor Swift feat. Post Malone", "key": "B", "section": "verse" }
+    ]
   },
   {
     "id": "canon-in-four-01",
@@ -81,7 +89,9 @@
     "genres": ["pop", "rock"],
     "instrument": "both",
     "notes": "The canon sequence straightened into 4/4 with IV V closing instead of ii V. The bass falls a fourth then rises a step, over and over, which is what drives it forward.",
-    "songs": []
+    "songs": [
+      { "title": "Graduation (Friends Forever)", "artist": "Vitamin C", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "three-chord-rock-01",
@@ -101,7 +111,9 @@
     "genres": ["rock", "punk"],
     "instrument": "guitar",
     "notes": "Tonic, dominant, subdominant, dominant, and it ends on V so it snaps back round. Nothing here needs a barre chord in a guitar key.",
-    "songs": []
+    "songs": [
+      { "title": "All the Small Things", "artist": "blink-182", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "power-ballad-01",
@@ -161,7 +173,9 @@
     "genres": ["rock", "indie"],
     "instrument": "guitar",
     "notes": "Down to bVI and back up through bVII rather than on to V, so it circles instead of cadencing. Natural minor throughout, with no leading tone to force a resolution.",
-    "songs": []
+    "songs": [
+      { "title": "Somebody That I Used to Know", "artist": "Gotye feat. Kimbra", "key": "Dm", "section": "chorus" }
+    ]
   },
   {
     "id": "open-string-loop-01",
@@ -199,7 +213,9 @@
     "genres": ["rock", "blues"],
     "instrument": "guitar",
     "notes": "The bIII borrowed against a major-leaning tonic is the blues-rock move, and power chords keep it ambiguous by leaving out every third. Slide between shapes on the same string pair.",
-    "songs": []
+    "songs": [
+      { "title": "Smoke on the Water", "artist": "Deep Purple", "key": "G", "section": "throughout" }
+    ]
   },
   {
     "id": "grunge-climb-01",
@@ -280,7 +296,10 @@
     "genres": ["soul", "pop"],
     "instrument": "piano",
     "notes": "The iii in bar two is the tonic with its root swapped out, so the harmony darkens without really moving. Triplet feel, and lean on the first of each group of three.",
-    "songs": []
+    "songs": [
+      { "title": "Crocodile Rock", "artist": "Elton John", "key": "G", "section": "verse" },
+      { "title": "Have I Told You Lately", "artist": "Van Morrison", "key": "B", "section": "verse" }
+    ]
   },
   {
     "id": "stadium-rock-01",
@@ -361,7 +380,9 @@
     "genres": ["reggae", "pop"],
     "instrument": "both",
     "notes": "Two bars each on I and IV, with no dominant anywhere, so nothing pushes and the groove carries it. Chords on the offbeats only, and leave beat one empty.",
-    "songs": []
+    "songs": [
+      { "title": "Waiting in Vain", "artist": "Bob Marley & The Wailers", "key": "Ab", "section": "throughout" }
+    ]
   },
   {
     "id": "bridge-lift-01",
@@ -401,7 +422,9 @@
     "genres": ["rock", "electronic"],
     "instrument": "both",
     "notes": "The same four chords as the major axis, read from the relative minor, which is why it feels like the serious version of the same tune. All natural minor, no dominant.",
-    "songs": []
+    "songs": [
+      { "title": "Zombie", "artist": "The Cranberries", "key": "Em", "section": "throughout" }
+    ]
   },
   {
     "id": "suspended-alt-rock-01",

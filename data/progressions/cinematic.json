@@ -320,7 +320,9 @@
     "genres": ["cinematic"],
     "instrument": "both",
     "notes": "Starting on the relative minor and arriving at the tonic in bar five, so the brightening is structural rather than decorative. The last bar splits so the cadence lands inside it.",
-    "songs": []
+    "songs": [
+      { "title": "Zombie", "artist": "The Cranberries", "key": "G", "section": "throughout" }
+    ]
   },
   {
     "id": "military-drums-01",

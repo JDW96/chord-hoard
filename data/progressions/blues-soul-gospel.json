@@ -22,7 +22,10 @@
     "genres": ["blues", "rock"],
     "instrument": "guitar",
     "notes": "The 12-bar with IV7 pulled forward into the second bar, which is the change most bands assume unless told otherwise. Everything else follows the standard form.",
-    "songs": []
+    "songs": [
+      { "title": "Sweet Home Chicago", "artist": "The Blues Brothers", "key": "E", "section": "throughout" },
+      { "title": "Pride and Joy", "artist": "Stevie Ray Vaughan", "key": "E", "section": "throughout" }
+    ]
   },
   {
     "id": "minor-blues-01",
@@ -44,7 +47,9 @@
     "genres": ["blues", "soul"],
     "instrument": "both",
     "notes": "The same twelve-bar shape with minor sevenths on i and iv, and bVI7 stepping down a semitone into V7 in bar nine. That semitone move is what separates a minor blues from a minor vamp.",
-    "songs": []
+    "songs": [
+      { "title": "The Thrill Is Gone", "artist": "B.B. King", "key": "Bm", "section": "throughout" }
+    ]
   },
   {
     "id": "eight-bar-blues-01",
@@ -85,7 +90,9 @@
     "genres": ["blues", "jazz"],
     "instrument": "both",
     "notes": "Four dominant sevenths a fifth apart, each one pointing at the next, which is how the last four bars of a blues chorus get you back to the top. Every chord is a dominant, including the ones the key says should be minor.",
-    "songs": []
+    "songs": [
+      { "title": "Sweet Georgia Brown", "artist": "Louis Armstrong", "key": "F", "section": "throughout" }
+    ]
   },
   {
     "id": "slow-blues-twelve-eight-01",
@@ -108,7 +115,9 @@
     "genres": ["blues", "soul"],
     "instrument": "both",
     "notes": "The blues written out in 12/8 so the shuffle is in the notation rather than left to feel. Eight bars at this length is the same amount of music as twelve at a normal count.",
-    "songs": []
+    "songs": [
+      { "title": "Stormy Monday", "artist": "T-Bone Walker", "key": "G", "section": "throughout" }
+    ]
   },
   {
     "id": "gospel-two-five-01",
@@ -231,7 +240,9 @@
     "genres": ["soul", "blues"],
     "instrument": "both",
     "notes": "bIII is borrowed from the parallel minor and shoved into half a bar on its way to IV. That flat third against a major key is the whole southern soul flavour.",
-    "songs": []
+    "songs": [
+      { "title": "Green Onions", "artist": "Booker T. & the M.G.'s", "key": "F", "section": "throughout" }
+    ]
   },
   {
     "id": "funk-one-chord-01",
@@ -248,7 +259,9 @@
     "genres": ["soul", "electronic"],
     "instrument": "both",
     "notes": "One chord for four bars, which puts every bit of the interest into rhythm and voicing. Dorian is the usual scale over it because the raised sixth keeps it from turning gloomy.",
-    "songs": []
+    "songs": [
+      { "title": "Chameleon", "artist": "Herbie Hancock", "key": "Bb", "section": "throughout" }
+    ]
   },
   {
     "id": "backdoor-cadence-01",
@@ -330,7 +343,9 @@
     "genres": ["gospel", "soul"],
     "instrument": "piano",
     "notes": "I and IV trading every two beats for three bars, then V7 for a whole bar to break the pattern. The shout section speeds up until it stops, so treat the tempo as a floor.",
-    "songs": []
+    "songs": [
+      { "title": "What'd I Say", "artist": "Ray Charles", "key": "E", "section": "throughout" }
+    ]
   },
   {
     "id": "doo-wop-blues-01",

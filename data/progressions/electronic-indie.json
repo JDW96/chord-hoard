@@ -17,7 +17,10 @@
     "genres": ["electronic", "soul"],
     "instrument": "piano",
     "notes": "Sevenths on every chord and no dominant, which keeps a four-bar loop from wearing out over eight minutes. Stab the chords on the offbeats and leave the downbeats to the kick.",
-    "songs": []
+    "songs": [
+      { "title": "If I Lose Myself (Alesso Remix)", "artist": "OneRepublic", "key": "Bm", "section": "intro" },
+      { "title": "LoveGame", "artist": "Lady Gaga", "key": "Bm", "section": "chorus" }
+    ]
   },
   {
     "id": "trance-lift-01",
@@ -37,7 +40,10 @@
     "genres": ["electronic"],
     "instrument": "both",
     "notes": "Two bars a chord climbing into the tonic halfway through, then on to the relative major. Eight bars is long enough that the arrival in bar five reads as an event rather than a repeat.",
-    "songs": []
+    "songs": [
+      { "title": "E.T.", "artist": "Katy Perry", "key": "Fm", "section": "chorus" },
+      { "title": "Young and Beautiful", "artist": "Lana Del Rey", "key": "Bm", "section": "chorus" }
+    ]
   },
   {
     "id": "arpeggiator-minor-01",
@@ -57,7 +63,10 @@
     "genres": ["electronic", "rock"],
     "instrument": "both",
     "notes": "Descending by step then jumping up a fifth to the relative major, so the last chord resets the line. Written for a sixteenth-note arpeggio, where the chord shape matters more than the voicing.",
-    "songs": []
+    "songs": [
+      { "title": "Bullet with Butterfly Wings", "artist": "The Smashing Pumpkins", "key": "Bbm", "section": "chorus" },
+      { "title": "Miss Misery", "artist": "Elliott Smith", "key": "Dm", "section": "verse" }
+    ]
   },
   {
     "id": "synthwave-drive-01",
@@ -77,7 +86,10 @@
     "genres": ["electronic", "rock"],
     "instrument": "both",
     "notes": "Two bars a chord, climbing from bVI through bVII and landing on the relative major rather than coming home. The slow harmonic rhythm is what makes it feel like cruising rather than running.",
-    "songs": []
+    "songs": [
+      { "title": "Only Time", "artist": "Enya", "key": "Cm", "section": "chorus" },
+      { "title": "Brothers in Arms", "artist": "Dire Straits", "key": "G#m", "section": "verse" }
+    ]
   },
   {
     "id": "four-to-the-floor-01",
@@ -97,7 +109,10 @@
     "genres": ["electronic", "pop"],
     "instrument": "both",
     "notes": "The descending minor line with a dominant seventh at the bottom instead of a plain triad, so it slams back to the tonic every four bars. The raised seventh in V7 is the only chromatic note.",
-    "songs": []
+    "songs": [
+      { "title": "Warriors", "artist": "Imagine Dragons", "key": "Em", "section": "verse" },
+      { "title": "Before He Cheats", "artist": "Carrie Underwood", "key": "F#m", "section": "verse" }
+    ]
   },
   {
     "id": "ambient-drift-01",
@@ -152,7 +167,9 @@
     "genres": ["electronic", "soul"],
     "instrument": "both",
     "notes": "Two bars on the tonic then two chords in the last two bars, so the loop is weighted at the front. The maj7 at the end is the brightest thing in it and sets up the return.",
-    "songs": []
+    "songs": [
+      { "title": "Stolen Dance", "artist": "Milky Chance", "key": "G#m", "section": "verse" }
+    ]
   },
   {
     "id": "indie-jangle-01",
@@ -172,7 +189,9 @@
     "genres": ["indie", "pop"],
     "instrument": "guitar",
     "notes": "Ending on ii rather than V leaves the loop unresolved without needing a dominant anywhere. Play it with a capo and open shapes so the top strings ring through the changes.",
-    "songs": []
+    "songs": [
+      { "title": "Settle Down", "artist": "Kimbra", "key": "C", "section": "chorus" }
+    ]
   },
   {
     "id": "shoegaze-wash-01",
@@ -192,7 +211,10 @@
     "genres": ["indie", "rock"],
     "instrument": "guitar",
     "notes": "A borrowed bVII against a sus2 tonic, so neither end of the loop has a clear third. Two bars a chord under enough reverb that the changes overlap on purpose.",
-    "songs": []
+    "songs": [
+      { "title": "Madness", "artist": "Muse", "key": "Bb", "section": "verse" },
+      { "title": "Cherub Rock", "artist": "The Smashing Pumpkins", "key": "E", "section": "intro" }
+    ]
   },
   {
     "id": "post-punk-drive-01",
@@ -231,7 +253,11 @@
     "genres": ["indie", "pop"],
     "instrument": "both",
     "notes": "The tonic never appears, so the loop hovers around it without ever landing. IV at both ends makes the phrase circular rather than directional.",
-    "songs": []
+    "songs": [
+      { "title": "Time After Time", "artist": "Cyndi Lauper", "key": "C", "section": "intro" },
+      { "title": "Hex Girlfriend", "artist": "Neon Indian", "key": "Bb", "section": "chorus" },
+      { "title": "Trouble", "artist": "Halsey", "key": "B", "section": "chorus" }
+    ]
   },
   {
     "id": "math-rock-seven-01",
@@ -271,7 +297,10 @@
     "genres": ["indie", "soul"],
     "instrument": "both",
     "notes": "Sevenths on all four chords with the bass rising in thirds, which blurs the boundaries between them. Nothing here has any urgency, which is the register the style works in.",
-    "songs": []
+    "songs": [
+      { "title": "Bad Religion", "artist": "Frank Ocean", "key": "E", "section": "intro" },
+      { "title": "The One That Got Away", "artist": "Katy Perry", "key": "E", "section": "chorus" }
+    ]
   },
   {
     "id": "lo-fi-loop-01",
@@ -291,7 +320,9 @@
     "genres": ["electronic", "jazz"],
     "instrument": "piano",
     "notes": "A two-five that resolves deceptively to iii7 and then vi7 rather than to the tonic. The tonic never arrives, which is why it loops indefinitely without feeling like a repeat.",
-    "songs": []
+    "songs": [
+      { "title": "Play Date", "artist": "Melanie Martinez", "key": "F", "section": "chorus" }
+    ]
   },
   {
     "id": "chillwave-01",
@@ -311,7 +342,10 @@
     "genres": ["electronic", "indie"],
     "instrument": "both",
     "notes": "Mixolydian with a maj7 tonic, so the chord has both a major seventh and a scale with a flat one around it. That contradiction is most of the haze.",
-    "songs": []
+    "songs": [
+      { "title": "Don't You Forget About Me", "artist": "Simple Minds", "key": "E", "section": "chorus" },
+      { "title": "The Safety Dance", "artist": "Men Without Hats", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "drum-and-bass-minor-01",
@@ -330,7 +364,10 @@
     "genres": ["electronic"],
     "instrument": "both",
     "notes": "Four bars of tonic before anything moves, which leaves room for the break to be the event. The last four bars climb back up so the loop restarts under its own momentum.",
-    "songs": []
+    "songs": [
+      { "title": "Somebody Told Me", "artist": "The Killers", "key": "Bbm", "section": "chorus" },
+      { "title": "Carry Out", "artist": "Timbaland ft. Justin Timberlake", "key": "D#m", "section": "chorus" }
+    ]
   },
   {
     "id": "electro-swing-01",
@@ -374,7 +411,10 @@
     "genres": ["indie", "folk"],
     "instrument": "guitar",
     "notes": "The axis with a major seventh on IV, which on guitar means lifting one finger rather than learning a chord. Capo up and use G-shape fingerings so the open strings do the ringing.",
-    "songs": []
+    "songs": [
+      { "title": "A Team", "artist": "Ed Sheeran", "key": "A", "section": "verse" },
+      { "title": "Wagon Wheel", "artist": "Old Crow Medicine Show", "key": "A", "section": "verse" }
+    ]
   },
   {
     "id": "slacker-rock-01",
@@ -394,7 +434,9 @@
     "genres": ["indie", "rock"],
     "instrument": "guitar",
     "notes": "Two borrowed chords from the parallel minor alternating with two from the key, so it flickers between bright and flat. No dominant, and no interest in resolving.",
-    "songs": []
+    "songs": [
+      { "title": "Don't Let It Bring You Down", "artist": "Annie Lennox", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "krautrock-motorik-01",
@@ -412,7 +454,9 @@
     "genres": ["electronic", "rock"],
     "instrument": "both",
     "notes": "Four bars each on two chords a whole tone apart, at a steady eighth-note pulse that never varies. The point is repetition long enough that the listener stops tracking the change.",
-    "songs": []
+    "songs": [
+      { "title": "Starman", "artist": "David Bowie", "key": "A", "section": "prechorus" }
+    ]
   },
   {
     "id": "glitch-five-01",
@@ -452,7 +496,10 @@
     "genres": ["electronic", "soul"],
     "instrument": "piano",
     "notes": "Starting on iv7 puts the tonic in bar five rather than bar one, so the loop feels like it is always halfway through. Major sevenths on the two borrowed chords keep the edges soft.",
-    "songs": []
+    "songs": [
+      { "title": "Undisclosed Desires", "artist": "Muse", "key": "Gm", "section": "chorus" },
+      { "title": "My Moon My Man", "artist": "Feist", "key": "Em", "section": "verse" }
+    ]
   },
   {
     "id": "indie-anthem-six-01",
@@ -474,7 +521,10 @@
     "genres": ["indie", "rock"],
     "instrument": "both",
     "notes": "Six bars of 6/8 that run partway through the canon sequence and stop on V. The odd phrase length means it never sits square against a four-bar drum pattern.",
-    "songs": []
+    "songs": [
+      { "title": "Lemon Tree", "artist": "Fools Garden", "key": "Ab", "section": "chorus" },
+      { "title": "Famous Last Words", "artist": "My Chemical Romance", "key": "F", "section": "chorus" }
+    ]
   },
   {
     "id": "vaporwave-slow-01",
@@ -494,6 +544,9 @@
     "genres": ["electronic", "soul"],
     "instrument": "piano",
     "notes": "The doo-wop changes with sevenths, in 12/8, at a tempo slow enough to feel wrong. Slowing an ordinary progression down until it drags is most of what the genre does.",
-    "songs": []
+    "songs": [
+      { "title": "I Will Always Love You", "artist": "Whitney Houston", "key": "A", "section": "chorus" },
+      { "title": "The Sign", "artist": "Ace of Base", "key": "G", "section": "chorus" }
+    ]
   }
 ]

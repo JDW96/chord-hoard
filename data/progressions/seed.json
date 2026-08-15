@@ -184,7 +184,9 @@
     "genres": ["jazz", "showtune"],
     "instrument": "piano",
     "notes": "The #idim is a passing chord carrying the bass chromatically from I up to ii7, so give it its two beats and move on. The added sixth on the final chord stops it closing completely.",
-    "songs": []
+    "songs": [
+      { "title": "Sweet Georgia Brown", "artist": "Ella Fitzgerald", "key": "F", "section": "throughout" }
+    ]
   },
   {
     "id": "borrowed-ache-01",
@@ -395,7 +397,9 @@
     "genres": ["klezmer", "folk"],
     "instrument": "both",
     "notes": "Oom-pah it: bass note on the beat, chord stab off it. The major V against a minor i is the harmonic-minor sound the style is built on. Speed up a little every time round.",
-    "songs": []
+    "songs": [
+      { "title": "Hava Nagila", "artist": "Traditional", "key": "D", "section": "throughout" }
+    ]
   },
   {
     "id": "mixolydian-highway-01",
@@ -521,6 +525,8 @@
     "genres": ["rock", "latin"],
     "instrument": "guitar",
     "notes": "bII sits a semitone above the tonic and that half-step is the phrygian sound. Play it low and palm-muted, and let the closing i ring out.",
-    "songs": []
+    "songs": [
+      { "title": "White Rabbit", "artist": "Jefferson Airplane", "key": "F#", "section": "verse" }
+    ]
   }
 ]

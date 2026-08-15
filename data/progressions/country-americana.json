@@ -39,7 +39,10 @@
     "genres": ["country", "folk"],
     "instrument": "both",
     "notes": "Half-bar changes for three bars, then a whole bar of tonic to land on. The snare is running sixteenths underneath, so the chords need to be short and out of the way.",
-    "songs": []
+    "songs": [
+      { "title": "Mama Tried", "artist": "Merle Haggard", "key": "D", "section": "verse" },
+      { "title": "You Are My Sunshine", "artist": "Jimmie Davis", "key": "E", "section": "chorus" }
+    ]
   },
   {
     "id": "bluegrass-standard-01",
@@ -59,7 +62,9 @@
     "genres": ["country", "folk"],
     "instrument": "guitar",
     "notes": "The three primary chords with the tonic back in bar three and a dominant seventh to turn it round. G and A are the standard bluegrass keys because the open strings do the work.",
-    "songs": []
+    "songs": [
+      { "title": "Act Naturally", "artist": "Buck Owens", "key": "F", "section": "verse" }
+    ]
   },
   {
     "id": "country-waltz-01",
@@ -257,7 +262,10 @@
     "genres": ["country", "blues"],
     "instrument": "guitar",
     "notes": "Two bars of tonic, then IV and bVII in the last two, so the flat seventh is the last thing heard before the loop turns. In open tuning all three chords are one finger straight across the strings.",
-    "songs": []
+    "songs": [
+      { "title": "Sweet Home Alabama", "artist": "Lynyrd Skynyrd", "key": "D", "section": "throughout" },
+      { "title": "Should've Been a Cowboy", "artist": "Toby Keith", "key": "D", "section": "verse" }
+    ]
   },
   {
     "id": "country-ballad-turn-01",

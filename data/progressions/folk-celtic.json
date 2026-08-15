@@ -57,7 +57,9 @@
     "genres": ["celtic", "folk"],
     "instrument": "both",
     "notes": "The three primary chords with the tonic returning in bar three, which is the plainest folk-dance shape there is. Dot the rhythm heavily; a hornpipe played straight turns into a reel.",
-    "songs": []
+    "songs": [
+      { "title": "This Land Is Your Land", "artist": "Woody Guthrie", "key": "G", "section": "chorus" }
+    ]
   },
   {
     "id": "slow-air-01",
@@ -160,7 +162,9 @@
     "genres": ["folk", "klezmer"],
     "instrument": "both",
     "notes": "Two bars a chord in cut-down 2/4, alternating tonic and dominant and nothing else. The simplicity is structural: dancers need to hear the change coming.",
-    "songs": []
+    "songs": [
+      { "title": "Beer Barrel Polka (Roll Out the Barrel)", "artist": "Traditional (Jaromír Vejvoda)", "key": "C", "section": "throughout" }
+    ]
   },
   {
     "id": "shanty-waltz-01",
@@ -198,7 +202,9 @@
     "genres": ["folk", "country"],
     "instrument": "guitar",
     "notes": "Two chords, two bars each, and the flat seventh means there is no leading tone to make anything urgent. Old-time fiddle tunes sit on this for as long as the dance lasts.",
-    "songs": []
+    "songs": [
+      { "title": "Old Joe Clark", "artist": "Traditional (American old-time)", "key": "A", "section": "throughout" }
+    ]
   },
   {
     "id": "harp-air-01",
@@ -298,7 +304,10 @@
     "genres": ["folk", "celtic"],
     "instrument": "both",
     "notes": "The axis chords in a 6/8 lilt, one to a bar, which is about as singable as harmony gets. Written to be shouted in a doorway, so pitch it low enough for everyone.",
-    "songs": []
+    "songs": [
+      { "title": "Wagon Wheel", "artist": "Old Crow Medicine Show", "key": "A", "section": "verse" },
+      { "title": "Let It Be", "artist": "The Beatles", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "fiddle-drone-01",
@@ -358,7 +367,9 @@
     "genres": ["gospel", "folk"],
     "instrument": "both",
     "notes": "Open fifths with no thirds, which is how shape-note singing gets its hollow sound. Sing it loud and slightly flat of centre; polish is not the point.",
-    "songs": []
+    "songs": [
+      { "title": "Amazing Grace (New Britain)", "artist": "Traditional (Southern Harmony / Sacred Harp)", "key": "F", "section": "throughout" }
+    ]
   },
   {
     "id": "carol-01",
@@ -425,7 +436,9 @@
     "genres": ["lullaby", "folk"],
     "instrument": "both",
     "notes": "The doo-wop chords slowed into a 6/8 rocking pulse, which is roughly the tempo of walking a child around a room. One chord per bar, and never resolve it firmly.",
-    "songs": []
+    "songs": [
+      { "title": "Stand by Me", "artist": "Ben E. King", "key": "A", "section": "throughout" }
+    ]
   },
   {
     "id": "phrygian-lament-01",
@@ -485,7 +498,9 @@
     "genres": ["celtic", "waltz"],
     "instrument": "both",
     "notes": "The first half of the canon sequence on its own, which drops a fourth then a fourth again and leaves you on iii. Bass on one, chord on two and three.",
-    "songs": []
+    "songs": [
+      { "title": "Canon in D", "artist": "Johann Pachelbel", "key": "D", "section": "throughout" }
+    ]
   },
   {
     "id": "mouth-music-01",

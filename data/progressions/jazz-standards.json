@@ -17,7 +17,9 @@
     "genres": ["jazz", "soul"],
     "instrument": "piano",
     "notes": "The one-six-two-five turnaround with a seventh on every chord, which is the default in jazz rather than an embellishment. Each root sits a fourth above the last, so the bass walks itself.",
-    "songs": []
+    "songs": [
+      { "title": "Blue Moon", "artist": "Rodgers and Hart", "key": "Bb", "section": "verse" }
+    ]
   },
   {
     "id": "rhythm-changes-a-01",
@@ -41,7 +43,10 @@
     "genres": ["jazz", "showtune"],
     "instrument": "piano",
     "notes": "Two chords per bar, the turnaround twice with iii7 and a dominant VI7 the second time. Hundreds of bebop heads are written over this, so it is worth having under the fingers at speed.",
-    "songs": []
+    "songs": [
+      { "title": "I Got Rhythm", "artist": "George Gershwin", "key": "Bb", "section": "verse" },
+      { "title": "Oleo", "artist": "Sonny Rollins", "key": "Bb", "section": "verse" }
+    ]
   },
   {
     "id": "three-six-two-five-01",
@@ -101,7 +106,9 @@
     "genres": ["jazz", "showtune"],
     "instrument": "piano",
     "notes": "Two bars each on four dominants working round the circle back to V7. The tonic never appears, which is exactly why it functions as a bridge rather than a verse.",
-    "songs": []
+    "songs": [
+      { "title": "I Got Rhythm", "artist": "George Gershwin", "key": "Bb", "section": "bridge" }
+    ]
   },
   {
     "id": "tritone-turnaround-01",
@@ -140,7 +147,10 @@
     "genres": ["jazz", "cinematic"],
     "instrument": "piano",
     "notes": "The minor cadence with a diminished chord on the second degree and a dominant on the fifth, resolving to a minor tonic held for two bars. Half the minor-key standards begin here.",
-    "songs": []
+    "songs": [
+      { "title": "Autumn Leaves", "artist": "Joseph Kosma", "key": "Gm", "section": "verse" },
+      { "title": "Softly, as in a Morning Sunrise", "artist": "Sigmund Romberg", "key": "Cm", "section": "throughout" }
+    ]
   },
   {
     "id": "major-to-relative-minor-01",
@@ -194,7 +204,9 @@
     "genres": ["jazz", "blues"],
     "instrument": "piano",
     "notes": "The twelve-bar with every gap filled: a two-five into bar five, a diminished passing chord in bar six, and a full turnaround across the last two bars. Same form as a plain blues, four times the chord changes.",
-    "songs": []
+    "songs": [
+      { "title": "Billie's Bounce", "artist": "Charlie Parker", "key": "F", "section": "throughout" }
+    ]
   },
   {
     "id": "chromatic-descent-to-five-01",
@@ -255,7 +267,9 @@
     "genres": ["jazz", "soul"],
     "instrument": "piano",
     "notes": "IVmaj7 turning minor is the same chord with its third dropped a semitone, and that one note is the whole effect. It borrows from the parallel minor and then resolves straight home.",
-    "songs": []
+    "songs": [
+      { "title": "Blackbird", "artist": "The Beatles", "key": "G", "section": "verse" }
+    ]
   },
   {
     "id": "jazz-ballad-eight-01",

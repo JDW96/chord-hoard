@@ -60,7 +60,10 @@
     "genres": ["latin"],
     "instrument": "piano",
     "notes": "Two chords a bar cycling through the primary three, which is the harmonic bed a montuno figure sits on. The piano part is an ostinato in octaves; the chords change under it without the pattern changing.",
-    "songs": []
+    "songs": [
+      { "title": "Wild Thing", "artist": "The Troggs", "key": "A", "section": "verse" },
+      { "title": "Stand", "artist": "R.E.M.", "key": "E", "section": "chorus" }
+    ]
   },
   {
     "id": "salsa-cadence-01",
@@ -119,7 +122,10 @@
     "genres": ["latin"],
     "instrument": "both",
     "notes": "Out to bVI and back through the dominant, slowly, with the tonic on both ends so it closes properly. Arpeggiate rather than block, and let the guitar carry the rhythm.",
-    "songs": []
+    "songs": [
+      { "title": "Smooth", "artist": "Santana featuring Rob Thomas", "key": "Am", "section": "intro" },
+      { "title": "La Vida Es un Carnaval", "artist": "Celia Cruz", "key": "Cm", "section": "verse" }
+    ]
   },
   {
     "id": "argentine-tango-01",
@@ -179,7 +185,10 @@
     "genres": ["latin", "waltz"],
     "instrument": "both",
     "notes": "A minor waltz that returns to the tonic in bar three and leaves the dominant hanging at the end. Faster than a European waltz, with the accent pushed off beat one.",
-    "songs": []
+    "songs": [
+      { "title": "Mayores", "artist": "Becky G featuring Bad Bunny", "key": "Fm", "section": "chorus" },
+      { "title": "Vegas", "artist": "Doja Cat", "key": "Ebm", "section": "chorus" }
+    ]
   },
   {
     "id": "afro-cuban-six-eight-01",
@@ -199,7 +208,11 @@
     "genres": ["latin"],
     "instrument": "both",
     "notes": "The descending minor line in a six-eight bell pattern, which is felt as two against three rather than as a jig. One chord per bar, and let the pulse fight the metre.",
-    "songs": []
+    "songs": [
+      { "title": "Hit the Road Jack", "artist": "Ray Charles", "key": "G#m", "section": "verse" },
+      { "title": "Sultans of Swing", "artist": "Dire Straits", "key": "Dm", "section": "verse" },
+      { "title": "Smooth Criminal", "artist": "Michael Jackson", "key": "Am", "section": "chorus" }
+    ]
   },
   {
     "id": "minor-bossa-01",
@@ -237,7 +250,9 @@
     "genres": ["latin", "jazz"],
     "instrument": "both",
     "notes": "Two bars each on a minor tonic and a dominant a fourth above, which is dorian rather than a two-five. The raised sixth in the IV7 is the note that keeps it from turning minor.",
-    "songs": []
+    "songs": [
+      { "title": "Oye Como Va", "artist": "Santana", "key": "A", "section": "verse" }
+    ]
   },
   {
     "id": "baiao-01",
@@ -257,7 +272,10 @@
     "genres": ["latin", "folk"],
     "instrument": "both",
     "notes": "Mixolydian with bVII appearing twice, so the flattened seventh is the loudest thing in the loop. Northeastern Brazilian music leans on this scale the way Celtic music does.",
-    "songs": []
+    "songs": [
+      { "title": "Don't You (Forget About Me)", "artist": "Simple Minds", "key": "E", "section": "chorus" },
+      { "title": "Thunderstruck", "artist": "AC/DC", "key": "B", "section": "chorus" }
+    ]
   },
   {
     "id": "merengue-01",
@@ -277,7 +295,10 @@
     "genres": ["latin"],
     "instrument": "both",
     "notes": "Two bars a chord in a fast 2/4, so the harmony turns over slowly while the rhythm does not. Almost every merengue is this or a two-chord version of it.",
-    "songs": []
+    "songs": [
+      { "title": "Here Comes the Sun", "artist": "The Beatles", "key": "A", "section": "verse" },
+      { "title": "Stir It Up", "artist": "Bob Marley & The Wailers", "key": "A", "section": "chorus" }
+    ]
   },
   {
     "id": "cumbia-01",
@@ -295,7 +316,9 @@
     "genres": ["latin"],
     "instrument": "both",
     "notes": "Two chords, two bars each, and the major V gives the minor key its only leading tone. The whole style runs on this much harmony plus a rhythm that never stops.",
-    "songs": []
+    "songs": [
+      { "title": "Paint It Black", "artist": "The Rolling Stones", "key": "Em", "section": "verse" }
+    ]
   },
   {
     "id": "samba-de-roda-01",
@@ -397,7 +420,10 @@
     "genres": ["reggae", "soul"],
     "instrument": "both",
     "notes": "All natural minor, ending on iv so the loop turns without a cadence. Roots reggae favours minor keys and avoids the dominant, which is why it sounds weighty rather than urgent.",
-    "songs": []
+    "songs": [
+      { "title": "What I've Done", "artist": "Linkin Park", "key": "Gm", "section": "chorus" },
+      { "title": "Just Dance", "artist": "Lady Gaga", "key": "C#m", "section": "intro" }
+    ]
   },
   {
     "id": "dub-vamp-01",
@@ -451,7 +477,10 @@
     "genres": ["reggae", "soul"],
     "instrument": "both",
     "notes": "Starting away from the tonic is what marks it out from the verse, and two bars of I at the end make the return obvious. Useful as a middle eight over a one-chord or two-chord song.",
-    "songs": []
+    "songs": [
+      { "title": "A Hard Day's Night", "artist": "The Beatles", "key": "G", "section": "chorus" },
+      { "title": "Pinball Wizard", "artist": "The Who", "key": "B", "section": "chorus" }
+    ]
   },
   {
     "id": "reggaeton-loop-01",
@@ -490,6 +519,9 @@
     "genres": ["latin", "folk"],
     "instrument": "both",
     "notes": "Two bars a chord in 2/4, primary chords only, ending on V so the verse rolls straight into the next. Call-and-response singing sits on top, so the harmony stays out of the way.",
-    "songs": []
+    "songs": [
+      { "title": "Brown Eyed Girl", "artist": "Van Morrison", "key": "G", "section": "chorus" },
+      { "title": "American Pie", "artist": "Don McLean", "key": "G", "section": "chorus" }
+    ]
   }
 ]

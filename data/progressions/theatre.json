@@ -93,7 +93,9 @@
     "genres": ["showtune", "klezmer"],
     "instrument": "piano",
     "notes": "Tonic and dominant swapping every two beats, with a single bar of iv for relief. The harmony repeats on purpose so the lyric can be as dense as it likes.",
-    "songs": []
+    "songs": [
+      { "title": "Hava Nagila", "artist": "Traditional", "key": "Dm", "section": "throughout" }
+    ]
   },
   {
     "id": "villain-song-01",
@@ -239,7 +241,9 @@
     "genres": ["showtune"],
     "instrument": "both",
     "notes": "The plainest cadence available, played fast and loud because the audience is already clapping. Full chords, no subtlety, and loop it until the cast is off.",
-    "songs": []
+    "songs": [
+      { "title": "La Bamba", "artist": "Ritchie Valens", "key": "C", "section": "throughout" }
+    ]
   },
   {
     "id": "love-duet-01",
@@ -366,7 +370,9 @@
     "genres": ["showtune", "klezmer"],
     "instrument": "piano",
     "notes": "Two beats a bar, tonic and dominant trading, which is deliberately the least surprising harmony available so the joke carries the number. Bass note then chord, and do not decorate it.",
-    "songs": []
+    "songs": [
+      { "title": "Beer Barrel Polka", "artist": "Traditional (Vejvoda)", "key": "C", "section": "throughout" }
+    ]
   },
   {
     "id": "quickstep-march-01",
@@ -431,7 +437,9 @@
     "genres": ["jazz", "showtune"],
     "instrument": "piano",
     "notes": "The cadence most jazz standards are assembled from: ii7 sets up V7, V7 resolves to Imaj7. Two full bars on the tonic gives a soloist somewhere to land.",
-    "songs": []
+    "songs": [
+      { "title": "Fly Me to the Moon", "artist": "Frank Sinatra", "key": "C", "section": "verse" }
+    ]
   },
   {
     "id": "ragtime-chain-01",
@@ -471,7 +479,9 @@
     "genres": ["jazz", "showtune"],
     "instrument": "piano",
     "notes": "Four major chords a fifth apart, each one acting as the dominant of the next, and only the last belongs to the key. It has to finish on V so the chorus can start on I.",
-    "songs": []
+    "songs": [
+      { "title": "I Got Rhythm", "artist": "George Gershwin", "key": "Bb", "section": "bridge" }
+    ]
   },
   {
     "id": "gospel-showstopper-01",
