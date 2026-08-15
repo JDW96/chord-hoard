@@ -158,6 +158,13 @@ export function render(container, params) {
   const topBar = el("div", { className: "perform-topbar" }, strip, legendCaption("perform-legend"));
 
   // ---- Chord grid ----------------------------------------------------------
+  // Fixed at TWO columns, always (backlog item 16): four chords are 2×2,
+  // eight are 2×4, ten are 2×5. Any shortfall is drawn as empty cells rather
+  // than reflowing, and short progressions sit on the same 2×2 base — so
+  // chord size shrinks predictably with row count instead of jumping when a
+  // column count changes.
+  const GRID_COLS = 2;
+  const gridRows = Math.max(2, Math.ceil(chords.length / GRID_COLS));
   const grid = el("div", { className: "perform-grid" });
 
   function buildGrid() {
@@ -186,6 +193,12 @@ export function render(container, params) {
         )
       );
     });
+    // Fill the last row(s) out to the fixed grid with visible empty cells.
+    for (let i = chords.length; i < gridRows * GRID_COLS; i += 1) {
+      grid.appendChild(
+        el("div", { className: "perform-cell blank", attrs: { "aria-hidden": "true" } })
+      );
+    }
   }
   buildGrid();
 
@@ -199,17 +212,12 @@ export function render(container, params) {
     const w = root.clientWidth;
     const h = root.clientHeight;
     if (!w || !h) return;
-    const n = chords.length;
-    const portrait = h >= w;
-    // Portrait stacks (4 chords → 2×2); landscape spreads (4 chords → 1×4).
-    let cols;
-    if (portrait) cols = n <= 3 ? 1 : n <= 8 ? 2 : 3;
-    else {
-      const rows = n <= 4 ? 1 : n <= 8 ? 2 : 3;
-      cols = Math.ceil(n / rows);
-    }
-    const rows = Math.ceil(n / cols);
+    // Two columns always, portrait or landscape — the row count is the only
+    // thing that grows, so the type size scales predictably (item 16).
+    const cols = GRID_COLS;
+    const rows = gridRows;
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
     // First guess from cell geometry, then shrink until nothing overflows.
     const cellW = w / cols;

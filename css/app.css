@@ -587,6 +587,55 @@ a:focus-visible {
   gap: var(--sp-2);
 }
 
+/* Pin toggle (phase 4) — same button on Hoard cards and the detail view.
+   Unpinned it sits quiet in the ink-faint range; pinned it takes the accent. */
+.pin-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  margin: calc(-1 * var(--sp-2)) calc(-1 * var(--sp-2)) calc(-1 * var(--sp-2)) 0;
+  border-radius: var(--radius-sm);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.pin-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.pin-btn:hover,
+.pin-btn:focus-visible {
+  color: var(--ink);
+  background: var(--bg-sunken);
+}
+
+.pin-btn.pinned {
+  color: var(--accent);
+}
+
+.pin-btn.pinned svg {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* The detail top bar's right-hand cluster: pin + performance mode. */
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.detail-actions .pin-btn {
+  margin: 0;
+}
+
 .card-name {
   font-size: var(--fs-md);
   font-weight: 700;
@@ -1297,6 +1346,79 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* ------------------------------------------------------------------ */
+/* Playability marks (phase 4) — segmented Playable / Shaky / Nope     */
+/* ------------------------------------------------------------------ */
+
+.playability {
+  margin-top: var(--sp-3);
+}
+
+.playability-label {
+  margin: 0 0 var(--sp-1);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+}
+
+.playability-row {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.playability-btn {
+  min-height: 2.2rem;
+  padding: 0 var(--sp-3);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.playability-btn + .playability-btn {
+  border-left: 1px solid var(--line);
+}
+
+.playability-btn.active.playable { background: var(--lv-1); color: var(--on-level); }
+.playability-btn.active.shaky { background: var(--lv-2); color: var(--on-level); }
+.playability-btn.active.nope { background: var(--lv-4); color: var(--on-level); }
+
+/* Plain action buttons in settings rows (backup download / restore). */
+.settings-action {
+  flex: 0 0 auto;
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-action:hover,
+.settings-action:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.settings-file {
+  display: none;
+}
+
+.settings-status {
+  margin: var(--sp-2) 0 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+}
+
+.settings-status:empty {
+  display: none;
+}
+
 .settings-switch.active {
   background: var(--accent);
   border-color: var(--accent);
@@ -1824,6 +1946,13 @@ body[data-route="perform"] .tabbar {
   min-height: 0;
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-sm);
+}
+
+/* Filler cells that square off the fixed two-column grid (backlog 16):
+   present but clearly not chords. */
+.perform-cell.blank {
+  border-style: dashed;
+  opacity: 0.45;
 }
 
 .perform-symbol {

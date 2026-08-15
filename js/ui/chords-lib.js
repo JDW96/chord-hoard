@@ -26,6 +26,7 @@ import {
 } from "./diagrams.js";
 import { chordHref } from "./chord-link.js";
 import { tintClass, legendCaption } from "./function-tint.js";
+import { playabilityRow } from "./playability.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { copyFor, orderFor, copyBlock, revealList } from "./chord-copy.js";
 import { el, clear, prettySymbol, prettyNote, getGuitarData } from "./util.js";
@@ -221,14 +222,23 @@ export function render(container, params) {
       "div",
       { className: "diagrams" },
       el("h3", {}, "On the piano"),
-      el("figure", { className: "diagram-cell piano lib-piano-cell" }, pianoHost)
+      el("figure", { className: "diagram-cell piano lib-piano-cell" }, pianoHost),
+      // Playability marks (phase 4) feed the Hoard's playability filter,
+      // kept per instrument — an F barre chord is only a guitar problem.
+      playabilityRow(realized.symbol, "piano")
     )
   );
 
   // ---- Guitar voicings (async data) -----------------------------------------
   const guitarStrip = el("div", { className: "diagram-strip" });
   section.appendChild(
-    el("div", { className: "diagrams" }, el("h3", {}, "On the guitar"), guitarStrip)
+    el(
+      "div",
+      { className: "diagrams" },
+      el("h3", {}, "On the guitar"),
+      guitarStrip,
+      playabilityRow(realized.symbol, "guitar")
+    )
   );
   fillGuitarStrip(guitarStrip, realized);
 

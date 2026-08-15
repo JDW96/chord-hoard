@@ -7,10 +7,14 @@
 
 import { state, renderIn, ratingIn, collectionLabel } from "./app.js";
 import { tintClass, legendCaption } from "./function-tint.js";
+import { isPinned, pinButton } from "./pins.js";
+import { isPlayable } from "./playability.js";
+import { chosenTonic } from "./detail.js";
 import { el, clear, interleave, prettySymbol, capitalise, levelClass } from "./util.js";
 
 // Module-level UI state so search/filters survive a trip into a detail view.
 const filters = {
+  pinned: new Set(), // holds "pinned" when the pins-only chip is on
   collection: new Set(), // themed batch the entry was loaded from
   mood: new Set(),
   genre: new Set(),
@@ -21,6 +25,7 @@ const filters = {
   instrument: new Set(),
   level: new Set(), // holds values like "P2" / "G1"; only the current
   // instrument's ladder is shown and applied
+  playability: new Set(), // "all" (every chord playable) / "one" (one to practise)
 };
 let query = "";
 let sheetOpen = false;
@@ -58,11 +63,30 @@ function entryLevel(entry) {
   return ratingIn(entry, entry.homeKey, state.instrument).level;
 }
 
+/**
+ * How many DISTINCT chords in this entry (home key, current instrument) the
+ * player can't yet play — marked playable or bottom-level unmarked counts as
+ * playable, everything else (shaky, nope, unmarked higher levels) doesn't.
+ * Distinct, so a chord that comes round four times is one problem, not four.
+ */
+function unplayableCount(entry) {
+  const rating = ratingIn(entry, entry.homeKey, state.instrument);
+  const seen = new Set();
+  let count = 0;
+  for (const chord of rating.perChord) {
+    if (seen.has(chord.symbol)) continue;
+    seen.add(chord.symbol);
+    if (!isPlayable(chord.symbol, state.instrument, chord.level)) count += 1;
+  }
+  return count;
+}
+
 // ---------------------------------------------------------------------------
 // Filtering
 // ---------------------------------------------------------------------------
 
 function matchesFilters(entry) {
+  if (filters.pinned.size && !isPinned(entry.id)) return false;
   if (filters.collection.size && !filters.collection.has(entry.collection)) return false;
   if (filters.mood.size && !entry.moods.some((m) => filters.mood.has(m))) return false;
   if (filters.genre.size && !entry.genres.some((g) => filters.genre.has(g))) return false;
@@ -74,6 +98,15 @@ function matchesFilters(entry) {
   // Only level values on the current instrument's ladder count.
   const activeLevels = ladder().filter((lv) => filters.level.has(lv));
   if (activeLevels.length && !activeLevels.includes(entryLevel(entry))) return false;
+  // Playability: "all" wants zero unplayable chords, "one" wants exactly one
+  // (a practice target). Both selected = either is fine.
+  if (filters.playability.size) {
+    const count = unplayableCount(entry);
+    const ok =
+      (filters.playability.has("all") && count === 0) ||
+      (filters.playability.has("one") && count === 1);
+    if (!ok) return false;
+  }
   return true;
 }
 
@@ -91,6 +124,7 @@ function results() {
 function activeFilterCount() {
   const levelCount = ladder().filter((lv) => filters.level.has(lv)).length;
   return (
+    filters.pinned.size +
     filters.collection.size +
     filters.mood.size +
     filters.genre.size +
@@ -99,6 +133,7 @@ function activeFilterCount() {
     filters.timeSig.size +
     filters.tempo.size +
     filters.instrument.size +
+    filters.playability.size +
     levelCount
   );
 }
@@ -225,6 +260,7 @@ export function render(container) {
 function buildSheet(sheet) {
   const opts = optionsFromData();
   const groups = [
+    ["pinned", "Pins", ["pinned"], () => "Pinned only"],
     ["collection", "Collection", opts.collection, collectionLabel],
     ["mood", "Mood", opts.mood, capitalise],
     ["genre", "Genre", opts.genre, capitalise],
@@ -238,6 +274,12 @@ function buildSheet(sheet) {
       state.instrument === "piano" ? "Complexity (piano)" : "Complexity (guitar)",
       opts.level,
       (lv) => lv,
+    ],
+    [
+      "playability",
+      state.instrument === "piano" ? "Playability (piano)" : "Playability (guitar)",
+      ["all", "one"],
+      (v) => (v === "all" ? "All chords playable" : "One chord to practise"),
     ],
   ];
 
@@ -327,7 +369,13 @@ function card(entry) {
         "span",
         { className: "badge " + levelClass(rating.level), attrs: { title: "Complexity in " + entry.homeKey } },
         rating.level
-      )
+      ),
+      // Pins record the key you'd actually play it in — the remembered
+      // choice from the detail view where there is one, else the home key.
+      pinButton(entry, () => chosenTonic(entry), () => {
+        // Unpinning while "Pinned only" is on should drop the card.
+        if (filters.pinned.size && refresh) refresh();
+      })
     ),
     el("p", { className: "card-numerals" }, numeralSpans),
     el("p", { className: "card-chords" }, chordSpans),

@@ -10,6 +10,8 @@ import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
 import { chordHref } from "./chord-link.js";
 import { tintClass, legendCaption } from "./function-tint.js";
+import { isPinned, pin, pinButton } from "./pins.js";
+import { playabilityRow } from "./playability.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { state, renderIn, ratingIn } from "./app.js";
 import {
@@ -87,6 +89,9 @@ export function render(container, params) {
   // The href gains the current tonic in draw(), so the chosen key survives
   // a refresh inside performance mode (#/perform/<id>/<tonic>).
   const performLink = el("a", { className: "perform-btn" }, "Performance mode");
+  // Pins record the key currently on screen; see chooseTonic() for how the
+  // recorded key follows later key changes while pinned.
+  const pinBtn = pinButton(entry, () => tonic);
 
   container.appendChild(
     el(
@@ -96,7 +101,7 @@ export function render(container, params) {
         "div",
         { className: "detail-topbar" },
         el("a", { className: "back-link", href: "#/hoard" }, "‹ Hoard"),
-        performLink
+        el("div", { className: "detail-actions" }, pinBtn, performLink)
       ),
       body
     )
@@ -191,6 +196,9 @@ export function render(container, params) {
     function chooseTonic(t) {
       tonic = t;
       rememberTonic(entry, t);
+      // A pin means "this progression, in my key" — so if it's pinned, the
+      // pin's recorded key follows the choice rather than going stale.
+      if (isPinned(entry.id)) pin(entry.id, t);
       draw();
     }
 
@@ -412,6 +420,8 @@ function guitarCell(chord, voicings) {
             )
           );
         }
+        // Playability mark (phase 4) — feeds the Hoard's playability filter.
+        body.appendChild(playabilityRow(chord.symbol, "guitar"));
       },
     });
   }
@@ -462,6 +472,8 @@ function pianoCell(chord) {
         const big = el("div", { className: "diagram-svg diagram-popup-svg" });
         big.innerHTML = svg;
         body.appendChild(big);
+        // Playability mark (phase 4) — feeds the Hoard's playability filter.
+        body.appendChild(playabilityRow(chord.symbol, "piano"));
       },
     });
   }

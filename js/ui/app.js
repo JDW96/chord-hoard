@@ -19,6 +19,7 @@ import * as chordsLib from "./chords-lib.js";
 import * as scalesLib from "./scales-lib.js";
 import { openSettingsPanel, settingsRow } from "./settings-panel.js";
 import { legendCaption } from "./function-tint.js";
+import { downloadBackup, importBackup } from "./backup.js";
 
 // ---------------------------------------------------------------------------
 // Shared state
@@ -274,6 +275,65 @@ export function buildSettingsPanel(body) {
     )
   );
   body.appendChild(legendCaption());
+
+  // ---- Backup: export / import (phase 4) --------------------------------
+  // Everything personal (pins, key choices, voicing picks, playability,
+  // settings) lives under chordhoard.* keys; backup.js sweeps the prefix.
+  body.appendChild(
+    settingsRow(
+      "Back up your hoard",
+      "Download pins, key choices, voicing picks and settings as one JSON file.",
+      el(
+        "button",
+        {
+          type: "button",
+          className: "settings-action",
+          on: { click: downloadBackup },
+        },
+        "Download"
+      )
+    )
+  );
+
+  const importStatus = el("p", { className: "settings-status" });
+  const fileInput = el("input", {
+    type: "file",
+    className: "settings-file",
+    attrs: { accept: "application/json,.json", "aria-hidden": "true", tabindex: "-1" },
+    on: {
+      change: async () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        try {
+          const written = await importBackup(file);
+          importStatus.textContent = written
+            ? `Restored ${written} ${written === 1 ? "item" : "items"} — reloading…`
+            : "That backup was empty, so nothing changed.";
+          if (written) setTimeout(() => location.reload(), 600);
+        } catch (err) {
+          importStatus.textContent = err && err.message ? err.message : String(err);
+        }
+        fileInput.value = "";
+      },
+    },
+  });
+  body.appendChild(
+    settingsRow(
+      "Restore a backup",
+      "Load a backup file. Matching items are replaced; everything else stays.",
+      el(
+        "button",
+        {
+          type: "button",
+          className: "settings-action",
+          on: { click: () => fileInput.click() },
+        },
+        "Choose file"
+      )
+    )
+  );
+  body.appendChild(fileInput);
+  body.appendChild(importStatus);
 }
 
 function wireHeader() {

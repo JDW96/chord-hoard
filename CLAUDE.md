@@ -475,6 +475,11 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
     empty cells rather than reflowing. Chord size then shrinks predictably with row
     count instead of jumping when the column count changes. Applies to short
     progressions too: a two-chord entry sits on the same 2×2 base with two blanks.
+    [DONE 2026-08-15] Implemented exactly as proposed, portrait AND landscape
+    (the proposal said "always" and was taken at its word — revisit if landscape
+    rows feel too squat). Blank filler cells are dashed and dimmed
+    (.perform-cell.blank, aria-hidden). The grid also sets explicit
+    grid-template-rows now, so blanks can't collapse.
 17. Pentatonic and blues scales in the Scales tab, plus guitar position cheat
     sheets (CAGED shapes across the neck) for soloing, plus a recommended soloing
     scale flagged on each progression. Two design notes before starting: these are
@@ -541,7 +546,22 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       Each batch must spread time signatures and bar counts deliberately, because the
       dedupe rule (mode + numeral sequence + timeSig) bites harder as the library grows.
 - [ ] **Phase 4** ← **current** — pins, playability profiles, song builder, dynamic
-      builder (moves.json), PWA/service worker, export/import
+      builder (moves.json), PWA/service worker, export/import.
+      Landed 2026-08-15: **pins** (`js/ui/pins.js`, `chordhoard.pins` as id → tonic;
+      shared pinButton() on Hoard cards and the detail top bar; the recorded key
+      follows the detail view's key choice while pinned; "Pinned only" filter chip
+      in the Hoard sheet), **playability profiles** (`js/ui/playability.js`,
+      `chordhoard.playability` keyed instrument → chord symbol → playable/shaky/
+      nope; marker rows live in the detail view's diagram popup and on the Chords
+      tab, one row per instrument there; unmarked chords default to playable iff
+      their computed level is the bottom rung (P1/G1), marks always win; Hoard
+      filter group "Playability" with "All chords playable" / "One chord to
+      practise" counting DISTINCT unplayable chords), and **export/import**
+      (`js/ui/backup.js`: export sweeps every `chordhoard.*` localStorage key by
+      prefix so new keys ride along automatically; import only writes keys with
+      that prefix, format-checked, from the settings panel with a status line
+      and a reload on success). PWA/service worker was already live pre-phase-4.
+      Still open: song builder, dynamic builder (moves.json).
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: audio playback (Web Audio), shareable song-structure links, MIDI export
 
