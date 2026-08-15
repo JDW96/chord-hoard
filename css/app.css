@@ -266,12 +266,12 @@ h1, h2, h3 {
   color: var(--on-accent);
 }
 
-/* Function-tint toggle (backlog item 9): a compact icon button, not a
-   pill like the instrument toggle, since it's a single on/off switch
-   rather than a choice between two things. The four dots are always
-   drawn in their real colours so the icon doubles as a tiny legend;
-   dimming on "off" is opacity only, not a colour change. */
-.tint-toggle {
+/* Settings cog (backlog item 15): permanently visible on every route,
+   unlike the single-purpose toggle it replaced (2026-08-15) — that toggle
+   disappeared on routes CSS decided it did nothing on, which meant it also
+   disappeared on routes that had since grown tinted chords of their own.
+   Opens js/ui/settings-panel.js's overlay; see app.js's buildSettingsPanel(). */
+.settings-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -281,19 +281,16 @@ h1, h2, h3 {
   color: var(--ink-dim);
 }
 
-.tint-toggle:hover,
-.tint-toggle:focus-visible {
+.settings-btn:hover,
+.settings-btn:focus-visible {
   color: var(--ink);
   background: var(--bg-sunken);
 }
 
-.tint-toggle svg {
-  width: 20px;
-  height: 20px;
-}
-
-.tint-toggle:not(.active) svg {
-  opacity: 0.35;
+.settings-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1198,6 +1195,118 @@ a:focus-visible {
   text-decoration: underline;
 }
 
+/* ------------------------------------------------------------------ */
+/* Settings panel (backlog item 15) — js/ui/settings-panel.js. Same       */
+/* visual language as the diagram popup (dim backdrop, centred sheet,    */
+/* header + close) but a separate set of classes, kept decoupled since    */
+/* they're conceptually different dialogs that may drift independently.  */
+/* ------------------------------------------------------------------ */
+
+.settings-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.settings-panel.open {
+  display: flex;
+}
+
+.settings-panel-sheet {
+  width: 100%;
+  max-width: min(24rem, 90vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  border-radius: var(--radius);
+  background: var(--bg-sheet);
+  box-shadow: var(--shadow);
+}
+
+.settings-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.settings-panel-head h3 {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+
+.settings-panel-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border-radius: var(--radius-pill);
+  color: var(--ink-dim);
+  font-size: var(--fs-md);
+}
+
+.settings-panel-close:hover,
+.settings-panel-close:focus-visible {
+  color: var(--ink);
+  background: var(--bg-sunken);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid var(--line-soft);
+}
+
+.settings-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-row-text strong {
+  font-size: var(--fs-sm);
+}
+
+.settings-row-text .muted {
+  font-size: var(--fs-xs);
+}
+
+.settings-switch {
+  flex: 0 0 auto;
+  min-height: 2rem;
+  min-width: 3.5rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.settings-switch.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.settings-panel .fn-legend {
+  margin: var(--sp-2) 0 0;
+}
+
 .notes p {
   margin: 0;
   color: var(--ink);
@@ -1638,6 +1747,29 @@ body[data-route="perform"] .tabbar {
   color: var(--ink);
 }
 
+/* The header's settings cog is hidden along with the rest of the header in
+   performance mode, so this is its own small entry point into the same
+   panel (js/ui/settings-panel.js), same idea as the capo toggle. */
+.perform-settings {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  color: var(--ink-dim);
+}
+
+.perform-settings svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.perform-settings:hover,
+.perform-settings:focus-visible {
+  color: var(--ink);
+}
+
 .perform-strip-info {
   flex: 1;
   text-align: right;
@@ -1799,15 +1931,6 @@ body[data-route="perform"] .tabbar {
 body[data-route="chords"] .instrument-toggle,
 body[data-route="scales"] .instrument-toggle,
 body[data-route="build"] .instrument-toggle {
-  display: none;
-}
-
-/* The tint toggle only does anything on Hoard/Chords/Scales (backlog item 9's
-   scope) — hidden elsewhere for the same reason the instrument toggle hides
-   itself where it would change nothing. */
-body[data-route="prog"] .tint-toggle,
-body[data-route="perform"] .tint-toggle,
-body[data-route="build"] .tint-toggle {
   display: none;
 }
 

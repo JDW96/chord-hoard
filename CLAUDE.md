@@ -374,10 +374,10 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
      capo-mode played shape — the function doesn't change under a capo,
      only which shape your hands make, confirmed by a jsdom check that
      toggling capo mode leaves every cell's `fn-*` class untouched.
-     A header icon button (four coloured dots, doubling as a tiny legend)
-     toggles it via `body[data-tint="off"]`; the toggle is CSS-only (the
-     `.fn-*` classes are always in the DOM, the toggle just flips whether
-     they paint), so no re-render is needed and it's instant. Persisted to
+     A toggle in the settings panel (backlog item 15) flips it via
+     `body[data-tint="off"]`; the toggle is CSS-only (the `.fn-*` classes are
+     always in the DOM, the toggle just flips whether they paint), so no
+     re-render is needed and it's instant. Persisted to
      `chordhoard.functionTint`, defaulting on. `js/ui/function-tint.js` also
      exports `legendCaption()` — "Colour: Tonic · Subdominant · Dominant ·
      Borrowed", each word in its own colour — the actual key explaining what
@@ -436,11 +436,38 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
     doesn't exist yet (that's phase 4), but the key follows the same storageGet/Set
     pattern as every other `chordhoard.*` key so it'll fall into whatever scheme
     phase 4 picks.
-15. Settings cog, first job being a manual light/dark override. The plumbing is
-    already there: `:root[data-theme="light"|"dark"]` is declared in `css/app.css`
-    and the dark block is written as `:root:not([data-theme="light"])`, so the
-    override works the moment something sets the attribute. Needs the control, a
-    `chordhoard.theme` key, and a "follow system" third state that clears it.
+15. Settings cog. [DONE 2026-08-15 for the cog itself; the light/dark override
+    it was originally proposed for is still open]
+    Built earlier than planned: the function-tint toggle (backlog item 9)
+    originally lived as its own header icon, hidden via CSS on routes it did
+    nothing on (`body[data-route="prog"|"perform"|"build"] .tint-toggle`).
+    Jack pointed out it kept disappearing as tinting spread to more views and
+    asked for a permanent settings cog instead, so the icon and its per-route
+    hiding rule are gone. `js/ui/settings-panel.js` is a small singleton
+    overlay (same one-instance-at-the-end-of-body pattern as
+    `diagram-popup.js`, deliberately a separate set of CSS classes rather than
+    sharing `.diagram-popup*` since the two dialogs are conceptually
+    different and may drift): `openSettingsPanel(build)` / `closeSettingsPanel()`
+    / a `settingsRow(label, description, control)` helper so every future
+    row looks the same. `app.js`'s `buildSettingsPanel()` is the one place
+    that fills it, currently one row (the colour switch) plus
+    `function-tint.js`'s `legendCaption()` for context. The header cog
+    (`.settings-btn`, gear SVG) is now visible on every route with a header —
+    but performance mode hides the WHOLE header for its full-viewport
+    takeover (pre-existing, unrelated design decision), so it needed its own
+    small entry point: `.perform-settings` in `perform.js`'s strip, next to
+    the exit button, opening the identical panel via the same
+    `buildSettingsPanel` (imported from `app.js`; safe despite the mutual
+    import because, like `state`/`renderIn`, it's only read inside a click
+    handler, never at module-evaluation time — see the chords-lib/detail
+    circular-import lesson elsewhere in this file). Next natural row: the
+    manual light/dark override this item originally asked for. The plumbing
+    is already there: `:root[data-theme="light"|"dark"]` is declared in
+    `css/app.css` and the dark block is written as
+    `:root:not([data-theme="light"])`, so the override works the moment
+    something sets the attribute. Needs a `chordhoard.theme` key and a
+    "follow system" third state that clears it, then a second
+    `settingsRow()` in `buildSettingsPanel()`.
 16. Performance view grid is wrong for long progressions. It currently reflows to
     3×3 and squeezes chords past readability once there are more than eight.
     Jack's proposal: fix the grid at TWO columns always and add rows as needed, so

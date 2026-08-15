@@ -17,6 +17,8 @@ import * as detail from "./detail.js";
 import * as perform from "./perform.js";
 import * as chordsLib from "./chords-lib.js";
 import * as scalesLib from "./scales-lib.js";
+import { openSettingsPanel, settingsRow } from "./settings-panel.js";
+import { legendCaption } from "./function-tint.js";
 
 // ---------------------------------------------------------------------------
 // Shared state
@@ -236,11 +238,42 @@ function reflectInstrumentToggle() {
 
 function reflectFunctionTint() {
   document.body.dataset.tint = state.functionTint ? "on" : "off";
-  const btn = document.querySelector(".tint-toggle");
-  if (btn) {
-    btn.classList.toggle("active", state.functionTint);
-    btn.setAttribute("aria-pressed", String(state.functionTint));
-  }
+}
+
+// ---------------------------------------------------------------------------
+// Settings panel (backlog item 15) — reachable from every route via the
+// header's permanent cog icon, rather than a one-off toggle that only made
+// sense on some routes. Currently one row (colour tinting); more settings
+// (a light/dark override is the obvious next one) become more rows here,
+// not more header icons.
+// ---------------------------------------------------------------------------
+
+export function buildSettingsPanel(body) {
+  const switchBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "settings-switch" + (state.functionTint ? " active" : ""),
+      attrs: { "aria-pressed": String(state.functionTint) },
+      on: {
+        click: () => {
+          setFunctionTint(!state.functionTint);
+          switchBtn.classList.toggle("active", state.functionTint);
+          switchBtn.setAttribute("aria-pressed", String(state.functionTint));
+          switchBtn.textContent = state.functionTint ? "On" : "Off";
+        },
+      },
+    },
+    state.functionTint ? "On" : "Off"
+  );
+  body.appendChild(
+    settingsRow(
+      "Colour by function",
+      "Tint chords by harmonic role on the Hoard, Chords, Scales, detail and performance views.",
+      switchBtn
+    )
+  );
+  body.appendChild(legendCaption());
 }
 
 function wireHeader() {
@@ -248,9 +281,9 @@ function wireHeader() {
     btn.addEventListener("click", () => setInstrument(btn.dataset.instrument));
   }
   reflectInstrumentToggle();
-  const tintBtn = document.querySelector(".tint-toggle");
-  if (tintBtn) {
-    tintBtn.addEventListener("click", () => setFunctionTint(!state.functionTint));
+  const settingsBtn = document.querySelector(".settings-btn");
+  if (settingsBtn) {
+    settingsBtn.addEventListener("click", () => openSettingsPanel(buildSettingsPanel));
   }
   reflectFunctionTint();
 }
