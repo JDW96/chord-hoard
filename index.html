@@ -27,9 +27,19 @@
 <body>
   <header class="app-header">
     <h1 class="app-name"><a href="#/hoard">Chord Hoard</a></h1>
-    <div class="instrument-toggle" role="group" aria-label="Instrument">
-      <button type="button" data-instrument="guitar" aria-pressed="false">Guitar</button>
-      <button type="button" data-instrument="piano" aria-pressed="false">Piano</button>
+    <div class="header-controls">
+      <button type="button" class="tint-toggle" data-tint-toggle aria-pressed="true" title="Colour chords by harmonic function" aria-label="Colour chords by harmonic function">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="7" cy="7" r="3.6" fill="var(--fn-tonic)"></circle>
+          <circle cx="17" cy="7" r="3.6" fill="var(--fn-subdominant)"></circle>
+          <circle cx="7" cy="17" r="3.6" fill="var(--fn-dominant)"></circle>
+          <circle cx="17" cy="17" r="3.6" fill="var(--fn-borrowed)"></circle>
+        </svg>
+      </button>
+      <div class="instrument-toggle" role="group" aria-label="Instrument">
+        <button type="button" data-instrument="guitar" aria-pressed="false">Guitar</button>
+        <button type="button" data-instrument="piano" aria-pressed="false">Piano</button>
+      </div>
     </div>
   </header>
 

@@ -5,9 +5,9 @@
 // Complexity is computed by the engine per entry in its home key for the
 // currently selected instrument, and cached in app.js's ratingCache.
 
-import { formatDisplay } from "../engine/numeral.js";
 import { state, renderIn, ratingIn, collectionLabel } from "./app.js";
-import { el, clear, prettySymbol, capitalise, levelClass } from "./util.js";
+import { tintClass } from "./function-tint.js";
+import { el, clear, interleave, prettySymbol, capitalise, levelClass } from "./util.js";
 
 // Module-level UI state so search/filters survive a trip into a detail view.
 const filters = {
@@ -298,12 +298,17 @@ function buildSheet(sheet) {
 function card(entry) {
   const rendered = renderIn(entry, entry.homeKey);
   const rating = ratingIn(entry, entry.homeKey, state.instrument);
-  const numeralPreview = entry.numerals
-    .map((n) => formatDisplay(n.numeral))
-    .join(" · ");
-  const chordNames = rendered.chords
-    .map((c) => prettySymbol(c.symbol))
-    .join(" – ");
+  const cls = (c) => tintClass(c.numeral, entry.homeKey, entry.mode);
+  const numeralSpans = interleave(
+    rendered.chords,
+    (c) => el("span", { className: cls(c) }, c.display),
+    " · "
+  );
+  const chordSpans = interleave(
+    rendered.chords,
+    (c) => el("span", { className: cls(c) }, prettySymbol(c.symbol)),
+    " – "
+  );
 
   return el(
     "a",
@@ -323,8 +328,8 @@ function card(entry) {
         rating.level
       )
     ),
-    el("p", { className: "card-numerals" }, numeralPreview),
-    el("p", { className: "card-chords" }, chordNames),
+    el("p", { className: "card-numerals" }, numeralSpans),
+    el("p", { className: "card-chords" }, chordSpans),
     el(
       "div",
       { className: "card-chips" },

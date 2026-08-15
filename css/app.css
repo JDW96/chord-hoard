@@ -57,6 +57,15 @@
   --lv-4: #a32d2d;
   --on-level: #ffffff;
 
+  /* Harmonic function tinting (backlog item 9): tonic teal, subdominant
+     purple, dominant amber, borrowed coral. Blue stays reserved for the
+     interface accent, so none of these four reuse it. Text colour only —
+     no background pills, to keep the neutral chassis. */
+  --fn-tonic: #1f8a72;
+  --fn-subdominant: #7c5cbf;
+  --fn-dominant: #b8790c;
+  --fn-borrowed: #c9502f;
+
   /* Type scale — chord symbols are the hero. */
   --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
     sans-serif;
@@ -137,6 +146,11 @@
     --lv-3: #f0997b;
     --lv-4: #e24b4a;
     --on-level: #16160f;
+
+    --fn-tonic: #56dab3;
+    --fn-subdominant: #b7a0e8;
+    --fn-dominant: #f0ac3f;
+    --fn-borrowed: #ff8f6b;
 
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   }
@@ -223,6 +237,12 @@ h1, h2, h3 {
   color: var(--accent);
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
 .instrument-toggle {
   display: flex;
   border: 1px solid var(--line);
@@ -244,6 +264,36 @@ h1, h2, h3 {
 .instrument-toggle button.active {
   background: var(--accent);
   color: var(--on-accent);
+}
+
+/* Function-tint toggle (backlog item 9): a compact icon button, not a
+   pill like the instrument toggle, since it's a single on/off switch
+   rather than a choice between two things. The four dots are always
+   drawn in their real colours so the icon doubles as a tiny legend;
+   dimming on "off" is opacity only, not a colour change. */
+.tint-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border-radius: var(--radius-pill);
+  color: var(--ink-dim);
+}
+
+.tint-toggle:hover,
+.tint-toggle:focus-visible {
+  color: var(--ink);
+  background: var(--bg-sunken);
+}
+
+.tint-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tint-toggle:not(.active) svg {
+  opacity: 0.35;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1743,4 +1793,44 @@ body[data-route="chords"] .instrument-toggle,
 body[data-route="scales"] .instrument-toggle,
 body[data-route="build"] .instrument-toggle {
   display: none;
+}
+
+/* The tint toggle only does anything on Hoard/Chords/Scales (backlog item 9's
+   scope) — hidden elsewhere for the same reason the instrument toggle hides
+   itself where it would change nothing. */
+body[data-route="prog"] .tint-toggle,
+body[data-route="perform"] .tint-toggle,
+body[data-route="build"] .tint-toggle {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Harmonic function tinting (backlog item 9) — js/ui/function-tint.js  */
+/* wraps js/engine/harmony.js's classify() and returns one of these     */
+/* four class names, applied to the numeral/chord-name text wherever    */
+/* it appears on the Hoard, Chords and Scales tabs. Text colour only,   */
+/* matching the neutral-chassis design.                                 */
+/*                                                                      */
+/* Deliberately the LAST rule in the file: several elements it tints    */
+/* (.dest-numeral, .degree-numeral, .degree-symbol, .visitor-symbol…)   */
+/* already set their own `color` at the same specificity, and source    */
+/* order is the only thing that decides a tie. Keeping this block last  */
+/* means the tint always wins without having to chase every future      */
+/* class it might be combined with.                                    */
+/*                                                                      */
+/* The toggle itself is CSS-only: no re-render, just body[data-tint=    */
+/* "off"] falling every tint back to inherit (the colour the element    */
+/* would have had without a .fn-* class).                               */
+/* ------------------------------------------------------------------ */
+
+.fn-tonic { color: var(--fn-tonic); }
+.fn-subdominant { color: var(--fn-subdominant); }
+.fn-dominant { color: var(--fn-dominant); }
+.fn-borrowed { color: var(--fn-borrowed); }
+
+body[data-tint="off"] .fn-tonic,
+body[data-tint="off"] .fn-subdominant,
+body[data-tint="off"] .fn-dominant,
+body[data-tint="off"] .fn-borrowed {
+  color: inherit;
 }

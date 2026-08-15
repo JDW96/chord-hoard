@@ -318,7 +318,8 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
 6. "Sounds like / common variations" section linking similar progressions. [phase 3]
 7. Chord-swap advice with tappable swaps, each stating its impact. [phase 4 — builder]
 8. Chords tab "where next?" blurbs: functional not cute. [phase 2.5, DONE 2026-08-03]
-9. Design overhaul. [phase 2.5, repaint DONE 2026-08-03, function tinting TODO]
+9. Design overhaul. [phase 2.5, DONE 2026-08-15 — repaint 2026-08-03, function
+   tinting 2026-08-15]
    Three directions were mocked up for Jack; he chose function colour on a neutral
    chassis, with the gold dropped for a pastel blue. What landed:
    - Palette rebuilt around light/dark. Light is the base `:root` declaration, dark
@@ -336,10 +337,36 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
    - Complexity moved onto the card's left edge as a stripe. `hoard.js` puts the
      `lv-*` class on the card as well as the badge; `.card:hover` sets three border
      sides rather than the shorthand so it cannot repaint the stripe.
-   Still to do: tint each chord by harmonic function (tonic teal, subdominant purple,
-   dominant amber, borrowed coral — blue is reserved for the interface, so subdominant
-   moved off it). Needs an engine module classifying a numeral's function, wired into
-   the Hoard, Chords and Scales tabs, with a toggle defaulting to on.
+   - Function tinting: `js/engine/harmony.js` is a new pure engine module,
+     `classify(numeral, tonic, mode)` → `"tonic" | "subdominant" | "dominant" |
+     "borrowed"`. Borrowed wins first (numeral not diatonic to the tonic+mode,
+     tested by pitch classes — the SAME test the Scales tab's "Borrowed chords"
+     section already used); a diatonic chord then falls into the classic
+     three-function grouping by scale degree (1/3/6 tonic, 2/4 subdominant,
+     5/7 dominant), independent of mode. `DIATONIC_NUMERALS` (the six modes'
+     own seven diatonic numerals) now lives there as the one source of truth —
+     scales-lib.js's `MODES` table reads its `numerals` field from it instead
+     of carrying its own copy, so the Scales tab and the tint engine can never
+     disagree about what's diatonic. `js/ui/function-tint.js` wraps
+     `classify()` as `tintClass()`, returning the CSS class name
+     (`fn-tonic`/`fn-subdominant`/`fn-dominant`/`fn-borrowed`) directly.
+     Colours: tonic teal, subdominant purple, dominant amber, borrowed coral
+     (blue stays reserved for the interface accent). Text colour only, no
+     background pills, to keep the neutral chassis. Wired into exactly the
+     three views the backlog named — Hoard cards (numerals + chord names,
+     built as interleaved tinted spans via a new `interleave()` helper in
+     util.js rather than one joined string), the Chords tab's "where next?"
+     destination cards, and the Scales tab's diatonic grid and borrowed-chord
+     list — deliberately not the detail or performance views. A header icon
+     button (four coloured dots, doubling as a tiny legend) toggles it via
+     `body[data-tint="off"]`; the toggle is CSS-only (the `.fn-*` classes are
+     always in the DOM, the toggle just flips whether they paint), so no
+     re-render is needed and it's instant. Persisted to
+     `chordhoard.functionTint`, defaulting on. The `.fn-*` rules are
+     deliberately the LAST block in app.css: several of the elements they tint
+     (`.dest-numeral`, `.degree-numeral`, `.degree-symbol`, `.visitor-symbol`)
+     already set their own `color` at equal specificity, and source order is
+     what breaks the tie.
 10. Instrument toggle rescoped: hidden on Chords/Scales/Build via
     `body[data-route]` in CSS, where it changed nothing. [phase 2.5, DONE 2026-08-03]
 11. Scales tab scale-note chips are now links that make that note the tonic, keeping
@@ -435,12 +462,12 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
 - [x] **Phase 2** — UI: browse/search/filter, cards, diagrams (guitar-chords.json from
       an MIT-licensed chord DB + generated piano SVGs), transpose/capo, chord library,
       scale library, performance mode + wake lock
-- [~] **Phase 2.5** ← **current** — design & UX polish. Done: items 8, 10, 11, 12
-      (chord explanation copy, shared copy table, instrument toggle scope, scale-note
+- [x] **Phase 2.5** — design & UX polish. All items landed: 8, 10, 11, 12 (chord
+      explanation copy, shared copy table, instrument toggle scope, scale-note
       links), 4 + 14 (diagram popup + voicing cycling, DONE 2026-08-15), 5 (capo
-      mode, DONE 2026-08-15), 3 (circle-of-fifths wheel, DONE 2026-08-15), and the
-      item 9 repaint (light/dark palette, pastel-blue accent, real piano keys,
-      complexity stripe). Remaining: 9's function tinting
+      mode, DONE 2026-08-15), 3 (circle-of-fifths wheel, DONE 2026-08-15), and 9
+      (light/dark palette repaint 2026-08-03 + function-colour tinting
+      2026-08-15, closing the phase).
 - [x] **Phase 3** — library generation to ~350 in themed batches of ~25, one file per
       batch, `node tools/validate.js` after each. All twelve batches landed
       2026-08-03 at 25 each, library at 349: theatre · pop-rock · folk-celtic ·
@@ -462,8 +489,8 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       if it is ever extended.
       Each batch must spread time signatures and bar counts deliberately, because the
       dedupe rule (mode + numeral sequence + timeSig) bites harder as the library grows.
-- [ ] **Phase 4** — pins, playability profiles, song builder, dynamic builder
-      (moves.json), PWA/service worker, export/import
+- [ ] **Phase 4** ← **current** — pins, playability profiles, song builder, dynamic
+      builder (moves.json), PWA/service worker, export/import
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: audio playback (Web Audio), shareable song-structure links, MIDI export
 

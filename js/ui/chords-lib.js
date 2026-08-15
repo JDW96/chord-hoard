@@ -25,6 +25,7 @@ import {
   pianoChordSVG,
 } from "./diagrams.js";
 import { chordHref } from "./chord-link.js";
+import { tintClass } from "./function-tint.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { copyFor, orderFor, copyBlock, revealList } from "./chord-copy.js";
 import { el, clear, prettySymbol, prettyNote, getGuitarData } from "./util.js";
@@ -238,14 +239,15 @@ export function render(container, params) {
   const destCard = (numeral) => {
     const copy = copyFor(numeral, quality.family);
     const destChord = realize(numeral, tonic);
+    const cls = tintClass(numeral, tonic, quality.family);
     return el(
       "a",
       { className: "dest-card", href: chordHref(destChord) },
       el(
         "div",
         { className: "dest-head" },
-        el("span", { className: "dest-symbol" }, prettySymbol(destChord.symbol)),
-        el("span", { className: "dest-numeral" }, formatDisplay(numeral))
+        el("span", { className: "dest-symbol " + cls }, prettySymbol(destChord.symbol)),
+        el("span", { className: "dest-numeral " + cls }, formatDisplay(numeral))
       ),
       copyBlock(copy)
     );

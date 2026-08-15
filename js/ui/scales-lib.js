@@ -16,57 +16,32 @@
 import { parseNote, pitchClass } from "../engine/theory.js";
 import { realize } from "../engine/chords.js";
 import { formatDisplay } from "../engine/numeral.js";
+import { DIATONIC_NUMERALS } from "../engine/harmony.js";
 import { pianoScaleSVG } from "./diagrams.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { chordHref } from "./chords-lib.js";
+import { tintClass } from "./function-tint.js";
 import { copyFor, borrowedFor, copyBlock, revealList } from "./chord-copy.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { el, prettySymbol, prettyNote, capitalise } from "./util.js";
 
 // ---------------------------------------------------------------------------
 // The six modes. `numerals` are the diatonic chords measured against the
-// tonic's MAJOR scale (the CLAUDE.md contract). `relative` names the numeral
-// whose root is the relative major (or, for major itself, the relative
-// minor) — used for the guitar fingering tip.
+// tonic's MAJOR scale (the CLAUDE.md contract) — sourced from harmony.js's
+// DIATONIC_NUMERALS, the single place that per-mode list of seven lives, so
+// this tab and the function-tinting engine can never disagree about what's
+// diatonic. `relative` names the numeral whose root is the relative major
+// (or, for major itself, the relative minor) — used for the guitar
+// fingering tip.
 // ---------------------------------------------------------------------------
 
 const MODES = [
-  {
-    id: "major",
-    family: "major",
-    numerals: ["I", "ii", "iii", "IV", "V", "vi", "viidim"],
-    relative: "vi",
-  },
-  {
-    id: "minor",
-    family: "minor",
-    numerals: ["i", "iidim", "bIII", "iv", "v", "bVI", "bVII"],
-    relative: "bIII",
-  },
-  {
-    id: "dorian",
-    family: "minor",
-    numerals: ["i", "ii", "bIII", "IV", "v", "vidim", "bVII"],
-    relative: "bVII",
-  },
-  {
-    id: "mixolydian",
-    family: "major",
-    numerals: ["I", "ii", "iiidim", "IV", "v", "vi", "bVII"],
-    relative: "IV",
-  },
-  {
-    id: "lydian",
-    family: "major",
-    numerals: ["I", "II", "iii", "#ivdim", "V", "vi", "vii"],
-    relative: "V",
-  },
-  {
-    id: "phrygian",
-    family: "minor",
-    numerals: ["i", "bII", "bIII", "iv", "vdim", "bVI", "bvii"],
-    relative: "bVI",
-  },
+  { id: "major", family: "major", numerals: DIATONIC_NUMERALS.major, relative: "vi" },
+  { id: "minor", family: "minor", numerals: DIATONIC_NUMERALS.minor, relative: "bIII" },
+  { id: "dorian", family: "minor", numerals: DIATONIC_NUMERALS.dorian, relative: "bVII" },
+  { id: "mixolydian", family: "major", numerals: DIATONIC_NUMERALS.mixolydian, relative: "IV" },
+  { id: "lydian", family: "major", numerals: DIATONIC_NUMERALS.lydian, relative: "V" },
+  { id: "phrygian", family: "minor", numerals: DIATONIC_NUMERALS.phrygian, relative: "bVI" },
 ];
 
 const modeById = new Map(MODES.map((m) => [m.id, m]));
@@ -248,12 +223,13 @@ export function render(container, params) {
   // ---- Diatonic chord grid ------------------------------------------------------------
   const grid = el("div", { className: "degree-grid" });
   for (const { numeral, chord } of diatonic) {
+    const cls = tintClass(numeral, tonic, mode.id);
     grid.appendChild(
       el(
         "a",
         { className: "degree-cell", href: chordHref(chord) },
-        el("div", { className: "degree-numeral" }, formatDisplay(numeral)),
-        el("div", { className: "degree-symbol" }, prettySymbol(chord.symbol))
+        el("div", { className: "degree-numeral " + cls }, formatDisplay(numeral)),
+        el("div", { className: "degree-symbol " + cls }, prettySymbol(chord.symbol))
       )
     );
   }
@@ -280,14 +256,15 @@ export function render(container, params) {
   const borrowed = borrowedFor(mode.family, mode.id, inScale);
   const visitorCard = (numeral) => {
     const chord = realize(numeral, tonic);
+    const cls = tintClass(numeral, tonic, mode.id);
     return el(
       "a",
       { className: "visitor-card", href: chordHref(chord) },
       el(
         "div",
         { className: "visitor-head" },
-        el("span", { className: "degree-numeral" }, formatDisplay(numeral)),
-        el("span", { className: "visitor-symbol" }, prettySymbol(chord.symbol))
+        el("span", { className: "degree-numeral " + cls }, formatDisplay(numeral)),
+        el("span", { className: "visitor-symbol " + cls }, prettySymbol(chord.symbol))
       ),
       copyBlock(copyFor(numeral, mode.family, mode.id))
     );

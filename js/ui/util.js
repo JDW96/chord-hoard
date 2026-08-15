@@ -44,6 +44,21 @@ export function clear(node) {
 }
 
 /**
+ * Map `items` to nodes/strings via `renderFn`, with `sep` (a string or node)
+ * inserted between each — for building "A · B · C" out of tinted spans
+ * rather than one joined text string. Returns a flat array suitable as
+ * el() children.
+ */
+export function interleave(items, renderFn, sep) {
+  const out = [];
+  items.forEach((item, i) => {
+    if (i > 0) out.push(sep);
+    out.push(renderFn(item, i));
+  });
+  return out;
+}
+
+/**
  * Escape a string for safe inclusion in HTML/attribute contexts. Prefer
  * building DOM via el(); this exists for the rare string-template case
  * (e.g. titles handed to SVG builders).

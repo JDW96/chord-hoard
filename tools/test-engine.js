@@ -8,6 +8,7 @@ import { realize } from "../js/engine/chords.js";
 import * as capo from "../js/engine/capo.js";
 import * as complexity from "../js/engine/complexity.js";
 import * as progression from "../js/engine/progression.js";
+import * as harmony from "../js/engine/harmony.js";
 
 let passed = 0;
 const failures = [];
@@ -393,6 +394,53 @@ test("progression.render realises in every supported tonic without throwing", ()
     timeSig: "4/4",
   };
   for (const tonic of majors) progression.render(spicy, tonic);
+});
+
+// ------------------------------------------------------------------ harmony.js
+
+test("harmony: each mode's own seven diatonic numerals are never borrowed", () => {
+  for (const [mode, numerals] of Object.entries(harmony.DIATONIC_NUMERALS)) {
+    const tonic = mode === "minor" || mode === "dorian" || mode === "phrygian" ? "A" : "C";
+    for (const n of numerals) {
+      assertEqual(
+        harmony.isDiatonic(n, tonic, mode), true,
+        `${n} should be diatonic in ${tonic} ${mode}`
+      );
+    }
+  }
+});
+
+test("harmony: classify groups scale degrees into tonic/subdominant/dominant", () => {
+  assertEqual(harmony.classify("I", "C", "major"), "tonic");
+  assertEqual(harmony.classify("iii", "C", "major"), "tonic");
+  assertEqual(harmony.classify("vi", "C", "major"), "tonic");
+  assertEqual(harmony.classify("ii", "C", "major"), "subdominant");
+  assertEqual(harmony.classify("IV", "C", "major"), "subdominant");
+  assertEqual(harmony.classify("V", "C", "major"), "dominant");
+  assertEqual(harmony.classify("viidim", "C", "major"), "dominant");
+});
+
+test("harmony: chords outside the mode's own seven are borrowed", () => {
+  assertEqual(harmony.classify("bVII", "C", "major"), "borrowed");
+  assertEqual(harmony.classify("iv", "C", "major"), "borrowed");
+  assertEqual(harmony.classify("bVI", "C", "major"), "borrowed");
+  assertEqual(harmony.classify("I7", "C", "major"), "borrowed");
+});
+
+test("harmony: V in minor is borrowed (needs harmonic minor's raised 7th)", () => {
+  assertEqual(harmony.classify("V", "A", "minor"), "borrowed");
+  assertEqual(harmony.classify("v", "A", "minor"), "dominant", "natural minor's own v is diatonic");
+});
+
+test("harmony: modal cases stay diatonic to their own mode", () => {
+  assertEqual(harmony.classify("IV", "D", "dorian"), "subdominant"); // dorian's raised 6th IV
+  assertEqual(harmony.classify("bVI", "D", "dorian"), "borrowed"); // borrowed from natural minor
+  assertEqual(harmony.classify("bVII", "G", "mixolydian"), "dominant");
+  assertEqual(harmony.classify("II", "C", "lydian"), "subdominant"); // lydian's raised 4th-degree II
+});
+
+test("harmony: unknown mode throws", () => {
+  assertThrows(() => harmony.scalePitchClasses("C", "harmonic-major"));
 });
 
 // ------------------------------------------------------------------- report

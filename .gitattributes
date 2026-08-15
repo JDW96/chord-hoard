@@ -1,0 +1,16 @@
+# Normalise line endings to LF in the repository regardless of what the
+# checking-out OS/editor does to the working tree, so `git diff` never shows
+# a whole file as changed just because Windows wrote CRLF.
+* text=auto eol=lf
+
+# Binary assets: never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary

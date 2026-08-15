@@ -28,11 +28,13 @@ export const state = {
   entries: [], // all progression entries, load order
   byId: new Map(), // id → entry
   instrument: "guitar", // "guitar" | "piano" — header toggle, persisted
+  functionTint: true, // harmonic-function colouring — header toggle, persisted
   renderCache: new Map(), // "id|tonic" → progression.render result
   ratingCache: new Map(), // "id|tonic|instrument" → complexity.rate result
 };
 
 const INSTRUMENT_KEY = "chordhoard.instrument";
+const TINT_KEY = "chordhoard.functionTint";
 
 /** Render a progression entry in a tonic, cached per (entry, tonic). */
 export function renderIn(entry, tonic) {
@@ -65,6 +67,17 @@ export function setInstrument(instrument) {
   storageSet(INSTRUMENT_KEY, instrument);
   reflectInstrumentToggle();
   renderRoute(); // complexity badges, filters and diagrams all depend on it
+}
+
+/**
+ * Toggle harmonic-function tinting. This is CSS-only: the .fn-* classes are
+ * always present on the tinted spans (see function-tint.js), and this just
+ * flips body[data-tint] to show or hide the colour — no re-render needed.
+ */
+export function setFunctionTint(on) {
+  state.functionTint = !!on;
+  storageSet(TINT_KEY, state.functionTint ? "on" : "off");
+  reflectFunctionTint();
 }
 
 // ---------------------------------------------------------------------------
@@ -221,11 +234,25 @@ function reflectInstrumentToggle() {
   }
 }
 
+function reflectFunctionTint() {
+  document.body.dataset.tint = state.functionTint ? "on" : "off";
+  const btn = document.querySelector(".tint-toggle");
+  if (btn) {
+    btn.classList.toggle("active", state.functionTint);
+    btn.setAttribute("aria-pressed", String(state.functionTint));
+  }
+}
+
 function wireHeader() {
   for (const btn of document.querySelectorAll(".instrument-toggle button")) {
     btn.addEventListener("click", () => setInstrument(btn.dataset.instrument));
   }
   reflectInstrumentToggle();
+  const tintBtn = document.querySelector(".tint-toggle");
+  if (tintBtn) {
+    tintBtn.addEventListener("click", () => setFunctionTint(!state.functionTint));
+  }
+  reflectFunctionTint();
 }
 
 // ---------------------------------------------------------------------------
@@ -235,6 +262,7 @@ function wireHeader() {
 async function init() {
   const saved = storageGet(INSTRUMENT_KEY, "guitar");
   state.instrument = saved === "piano" ? "piano" : "guitar";
+  state.functionTint = storageGet(TINT_KEY, "on") !== "off";
   wireHeader();
   window.addEventListener("hashchange", renderRoute);
   renderRoute(); // loading state
