@@ -20,11 +20,11 @@ import { parseNote, pitchClass } from "../engine/theory.js";
 import { realize } from "../engine/chords.js";
 import { formatDisplay } from "../engine/numeral.js";
 import {
-  shapeKeyFor,
   voicingsFor,
   guitarChordSVG,
   pianoChordSVG,
 } from "./diagrams.js";
+import { chordHref } from "./chord-link.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { copyFor, orderFor, copyBlock, revealList } from "./chord-copy.js";
 import { el, clear, prettySymbol, prettyNote, getGuitarData } from "./util.js";
@@ -96,23 +96,10 @@ function tonicFor(pc, quality) {
     : MAJOR_TONIC_BY_PC.get(pc);
 }
 
-/**
- * Library link for any realised chord (engine chords.realize output).
- * Shared with the scale library and the where-next panel, so every chord
- * name in the app can be a doorway back here.
- */
-export function chordHref(realized) {
-  const suffix = shapeKeyFor(realized);
-  const qualityId = qualityById.has(suffix === "" ? "maj" : suffix)
-    ? (suffix === "" ? "maj" : suffix)
-    : "maj";
-  return (
-    "#/chords/" +
-    encodeURIComponent(realized.root) +
-    "/" +
-    encodeURIComponent(qualityId)
-  );
-}
+// chordHref (the #/chords/<root>/<quality> link for a realised chord) lives
+// in chord-link.js and is re-exported here so existing `from "./chords-lib.js"`
+// imports (the scale library, the where-next panel) keep working unchanged.
+export { chordHref };
 
 // "Where next?" destinations come from chord-copy.js, which treats the
 // selected chord as home (I or i) and is shared with the scale library.

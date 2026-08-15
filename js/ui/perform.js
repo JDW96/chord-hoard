@@ -15,7 +15,14 @@ import { parseNote, pitchClass } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
 import { state, renderIn } from "./app.js";
 import { chosenTonic, tonicsFor, isMajorFamily } from "./detail.js";
-import { el, prettySymbol, prettyNote } from "./util.js";
+import { el, clear, prettySymbol, prettyNote } from "./util.js";
+
+/** "Am"/"Em"/"Dm" → "A"/"E"/"D" — capo.suggest()'s playAs already carries the
+    minor-family "m", but progression.render() only wants the tonic letter
+    (the entry's own mode supplies the rest). */
+function playedTonicFor(hint) {
+  return hint.playAs.endsWith("m") ? hint.playAs.slice(0, -1) : hint.playAs;
+}
 
 export function render(container, params) {
   const id = decodeURIComponent(params[0] || "");
@@ -50,6 +57,19 @@ export function render(container, params) {
   const rendered = renderIn(entry, tonic);
   const chords = rendered.chords;
 
+  // ---- Capo mode (backlog item 5): a toggle that swaps the big symbols for
+  // the shapes you'd actually play under the suggested capo, keeping the
+  // real sounding chord as small print alongside — for sight-reading while
+  // capoed up, rather than having to do the transposition in your head.
+  // Ephemeral (resets on re-entry), like the detail view's per-chord toggle.
+  let hint = null;
+  let playedChords = null;
+  if (state.instrument === "guitar") {
+    hint = capo.suggest(chords, tonic, !isMajorFamily(entry));
+    if (hint) playedChords = renderIn(entry, playedTonicFor(hint)).chords;
+  }
+  let capoMode = false;
+
   // ---- Corner strip: exit, key + time signature + capo, wake indicator ----
   const wakeDot = el(
     "span",
@@ -61,11 +81,41 @@ export function render(container, params) {
   );
   wakeDot.style.display = "none";
 
-  let capoText = null;
-  if (state.instrument === "guitar") {
-    const hint = capo.suggest(chords, tonic, !isMajorFamily(entry));
-    if (hint) capoText = `capo ${hint.capo} (as ${hint.playAs})`;
+  function infoText() {
+    const base = `${prettyNote(tonic)} ${entry.mode} · ${entry.timeSig}`;
+    if (!hint) return base;
+    if (capoMode) {
+      return `Capo ${hint.capo} · playing as ${hint.playAs} · sounds ${prettyNote(tonic)} ${entry.mode}`;
+    }
+    return `${base} · capo ${hint.capo} (as ${hint.playAs})`;
   }
+
+  const infoSpan = el("span", { className: "perform-strip-info" }, infoText());
+
+  const capoBtn = hint
+    ? el(
+        "button",
+        {
+          type: "button",
+          className: "perform-capo-toggle",
+          attrs: {
+            "aria-pressed": String(capoMode),
+            title: "Show the shapes to play under the capo instead of the sounding chords",
+          },
+          on: {
+            click: () => {
+              capoMode = !capoMode;
+              capoBtn.classList.toggle("active", capoMode);
+              capoBtn.setAttribute("aria-pressed", String(capoMode));
+              infoSpan.textContent = infoText();
+              buildGrid();
+              layout();
+            },
+          },
+        },
+        "Capo mode"
+      )
+    : null;
 
   const strip = el(
     "div",
@@ -79,40 +129,46 @@ export function render(container, params) {
       },
       "✕"
     ),
-    el(
-      "span",
-      { className: "perform-strip-info" },
-      `${prettyNote(tonic)} ${entry.mode} · ${entry.timeSig}` +
-        (capoText ? ` · ${capoText}` : "")
-    ),
+    capoBtn,
+    infoSpan,
     wakeDot
   );
 
   // ---- Chord grid ----------------------------------------------------------
   const grid = el("div", { className: "perform-grid" });
-  for (const chord of chords) {
-    grid.appendChild(
-      el(
-        "div",
-        { className: "perform-cell" },
-        el("div", { className: "perform-symbol" }, prettySymbol(chord.symbol)),
+
+  function buildGrid() {
+    clear(grid);
+    chords.forEach((chord, i) => {
+      const playedChord = playedChords ? playedChords[i] : null;
+      const big = capoMode && playedChord ? playedChord : chord;
+      grid.appendChild(
         el(
           "div",
-          { className: "perform-sub" },
-          el("span", { className: "perform-numeral" }, chord.display),
-          el("span", { className: "perform-beats" }, `${chord.beats}`)
+          { className: "perform-cell" },
+          el("div", { className: "perform-symbol" }, prettySymbol(big.symbol)),
+          el(
+            "div",
+            { className: "perform-sub" },
+            el("span", { className: "perform-numeral" }, chord.display),
+            el("span", { className: "perform-beats" }, `${chord.beats}`),
+            capoMode && playedChord
+              ? el("span", { className: "perform-sounds" }, `sounds ${prettySymbol(chord.symbol)}`)
+              : null
+          )
         )
-      )
-    );
+      );
+    });
   }
+  buildGrid();
 
   const root = el("section", { className: "perform-full" }, strip, grid);
   container.appendChild(root);
 
   // ---- Fit-to-viewport ------------------------------------------------------
-  const longest = Math.max(...chords.map((c) => prettySymbol(c.symbol).length));
-
   function layout() {
+    const shown = capoMode && playedChords ? playedChords : chords;
+    const longest = Math.max(...shown.map((c) => prettySymbol(c.symbol).length));
     const w = root.clientWidth;
     const h = root.clientHeight;
     if (!w || !h) return;

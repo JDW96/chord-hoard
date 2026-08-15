@@ -2,7 +2,7 @@
    Bump CACHE_VERSION whenever any precached file changes, so returning
    visitors pick up the new build. */
 
-const CACHE_VERSION = 'chordhoard-v4';
+const CACHE_VERSION = 'chordhoard-v5';
 
 const PRECACHE = [
   './',
@@ -20,6 +20,9 @@ const PRECACHE = [
   './js/ui/hoard.js',
   './js/ui/detail.js',
   './js/ui/diagrams.js',
+  './js/ui/diagram-popup.js',
+  './js/ui/voicing-choice.js',
+  './js/ui/chord-link.js',
   './js/ui/chord-copy.js',
   './js/ui/chords-lib.js',
   './js/ui/scales-lib.js',

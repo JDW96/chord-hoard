@@ -268,9 +268,22 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
 3. Key selector: circle-of-fifths wheel showing each key's accidentals
    (e.g. "E: F♯ C♯ G♯ D♯"). Memorisation aid. [phase 2.5, TODO]
 4. Hoard/detail chord diagrams: uniform size, bigger, tappable → full-size popup, plus
-   a button through to the Chords tab. [phase 2.5, TODO]
+   a button through to the Chords tab. [phase 2.5, DONE 2026-08-15, done together
+   with item 14] Scoped to the detail view's "Chord shapes" strip — Hoard cards
+   show chord names as text, not diagrams, and that was a deliberate call in the
+   item 9 repaint, so it was left alone. `diagram-popup.js` is a small singleton
+   overlay (one instance at the end of `<body>`, reused across opens, closes on
+   Escape/backdrop/route change) that any single-chord-diagram view can call
+   into; its popup carries a "Open in Chords tab" link built from `chord-link.js`.
+   `--diagram-guitar-w`/`--diagram-piano-w` bumped up for the inline strip too.
 5. Capo mode: a toggle that applies the suggested capo — played shapes LARGE for
-   sight-reading, sounding chords/key small alongside. [phase 2.5, TODO]
+   sight-reading, sounding chords/key small alongside. [phase 2.5, DONE 2026-08-15]
+   Lives in Performance mode (`perform.js`), guitar only, only shown when
+   `capo.suggest()` actually returns a hint. Toggling re-renders the grid at the
+   `playAs` tonic (same numerals, different tonic — `renderIn(entry, playedTonic)`)
+   so the big symbols become the shapes to play, with a small "sounds X" per chord
+   and the strip text swapping to "Capo N · playing as X · sounds Y". Ephemeral
+   like the detail view's per-chord badge toggle — resets on re-entry, not stored.
 6. "Sounds like / common variations" section linking similar progressions. [phase 3]
 7. Chord-swap advice with tappable swaps, each stating its impact. [phase 4 — builder]
 8. Chords tab "where next?" blurbs: functional not cute. [phase 2.5, DONE 2026-08-03]
@@ -328,7 +341,19 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
     chosen voicing remembered for next time. Storage is per chord symbol, not per
     progression, so picking an easier F once fixes it everywhere. `chordhoard.*`
     key, same export/import as pins. Supersedes the "tappable → popup" half of
-    backlog item 4; do them together.
+    backlog item 4; do them together. [DONE 2026-08-15, done together with item 4]
+    Resolved the two competing "tap" meanings by splitting the affordance: tapping
+    a guitar diagram cycles voicings in place (when there's more than one on file)
+    and remembers the choice; a small ⤢ button is the popup trigger instead, always
+    present on guitar cells so the popup stays reachable even when the main tap is
+    busy cycling, and the popup itself carries its own "Try another shape" control
+    kept in sync with the inline cell. Piano cells have nothing to cycle, so the
+    whole cell just opens the popup. `voicing-choice.js` keys the memory by
+    `<root pitch class>:<shape suffix>` (the same lookup `diagrams.voicingsFor()`
+    uses), NOT by numeral or progression, under `chordhoard.voicing` — export/import
+    doesn't exist yet (that's phase 4), but the key follows the same storageGet/Set
+    pattern as every other `chordhoard.*` key so it'll fall into whatever scheme
+    phase 4 picks.
 15. Settings cog, first job being a manual light/dark override. The plumbing is
     already there: `:root[data-theme="light"|"dark"]` is declared in `css/app.css`
     and the dark block is written as `:root:not([data-theme="light"])`, so the
@@ -381,9 +406,10 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       scale library, performance mode + wake lock
 - [~] **Phase 2.5** ← **current** — design & UX polish. Done: items 8, 10, 11, 12
       (chord explanation copy, shared copy table, instrument toggle scope, scale-note
-      links) and the item 9 repaint (light/dark palette, pastel-blue accent, real
-      piano keys, complexity stripe). Remaining: 3 (circle of fifths), 4 (diagrams),
-      5 (capo mode), 9's function tinting
+      links), 4 + 14 (diagram popup + voicing cycling, DONE 2026-08-15), 5 (capo
+      mode, DONE 2026-08-15), and the item 9 repaint (light/dark palette,
+      pastel-blue accent, real piano keys, complexity stripe). Remaining: 3
+      (circle of fifths), 9's function tinting
 - [x] **Phase 3** — library generation to ~350 in themed batches of ~25, one file per
       batch, `node tools/validate.js` after each. All twelve batches landed
       2026-08-03 at 25 each, library at 349: theatre · pop-rock · folk-celtic ·

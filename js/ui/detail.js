@@ -7,6 +7,9 @@
 import { parseNote, formatNoteDisplay } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
 import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
+import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
+import { openDiagramPopup } from "./diagram-popup.js";
+import { chordHref } from "./chord-link.js";
 import { state, renderIn, ratingIn } from "./app.js";
 import {
   el,
@@ -289,6 +292,15 @@ function notFound(id) {
 // Diagrams — js/ui/diagrams.js renders SVG strings; the SVG builders escape
 // their own text, so titles are passed RAW (escaping here would double up).
 // Guitar shape data loads lazily via util.getGuitarData().
+//
+// Guitar cells (backlog items 4 + 14): tapping the shape itself cycles to the
+// next voicing on file when there's more than one, remembering the choice
+// (voicing-choice.js) — that supersedes the plain "tap for popup" item 4
+// originally asked for. A small ⤢ button is the popup trigger instead, so
+// the full-size view (with a way through to the Chords tab, and its own
+// "try another shape" control) is always reachable even when the main tap
+// is busy cycling. Piano cells have nothing to cycle, so the whole cell just
+// opens the popup.
 // ---------------------------------------------------------------------------
 
 async function fillDiagrams(host, rendered) {
@@ -309,29 +321,151 @@ async function fillDiagrams(host, rendered) {
       );
       return;
     }
+    let anyAlternates = false;
     for (const chord of rendered.distinctChords) {
       const voicings = voicingsFor(chord, guitarData);
-      const cell = el("figure", { className: "diagram-cell" });
-      if (voicings && voicings.length) {
-        const svgHost = el("div", { className: "diagram-svg" });
-        svgHost.innerHTML = guitarChordSVG(voicings[0], { title: prettySymbol(chord.symbol) });
-        cell.appendChild(svgHost);
-      } else {
-        cell.appendChild(el("div", { className: "diagram-missing" }, "No shape on file"));
-      }
-      cell.appendChild(el("figcaption", {}, prettySymbol(chord.symbol)));
-      host.appendChild(cell);
+      if (voicings && voicings.length > 1) anyAlternates = true;
+      host.appendChild(voicings && voicings.length ? guitarCell(chord, voicings) : missingCell(chord));
+    }
+    if (anyAlternates) {
+      host.parentElement.insertBefore(
+        el(
+          "p",
+          { className: "diagram-hint" },
+          "Tap a shape to try another voicing. Tap ⤢ to see it full size."
+        ),
+        host
+      );
     }
   } else {
     for (const chord of rendered.distinctChords) {
-      const cell = el("figure", { className: "diagram-cell piano" });
-      const svgHost = el("div", { className: "diagram-svg" });
-      svgHost.innerHTML = pianoChordSVG(chord);
-      cell.appendChild(svgHost);
-      cell.appendChild(el("figcaption", {}, prettySymbol(chord.symbol)));
-      host.appendChild(cell);
+      host.appendChild(pianoCell(chord));
     }
   }
+}
+
+function missingCell(chord) {
+  const cell = el("figure", { className: "diagram-cell" });
+  cell.appendChild(el("div", { className: "diagram-missing" }, "No shape on file"));
+  cell.appendChild(el("figcaption", {}, prettySymbol(chord.symbol)));
+  return cell;
+}
+
+function guitarCell(chord, voicings) {
+  let index = chosenVoicingIndex(chord, voicings);
+  let popupRefresh = null;
+
+  const label = () =>
+    voicings.length > 1
+      ? `${prettySymbol(chord.symbol)} — shape ${index + 1} of ${voicings.length}`
+      : prettySymbol(chord.symbol);
+
+  const svgHost = el("div", { className: "diagram-svg" });
+  const caption = el("figcaption", {}, label());
+
+  function draw() {
+    svgHost.innerHTML = guitarChordSVG(voicings[index], { title: prettySymbol(chord.symbol) });
+    caption.textContent = label();
+    if (popupRefresh) popupRefresh();
+  }
+
+  function cycle() {
+    if (voicings.length < 2) return;
+    index = nextVoicingIndex(chord, voicings, index);
+    draw();
+  }
+
+  function openPopup() {
+    openDiagramPopup({
+      title: prettySymbol(chord.symbol),
+      chordsHref: chordHref(chord),
+      build(body, refresh) {
+        popupRefresh = refresh;
+        const big = el("div", { className: "diagram-svg diagram-popup-svg" });
+        big.innerHTML = guitarChordSVG(voicings[index], { title: prettySymbol(chord.symbol) });
+        body.appendChild(big);
+        body.appendChild(el("p", { className: "diagram-popup-caption" }, label()));
+        if (voicings.length > 1) {
+          body.appendChild(
+            el(
+              "button",
+              { type: "button", className: "diagram-popup-cycle", on: { click: cycle } },
+              "Try another shape"
+            )
+          );
+        }
+      },
+    });
+  }
+
+  draw();
+
+  const cell = el(
+    "figure",
+    { className: "diagram-cell" },
+    el(
+      "button",
+      {
+        type: "button",
+        className: "diagram-tap",
+        attrs: {
+          "aria-label":
+            voicings.length > 1
+              ? `${prettySymbol(chord.symbol)}, shape ${index + 1} of ${voicings.length}. Tap to try another shape.`
+              : prettySymbol(chord.symbol),
+        },
+        on: { click: () => (voicings.length > 1 ? cycle() : openPopup()) },
+      },
+      svgHost
+    ),
+    caption,
+    el(
+      "button",
+      {
+        type: "button",
+        className: "diagram-expand",
+        attrs: { "aria-label": `View ${prettySymbol(chord.symbol)} full size` },
+        on: { click: openPopup },
+      },
+      "⤢"
+    )
+  );
+  return cell;
+}
+
+function pianoCell(chord) {
+  const svg = pianoChordSVG(chord);
+
+  function openPopup() {
+    openDiagramPopup({
+      title: prettySymbol(chord.symbol),
+      chordsHref: chordHref(chord),
+      build(body) {
+        const big = el("div", { className: "diagram-svg diagram-popup-svg" });
+        big.innerHTML = svg;
+        body.appendChild(big);
+      },
+    });
+  }
+
+  const svgHost = el("div", { className: "diagram-svg" });
+  svgHost.innerHTML = svg;
+
+  return el(
+    "figure",
+    { className: "diagram-cell piano" },
+    el(
+      "button",
+      {
+        type: "button",
+        className: "diagram-tap",
+        attrs: { "aria-label": `View ${prettySymbol(chord.symbol)} full size` },
+        on: { click: openPopup },
+      },
+      svgHost
+    ),
+    el("figcaption", {}, prettySymbol(chord.symbol))
+  );
 }
 
 // Performance mode lives in js/ui/perform.js (real full-screen view, wave 2).

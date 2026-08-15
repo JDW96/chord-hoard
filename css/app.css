@@ -88,9 +88,10 @@
      decides the size and the shape follows from the viewBox. Guitar grids are
      100×120, keyboards are roughly 198×83, which is why the two need separate
      widths to end up looking like the same weight of thing. */
-  --diagram-guitar-w: 12rem;
-  --diagram-piano-w: min(24rem, 82vw);
+  --diagram-guitar-w: 13.5rem;
+  --diagram-piano-w: min(26rem, 84vw);
   --diagram-piano-hero-w: min(28rem, 92vw);
+  --diagram-popup-w: min(26rem, 88vw);
 
   --header-h: 3.25rem;
   --tabbar-h: 3.5rem;
@@ -768,6 +769,7 @@ a:focus-visible {
    flex row to resolve a width from an element that has only a viewBox, which
    it did inconsistently between the two shapes. */
 .diagram-cell {
+  position: relative;
   flex: 0 0 auto;
   width: var(--diagram-guitar-w);
   margin: 0;
@@ -792,6 +794,49 @@ a:focus-visible {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Diagram cells (backlog items 4 + 14): the diagram itself is a tappable
+   button — cycles voicings on a guitar shape with more than one on file,
+   or opens the full-size popup when there's nothing to cycle. The ⤢ button
+   is the popup shortcut, always present on guitar cells so the popup stays
+   reachable even when the main tap is busy cycling. */
+.diagram-tap {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+
+.diagram-tap:hover .diagram-svg svg,
+.diagram-tap:focus-visible .diagram-svg svg {
+  opacity: 0.8;
+}
+
+.diagram-expand {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  min-height: 1.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.diagram-expand:hover,
+.diagram-expand:focus-visible {
+  color: var(--accent-bright);
+}
+
+.diagram-hint {
+  margin: 0 0 var(--sp-2);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
 }
 
 /* ------------------------------------------------------------------ */
@@ -880,6 +925,115 @@ a:focus-visible {
 .diagram-placeholder .muted {
   font-size: var(--fs-sm);
   font-weight: 400;
+}
+
+/* ------------------------------------------------------------------ */
+/* Diagram popup (backlog item 4) — full-size chord diagram overlay,    */
+/* opened from a diagram-tap or diagram-expand button. A single         */
+/* instance lives at the end of <body>; diagram-popup.js toggles the    */
+/* "open" class and (re)fills .diagram-popup-body.                      */
+/* ------------------------------------------------------------------ */
+
+.diagram-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.diagram-popup.open {
+  display: flex;
+}
+
+.diagram-popup-panel {
+  width: 100%;
+  max-width: var(--diagram-popup-w);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  border-radius: var(--radius);
+  background: var(--bg-sheet);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.diagram-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.diagram-popup-head h3 {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+
+.diagram-popup-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border-radius: var(--radius-pill);
+  color: var(--ink-dim);
+  font-size: var(--fs-md);
+}
+
+.diagram-popup-close:hover,
+.diagram-popup-close:focus-visible {
+  color: var(--ink);
+  background: var(--bg-sunken);
+}
+
+.diagram-popup-svg {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.diagram-popup-caption {
+  margin: var(--sp-2) 0 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.diagram-popup-cycle {
+  margin-top: var(--sp-3);
+  min-height: var(--tap);
+  width: 100%;
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.diagram-popup-cycle:hover,
+.diagram-popup-cycle:focus-visible {
+  border-color: var(--accent-dim);
+  color: var(--accent-bright);
+}
+
+.diagram-popup-link {
+  display: block;
+  margin-top: var(--sp-3);
+  min-height: var(--tap);
+  line-height: var(--tap);
+  color: var(--accent-bright);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.diagram-popup-link:hover {
+  text-decoration: underline;
 }
 
 .notes p {
@@ -1323,6 +1477,26 @@ body[data-route="perform"] .tabbar {
   text-overflow: ellipsis;
 }
 
+/* Capo mode toggle (backlog item 5). */
+.perform-capo-toggle {
+  flex: 0 0 auto;
+  min-height: 1.6rem;
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.perform-capo-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
 .wake-dot {
   color: var(--accent-dim);
   font-size: 0.55rem;
@@ -1361,6 +1535,8 @@ body[data-route="perform"] .tabbar {
 
 .perform-sub {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.7em;
   font-size: max(0.7rem, calc(var(--perform-fs, 3rem) * 0.22));
   color: var(--ink-faint);
@@ -1373,6 +1549,11 @@ body[data-route="perform"] .tabbar {
 
 .perform-beats::after {
   content: " beats";
+}
+
+/* The small "sounds Bb" note shown alongside a played (capo) shape. */
+.perform-sounds {
+  font-style: italic;
 }
 
 /* ------------------------------------------------------------------ */
