@@ -77,7 +77,7 @@ export function pinButton(entry, getTonic, onChange) {
       "aria-label",
       pinned ? "Unpin from your hoard" : "Pin to your hoard"
     );
-    btn.title = pinned ? "Pinned — tap to unpin" : "Pin to your hoard";
+    btn.title = pinned ? "Pinned. Tap to unpin" : "Pin to your hoard";
   }
 
   btn.addEventListener("click", (ev) => {

@@ -17,6 +17,8 @@ import * as detail from "./detail.js";
 import * as perform from "./perform.js";
 import * as chordsLib from "./chords-lib.js";
 import * as scalesLib from "./scales-lib.js";
+import * as builder from "./builder.js";
+import { builtEntries } from "./built.js";
 import { openSettingsPanel, settingsRow } from "./settings-panel.js";
 import { legendCaption } from "./function-tint.js";
 import { downloadBackup, importBackup } from "./backup.js";
@@ -84,26 +86,6 @@ export function setFunctionTint(on) {
 }
 
 // ---------------------------------------------------------------------------
-// Placeholder views ("coming soon")
-// ---------------------------------------------------------------------------
-
-function comingSoon(title, blurb) {
-  return {
-    render(container) {
-      container.appendChild(
-        el(
-          "section",
-          { className: "coming-soon" },
-          el("h2", {}, title),
-          el("p", {}, blurb),
-          el("p", { className: "coming-soon-tag" }, "Coming soon")
-        )
-      );
-    },
-  };
-}
-
-// ---------------------------------------------------------------------------
 // VIEW REGISTRY — the one obvious place views plug in.
 //
 // ═══ EXTENSION POINT (wave 2) ═══
@@ -120,10 +102,7 @@ const views = {
   perform: { render: perform.render },
   chords: { render: chordsLib.render },
   scales: { render: scalesLib.render },
-  build: comingSoon(
-    "Progression builder",
-    "Start from one chord and let the hoard suggest where to go next — mild, medium or spicy. Still in the workshop."
-  ),
+  build: { render: builder.render },
 };
 
 // Which bottom tab lights up for each route.
@@ -217,7 +196,27 @@ async function loadData() {
     const collection = files[i].replace(/\.json$/, "");
     return batch.map((entry) => ({ ...entry, collection }));
   });
+  // Progressions saved from the builder (chordhoard.built) join the list
+  // under their own derived collection, so cards, filters, detail view and
+  // performance mode treat them like any other entry.
+  state.collectionLabels = { ...state.collectionLabels, built: "My progressions" };
+  state.entries.push(
+    ...builtEntries().map((entry) => ({ ...entry, collection: "built" }))
+  );
   state.byId = new Map(state.entries.map((entry) => [entry.id, entry]));
+}
+
+/** Register a just-saved builder progression into the running app. */
+export function registerBuiltEntry(entry) {
+  const withCollection = { ...entry, collection: "built" };
+  state.entries.push(withCollection);
+  state.byId.set(entry.id, withCollection);
+}
+
+/** Remove a deleted builder progression from the running app. */
+export function unregisterBuiltEntry(id) {
+  state.entries = state.entries.filter((entry) => entry.id !== id);
+  state.byId.delete(id);
 }
 
 /** Display label for a collection key, falling back to the key itself. */
@@ -307,7 +306,7 @@ export function buildSettingsPanel(body) {
         try {
           const written = await importBackup(file);
           importStatus.textContent = written
-            ? `Restored ${written} ${written === 1 ? "item" : "items"} — reloading…`
+            ? `Restored ${written} ${written === 1 ? "item" : "items"}. Reloading…`
             : "That backup was empty, so nothing changed.";
           if (written) setTimeout(() => location.reload(), 600);
         } catch (err) {

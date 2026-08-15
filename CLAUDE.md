@@ -561,7 +561,28 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       prefix so new keys ride along automatically; import only writes keys with
       that prefix, format-checked, from the settings panel with a status line
       and a reload on success). PWA/service worker was already live pre-phase-4.
-      Still open: song builder, dynamic builder (moves.json).
+      Also landed 2026-08-15: the **dynamic builder** (`js/ui/builder.js` +
+      `js/ui/built.js` + `data/moves.json`, replacing the Build tab placeholder).
+      moves.json holds degree→ranked-degrees `transitions` (mode-agnostic, mapped
+      through DIATONIC_NUMERALS at suggestion time), per-family `colours` for
+      spice 2 (slash basses only in the major table, because bass digits read
+      against the tonic's MAJOR scale — i/3 in Am would give Am/C#), and
+      per-family `borrowed` pools for spice 3, filtered per mode with
+      isDiatonic() so anything the mode already owns drops out. Context rules
+      v1: rank from the last chord placed, never re-suggest the chord you're on,
+      nudge degree 1 forward after 3+ chords away from home. Saves write a FULL
+      schema entry (4 beats per chord, 4/4, bars = chord count, 16-bar cap,
+      moods/genres empty) to `chordhoard.built` and register it under the
+      derived "built" collection ("My progressions"), so cards, detail,
+      transpose, capo, complexity, performance mode and pins all work on saved
+      results with no special casing; ids are `built-*` and stable, and the
+      chordhoard.* prefix means they ride along in backups. tools/validate.js
+      now also validates moves.json (numerals parse + realise, transitions
+      cover degrees 1–7, no minor-family slash basses); schema.md documents the
+      file. The header instrument toggle is UNHIDDEN on #/build now (suggestion
+      buttons carry per-instrument complexity badges, so it does something
+      there again).
+      Still open: song builder.
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: audio playback (Web Audio), shareable song-structure links, MIDI export
 

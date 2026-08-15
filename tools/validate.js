@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { parse as parseNumeral, format as formatNumeral } from "../js/engine/numeral.js";
 import { render, beatsPerBar } from "../js/engine/progression.js";
 import { parseNote } from "../js/engine/theory.js";
+import { realize } from "../js/engine/chords.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PROG_DIR = join(ROOT, "data", "progressions");
@@ -272,6 +273,81 @@ for (const file of files) {
       }
     }
   });
+}
+
+// ------------------------------------------------- data/moves.json (builder)
+// Every numeral in the suggestion rules must parse and realise in a
+// representative key of its family, transitions must be ranked lists of
+// degrees 1–7 for all seven degrees, and (because slash-bass digits read
+// against the tonic's MAJOR scale) no minor-family rule may use a slash bass.
+
+const MOVES_PATH = join(ROOT, "data", "moves.json");
+if (existsSync(MOVES_PATH)) {
+  const where = "data/moves.json";
+  try {
+    const moves = JSON.parse(readFileSync(MOVES_PATH, "utf8"));
+
+    if (!moves.transitions || typeof moves.transitions !== "object") {
+      problem(where, "missing transitions object");
+    } else {
+      for (let d = 1; d <= 7; d += 1) {
+        const list = moves.transitions[String(d)];
+        if (!Array.isArray(list) || list.length === 0) {
+          problem(where, `transitions["${d}"] must be a non-empty array`);
+          continue;
+        }
+        for (const dest of list) {
+          if (!Number.isInteger(dest) || dest < 1 || dest > 7) {
+            problem(where, `transitions["${d}"] contains "${dest}" (want degrees 1–7)`);
+          }
+        }
+        if (new Set(list).size !== list.length) {
+          problem(where, `transitions["${d}"] has duplicate degrees`);
+        }
+      }
+    }
+
+    const checkNumeral = (numeral, family, context) => {
+      const testTonic = family === "major" ? "C" : "A";
+      try {
+        const parsed = parseNumeral(numeral);
+        realize(parsed, testTonic);
+        if (family === "minor" && parsed.bass !== null) {
+          problem(
+            where,
+            `${context} "${numeral}": slash bass in a minor-family rule (bass digits read against the MAJOR scale)`
+          );
+        }
+      } catch (err) {
+        problem(where, `${context} "${numeral}": ${err.message}`);
+      }
+    };
+
+    for (const family of ["major", "minor"]) {
+      const colours = moves.colours && moves.colours[family];
+      if (!colours || typeof colours !== "object") {
+        problem(where, `missing colours.${family}`);
+      } else {
+        for (const [degree, list] of Object.entries(colours)) {
+          if (!Array.isArray(list)) {
+            problem(where, `colours.${family}["${degree}"] must be an array`);
+            continue;
+          }
+          for (const n of list) checkNumeral(n, family, `colours.${family}["${degree}"]`);
+        }
+      }
+      const borrowed = moves.borrowed && moves.borrowed[family];
+      if (!Array.isArray(borrowed) || borrowed.length === 0) {
+        problem(where, `borrowed.${family} must be a non-empty array`);
+      } else {
+        for (const n of borrowed) checkNumeral(n, family, `borrowed.${family}`);
+      }
+    }
+  } catch (err) {
+    problem(where, `unreadable JSON: ${err.message}`);
+  }
+} else {
+  warnings.push("data/moves.json not found — builder rule checks skipped");
 }
 
 for (const w of warnings) console.warn(`Warning: ${w}`);

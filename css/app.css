@@ -2057,10 +2057,284 @@ body[data-route="perform"] .tabbar {
 /* nothing.                                                            */
 /* ------------------------------------------------------------------ */
 
+/* Build used to be in this list as a placeholder route; the real builder
+   badges every suggestion with its complexity for the CURRENT instrument,
+   so the toggle earns its place there now. */
 body[data-route="chords"] .instrument-toggle,
-body[data-route="scales"] .instrument-toggle,
-body[data-route="build"] .instrument-toggle {
+body[data-route="scales"] .instrument-toggle {
   display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dynamic builder (#/build, phase 4)                                  */
+/* ------------------------------------------------------------------ */
+
+.builder-title {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-lg);
+}
+
+.build-pickers {
+  margin-bottom: var(--sp-4);
+}
+
+.build-current {
+  padding: var(--sp-3);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  margin-bottom: var(--sp-4);
+}
+
+.build-current-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.build-current-head h3 {
+  margin: 0;
+  flex: 1;
+}
+
+.build-clear {
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.build-empty {
+  margin: 0;
+  color: var(--ink-dim);
+}
+
+.build-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.build-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+}
+
+.build-chip-symbol {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.build-chip-numeral {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.build-chip-remove {
+  min-width: 1.8rem;
+  min-height: 1.8rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.build-chip-remove:hover,
+.build-chip-remove:focus-visible {
+  color: var(--ink);
+  background: var(--bg-raised);
+}
+
+.build-note {
+  margin: var(--sp-2) 0 0;
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.build-suggestions h3 {
+  margin: 0 0 var(--sp-1);
+}
+
+.build-sug-group {
+  margin: var(--sp-3) 0;
+}
+
+.build-sug-group h4 {
+  margin: 0 0 2px;
+  font-size: var(--fs-sm);
+}
+
+.build-chillies {
+  letter-spacing: 0.1em;
+}
+
+.build-sug-blurb {
+  margin: 0 0 var(--sp-2);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.build-sug-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.build-sug {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 4.4rem;
+  min-height: var(--tap);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  cursor: pointer;
+}
+
+.build-sug:hover,
+.build-sug:focus-visible {
+  border-color: var(--accent-dim);
+}
+
+.build-sug.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.build-sug-symbol {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.build-sug-numeral {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.build-save,
+.build-saved {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}
+
+.build-save h3,
+.build-saved h3 {
+  margin: 0 0 var(--sp-1);
+}
+
+.build-save-row {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.build-name {
+  flex: 1;
+  min-height: var(--tap);
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-family: inherit;
+}
+
+.build-save-btn {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.build-save-btn:hover,
+.build-save-btn:focus-visible {
+  background: var(--accent-bright);
+}
+
+.build-save-status {
+  margin: var(--sp-2) 0 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+}
+
+.build-save-status:empty {
+  display: none;
+}
+
+.build-saved-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.build-saved-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.build-saved-name {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.build-saved-name:hover,
+.build-saved-name:focus-visible {
+  color: var(--accent);
+}
+
+.build-saved-meta {
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.build-saved-load,
+.build-saved-delete {
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.build-saved-delete:hover,
+.build-saved-delete:focus-visible {
+  border-color: var(--lv-4);
+  color: var(--lv-4);
+}
+
+.build-saved-load:hover,
+.build-saved-load:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ------------------------------------------------------------------ */

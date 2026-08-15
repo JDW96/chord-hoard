@@ -1,0 +1,36 @@
+{
+  "comment": "Dynamic-builder suggestion rules (phase 4). transitions: for each scale degree you are ON (1-7), the ranked scale degrees to go TO next - mode-agnostic, mapped through each mode's own diatonic numerals at suggestion time. colours: per family and destination degree, the tasteful-colour variants offered at spice 2 (slash basses only appear in the major table because bass digits read against the tonic's MAJOR scale). borrowed: the spice-3 pool per family, filtered per mode so anything already diatonic drops out. Every numeral here must parse and realise; tools/validate.js checks that.",
+  "transitions": {
+    "1": [5, 4, 6, 2, 3, 7],
+    "2": [5, 7, 1, 4, 6],
+    "3": [6, 4, 2, 1],
+    "4": [5, 1, 2, 7, 6],
+    "5": [1, 6, 4, 2],
+    "6": [2, 4, 5, 1, 3],
+    "7": [1, 3, 6, 5]
+  },
+  "colours": {
+    "major": {
+      "1": ["Imaj7", "I6", "Iadd9", "Isus2", "I/3"],
+      "2": ["ii7"],
+      "3": ["iii7"],
+      "4": ["IVmaj7", "IVadd9", "IV6", "IV/1"],
+      "5": ["V7", "Vsus4", "V7sus4", "V/7"],
+      "6": ["vi7", "viadd9"],
+      "7": []
+    },
+    "minor": {
+      "1": ["i7", "iadd9"],
+      "2": [],
+      "3": ["bIIImaj7", "bIII6"],
+      "4": ["iv7", "ivadd9"],
+      "5": ["v7"],
+      "6": ["bVImaj7", "bVI6"],
+      "7": ["bVII7", "bVIIadd9"]
+    }
+  },
+  "borrowed": {
+    "major": ["iv", "bVII", "bVI", "i", "bIII", "II7", "III7", "VI7", "II", "bII"],
+    "minor": ["V", "V7", "IV", "bII", "viidim", "I", "IV7"]
+  }
+}

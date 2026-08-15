@@ -81,3 +81,22 @@ bass       := "/" digit 1–7       (diatonic scale degree of the bass note)
 - `5` = power chord (root + fifth, no third).
 - Slash bass: `I/3` in C = C/E; `V/7` in G = D/F#.
 - Nothing fancier in v1: no 9/11/13, no m7b5, no ø or °7 symbols.
+
+## data/moves.json (dynamic builder rules)
+
+Suggestion rules for the Build tab. Three parts:
+
+- `transitions`: for each scale degree you are on (`"1"`–`"7"`), the ranked
+  degrees to try next. Mode-agnostic — the builder maps degrees through the
+  current mode's own diatonic numerals (`DIATONIC_NUMERALS` in
+  `js/engine/harmony.js`), so `5 → 1` means V→I in major and v→i in minor.
+- `colours`: per family (`major`/`minor`), per destination degree, the
+  tasteful-colour variants offered at spice level two (sus, 7ths, 6, add9,
+  slash basses). Slash basses appear only in the major table: bass digits
+  read against the tonic's MAJOR scale, so `i/3` in A minor would give
+  Am/C#, which nobody wants.
+- `borrowed`: per family, the spice-three pool. The builder filters it per
+  mode with `isDiatonic()`, so anything the current mode already owns (like
+  bVII in mixolydian) drops out by itself.
+
+Every numeral must parse and realise; `tools/validate.js` checks the file.
