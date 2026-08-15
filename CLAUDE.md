@@ -237,10 +237,18 @@ landscape, Screen Wake Lock held.
 ## Live deployment
 
 Live at **https://jdw96.github.io/chord-hoard/** (GitHub Pages, repo `jdw96/chord-hoard`,
-deploy from main branch root). Updates are currently manual: Jack drags changed files
-into the repo's web uploader. Bump `CACHE_VERSION` in sw.js whenever any shipped file
-changes, and always tell Jack exactly which files to re-upload. The cloud sandbox
-CANNOT reach github.com (egress blocked) — never attempt to push from a cloud session.
+deploy from main branch root). As of 2026-08-15, a Cowork session with `mcp__workspace__bash`
+access to this clone can push directly: Jack issued a fine-grained PAT (scoped to just
+this repo, Contents: read/write) and it's stored as `origin`'s push URL in this local
+clone's `.git/config` (never committed, never in a tracked file). Ship loop: edit, run
+`node tools/test-all.js`, bump `CACHE_VERSION` in sw.js if any shipped file changed,
+`git add -A && git commit` with a real message, `git push origin main`. Watch for CRLF
+line endings in the working tree turning every file into a false diff — normalise with
+`sed -i 's/\r$//'` before trusting `git diff`; `.gitattributes` (added 2026-08-15) should
+prevent this recurring. This does NOT apply to every environment: an older, more locked-down
+cloud sandbox genuinely could not reach github.com — if `git ls-remote origin` or
+`curl https://github.com` fails, fall back to listing changed files and asking Jack to
+push himself (GitHub Desktop or the web uploader).
 
 ## Copy voice rules (agreed 2026-08-02 — apply to ALL app copy and data text)
 
