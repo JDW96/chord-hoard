@@ -1699,10 +1699,35 @@ a.chip {
   text-align: center;
 }
 
+.chord-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
 .chord-hero-symbol {
   font-size: var(--fs-chord-hero);
   font-weight: 800;
   line-height: 1.1;
+}
+
+/* Audition button (roadmap 1.2) — plays the notes shown below. */
+.chord-hero-audition {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-md);
+}
+
+.chord-hero-audition:hover,
+.chord-hero-audition:focus-visible {
+  color: var(--accent-bright);
 }
 
 .chord-hero-quality {
@@ -2541,6 +2566,13 @@ body[data-route="scales"] .instrument-toggle {
   gap: var(--sp-2);
 }
 
+/* Wraps the add-button and its audition button (roadmap 1.2) so the
+   speaker can sit as a corner overlay, same pattern as .diagram-expand. */
+.build-sug-wrap {
+  position: relative;
+  display: inline-block;
+}
+
 .build-sug {
   display: flex;
   flex-direction: column;
@@ -2553,6 +2585,26 @@ body[data-route="scales"] .instrument-toggle {
   border-radius: var(--radius-sm);
   background: var(--bg-raised);
   cursor: pointer;
+}
+
+.build-sug-audition {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.build-sug-audition:hover,
+.build-sug-audition:focus-visible {
+  color: var(--accent-bright);
 }
 
 .build-sug:hover,

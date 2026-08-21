@@ -25,6 +25,7 @@ import { parse, formatDisplay } from "../engine/numeral.js";
 import { realize } from "../engine/chords.js";
 import * as complexity from "../engine/complexity.js";
 import { DIATONIC_NUMERALS, isDiatonic } from "../engine/harmony.js";
+import * as audioPlayer from "./audio-player.js";
 import { state, registerBuiltEntry, unregisterBuiltEntry } from "./app.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { tintClass, legendCaption } from "./function-tint.js";
@@ -264,7 +265,7 @@ function suggestionBtn(numeral, redraw) {
   const cls = tintClass(numeral, tonic, mode);
   const level = complexity.rate([realized], state.instrument).level;
   const full = chosen.length >= MAX_CHORDS;
-  return el(
+  const addBtn = el(
     "button",
     {
       type: "button",
@@ -283,6 +284,20 @@ function suggestionBtn(numeral, redraw) {
     el("span", { className: "build-sug-numeral " + cls }, formatDisplay(numeral)),
     el("span", { className: "badge small " + levelClass(level) }, level)
   );
+  // Audition (roadmap 1.2): a separate small speaker button, not the whole
+  // cell, since the cell's own tap already places the chord — a whole-cell
+  // tap can only mean one thing per the backlog item 14 lesson.
+  const playBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "build-sug-audition",
+      attrs: { "aria-label": `Play ${realized.symbol}` },
+      on: { click: () => audioPlayer.playChord(realized) },
+    },
+    "♪"
+  );
+  return el("span", { className: "build-sug-wrap" }, addBtn, playBtn);
 }
 
 function fillCurrent(host, redraw) {

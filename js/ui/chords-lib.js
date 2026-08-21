@@ -19,6 +19,7 @@
 import { parseNote, pitchClass } from "../engine/theory.js";
 import { realize } from "../engine/chords.js";
 import { formatDisplay } from "../engine/numeral.js";
+import * as audioPlayer from "./audio-player.js";
 import {
   voicingsFor,
   guitarChordSVG,
@@ -202,7 +203,23 @@ export function render(container, params) {
     el(
       "header",
       { className: "chord-hero" },
-      el("div", { className: "chord-hero-symbol" }, prettySymbol(realized.symbol)),
+      el(
+        "div",
+        { className: "chord-hero-top" },
+        el("div", { className: "chord-hero-symbol" }, prettySymbol(realized.symbol)),
+        // Audition (roadmap 1.2): plays the exact notes shown below, not any
+        // particular guitar voicing.
+        el(
+          "button",
+          {
+            type: "button",
+            className: "chord-hero-audition",
+            attrs: { "aria-label": `Play ${realized.symbol}` },
+            on: { click: () => audioPlayer.playChord(realized) },
+          },
+          "♪"
+        )
+      ),
       el("div", { className: "chord-hero-quality" }, realized.quality),
       el(
         "div",

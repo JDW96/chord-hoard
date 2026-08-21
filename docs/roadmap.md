@@ -245,7 +245,7 @@ slash basses; loop is gapless (schedule the loop boundary ahead, do not stop/sta
 BPM changes apply on the next bar; works on mobile Safari and Chrome after one tap;
 performance mode can play with the grid highlighting along; test-all green.
 
-### 1.2 Builder and chord library audition  [ ]  (S/M)
+### 1.2 Builder and chord library audition  [x]  (S/M)  DONE 2026-08-21
 
 **Goal.** Once 1.1 exists, wire single-chord audition everywhere chords appear:
 tapping a suggestion in the dynamic builder plays it, a play affordance on the Chords

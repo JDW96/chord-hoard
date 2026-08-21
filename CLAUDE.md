@@ -847,6 +847,28 @@ its checkbox there, and note any new architectural fact here. Landed so far:
     highlights the grid; navigating away mid-playback (both routes) throws
     no console errors. `sw.js` precache gained the two new files and
     `CACHE_VERSION` bumped to v17. `node tools/test-all.js` green throughout.
+- **Roadmap 1.2, builder and chord library audition**, DONE 2026-08-21. Wired
+  `audioPlayer.playChord()` in everywhere a single chord is displayed:
+  - `js/ui/builder.js`'s suggestion buttons — `suggestionBtn()` now returns a
+    `.build-sug-wrap` (`position: relative`) holding the existing add-button
+    unchanged plus a small `.build-sug-audition` speaker button absolutely
+    positioned in the corner (same visual pattern as `diagrams.js`'s
+    `.diagram-expand` popup shortcut). Deliberately NOT a whole-cell tap —
+    the cell's own tap already places the chord, and backlog item 14 already
+    settled that one tap can only mean one thing, so a second affordance
+    needs its own hit target rather than overloading the first.
+  - `js/ui/chords-lib.js`'s chord-hero header — a `.chord-hero-audition`
+    button next to the big chord symbol, playing `realized` (the exact
+    displayed notes, not any one guitar voicing among the several shown
+    below).
+  Both call `audioPlayer.playChord(realized)` directly; auditioning never
+  touches builder state (confirmed no chord gets placed) and never
+  navigates (confirmed the hash is untouched by a click). `sw.js`
+  `CACHE_VERSION` bumped to v18 (no new files, existing ones changed).
+  Verified in a real browser: the builder's audition button plays without
+  placing, the add-button still places correctly afterwards, and the chord
+  library's audition button fires with no console errors and no route
+  change. This closes roadmap tier 1.
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export
 
