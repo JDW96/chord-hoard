@@ -975,10 +975,16 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   gesture, so nobody loses the ability to zoom in and read; `user-scalable=no`
   in the viewport meta would have taken that away, which is why it is NOT
   used and the meta is unchanged. `touch-action` is not inherited, but the
-  browser intersects it with every ancestor of the touched element, so one
-  declaration on `body` covers the whole app including the fixed
-  full-viewport performance view. Nothing in the app listens for `dblclick`
-  or raw touch events, so there was nothing to break.
+  browser intersects it with every ancestor of the touched element, so the
+  `body` declaration alone covers the whole app including the fixed
+  full-viewport performance view. Jack asked for it everywhere regardless, so
+  the file's existing `*` rule (the one that sets `box-sizing`) carries the
+  same declaration: belt and braces, and it means nothing added later can
+  miss it. Zero specificity, so a future control needing different touch
+  semantics still overrides it. Nothing in the app listens for `dblclick` or
+  raw touch events, so there was nothing to break. Verified across six routes
+  plus the settings overlay: 11,450 elements, every one computing
+  `manipulation`.
 
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export

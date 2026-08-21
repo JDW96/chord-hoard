@@ -212,6 +212,15 @@
 
 * {
   box-sizing: border-box;
+  /* No double-tap-to-zoom, anywhere. The body declaration below explains
+     why; this covers every element outright, so nothing can miss it —
+     including anything inside its own scrolling container, an overlay, or
+     markup added later that nobody remembers to think about.
+     "manipulation" still allows panning and pinch-zoom, so applying it
+     universally costs nothing: it only drops the double-tap gesture. Zero
+     specificity, so a future control that needs different touch semantics
+     (pan-y on a swipe, say) overrides it without a fight. */
+  touch-action: manipulation;
 }
 
 html {
