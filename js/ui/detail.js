@@ -7,6 +7,8 @@
 import * as capo from "../engine/capo.js";
 import { parseNote, pitchClass } from "../engine/theory.js";
 import { recommend } from "../engine/solo-scales.js";
+import { bpmForTempo } from "../engine/audio-notes.js";
+import * as audioPlayer from "./audio-player.js";
 import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
 import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
@@ -111,6 +113,13 @@ export function render(container, params) {
 
   let tonic = chosenTonic(entry);
   let showPerChord = false;
+  // Audio transport state (roadmap 1.1) — persists across redraws within
+  // this view visit (key changes, badge toggle), ephemeral like the
+  // performance view's capo toggle: resets on re-entry, not stored.
+  let bpm = bpmForTempo(entry.tempo);
+  let loopOn = false;
+  let countInOn = false;
+  let metronomeOn = false;
 
   const body = el("div", { className: "detail-body" });
   // The href gains the current tonic in draw(), so the chosen key survives
@@ -135,8 +144,14 @@ export function render(container, params) {
   );
 
   draw();
+  // draw() rebuilds the whole body (a key change swaps out the chord set
+  // under any in-flight playback), so every redraw stops it rather than
+  // trying to keep old DOM-bound callbacks alive across a rebuild; leaving
+  // the route entirely does the same.
+  window.addEventListener("hashchange", () => audioPlayer.stopPlayback(), { once: true });
 
   function draw() {
+    audioPlayer.stopPlayback();
     clear(body);
     performLink.href =
       "#/perform/" + encodeURIComponent(entry.id) + "/" + encodeURIComponent(tonic);
@@ -212,6 +227,134 @@ export function render(container, params) {
         )
       );
     });
+
+    // ---- Audio transport (roadmap 1.1) ------------------------------------
+    // Play/stop, BPM stepper, loop/count-in/metronome toggles. State
+    // (bpm/loopOn/countInOn/metronomeOn) lives at render() scope so it
+    // survives a redraw; the play button and highlight wiring are rebuilt
+    // fresh each draw() (which always stops any prior playback first, see
+    // above), so they only ever reference this draw's own chord strip.
+    const countInLabel = el("span", { className: "audio-count-in" });
+
+    function highlightSounding(index) {
+      strip.querySelectorAll(".chord-block").forEach((node, i) => {
+        node.classList.toggle("sounding", i === index);
+      });
+    }
+
+    function resetAudioUI() {
+      playBtn.textContent = "▶";
+      playBtn.classList.remove("active");
+      playBtn.setAttribute("aria-label", "Play");
+      playBtn.setAttribute("aria-pressed", "false");
+      countInLabel.textContent = "";
+      highlightSounding(null);
+    }
+
+    const playBtn = el(
+      "button",
+      {
+        type: "button",
+        className: "audio-play-btn",
+        attrs: { "aria-label": "Play", "aria-pressed": "false" },
+        on: {
+          click: () => {
+            if (audioPlayer.isPlaying()) {
+              audioPlayer.stopPlayback();
+              return;
+            }
+            playBtn.textContent = "■";
+            playBtn.classList.add("active");
+            playBtn.setAttribute("aria-label", "Stop");
+            playBtn.setAttribute("aria-pressed", "true");
+            audioPlayer.playProgression(rendered.chords, {
+              bpm,
+              timeSig: entry.timeSig,
+              loop: loopOn,
+              countIn: countInOn,
+              metronome: metronomeOn,
+              onChordChange: highlightSounding,
+              onCountIn: (beatsLeft) => {
+                countInLabel.textContent = beatsLeft ? String(beatsLeft) : "";
+              },
+              onStop: resetAudioUI,
+            });
+          },
+        },
+      },
+      "▶"
+    );
+
+    const bpmValue = el("span", { className: "bpm-value" }, `${bpm} BPM`);
+    const bpmStepper = el(
+      "div",
+      { className: "bpm-stepper" },
+      el(
+        "button",
+        {
+          type: "button",
+          className: "bpm-btn",
+          attrs: { "aria-label": "Slower" },
+          on: {
+            click: () => {
+              bpm = Math.max(40, bpm - 4);
+              bpmValue.textContent = `${bpm} BPM`;
+            },
+          },
+        },
+        "−"
+      ),
+      bpmValue,
+      el(
+        "button",
+        {
+          type: "button",
+          className: "bpm-btn",
+          attrs: { "aria-label": "Faster" },
+          on: {
+            click: () => {
+              bpm = Math.min(220, bpm + 4);
+              bpmValue.textContent = `${bpm} BPM`;
+            },
+          },
+        },
+        "+"
+      )
+    );
+
+    function audioToggle(label, get, set) {
+      const btn = el(
+        "button",
+        {
+          type: "button",
+          className: "audio-toggle" + (get() ? " active" : ""),
+          attrs: { "aria-pressed": String(get()) },
+          on: {
+            click: () => {
+              set(!get());
+              btn.classList.toggle("active", get());
+              btn.setAttribute("aria-pressed", String(get()));
+            },
+          },
+        },
+        label
+      );
+      return btn;
+    }
+
+    body.appendChild(
+      el(
+        "div",
+        { className: "audio-transport" },
+        playBtn,
+        bpmStepper,
+        audioToggle("Loop", () => loopOn, (v) => (loopOn = v)),
+        audioToggle("Count-in", () => countInOn, (v) => (countInOn = v)),
+        audioToggle("Metronome", () => metronomeOn, (v) => (metronomeOn = v)),
+        countInLabel
+      )
+    );
+
     body.appendChild(strip);
     body.appendChild(legendCaption());
 

@@ -22,6 +22,8 @@
 import { parseNote, pitchClass } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
 import { renderSong as realizeSong } from "../engine/song.js";
+import { bpmForTempo } from "../engine/audio-notes.js";
+import * as audioPlayer from "./audio-player.js";
 import { state, renderIn, buildSettingsPanel } from "./app.js";
 import { chosenTonic, tonicsFor, isMajorFamily } from "./detail.js";
 import { songById } from "./songs-store.js";
@@ -269,6 +271,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
               capoBtn.setAttribute("aria-pressed", String(capoMode));
               infoSpan.textContent = infoText();
               buildGrid();
+              applyHighlight();
               layout();
             },
           },
@@ -288,6 +291,55 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   );
   settingsBtn.innerHTML = SETTINGS_ICON;
 
+  // ---- Play button (roadmap 1.1) ------------------------------------------
+  // Always plays the real sounding chords (`chords`, at `tonic`), never the
+  // capo-played shapes — same precedent as the tint above: the harmony
+  // doesn't change under a capo, only which shape your hands make.
+  let soundingIndex = null;
+  function applyHighlight() {
+    grid.querySelectorAll(".perform-cell:not(.blank)").forEach((node, i) => {
+      node.classList.toggle("sounding", i === soundingIndex);
+    });
+  }
+  function highlightSounding(index) {
+    soundingIndex = index;
+    applyHighlight();
+  }
+  function resetPlayUI() {
+    playBtn.textContent = "▶";
+    playBtn.classList.remove("active");
+    playBtn.setAttribute("aria-label", "Play");
+    playBtn.setAttribute("aria-pressed", "false");
+    highlightSounding(null);
+  }
+  const playBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "perform-play-toggle",
+      attrs: { "aria-label": "Play", "aria-pressed": "false" },
+      on: {
+        click: () => {
+          if (audioPlayer.isPlaying()) {
+            audioPlayer.stopPlayback();
+            return;
+          }
+          playBtn.textContent = "■";
+          playBtn.classList.add("active");
+          playBtn.setAttribute("aria-label", "Stop");
+          playBtn.setAttribute("aria-pressed", "true");
+          audioPlayer.playProgression(chords, {
+            bpm: bpmForTempo(entry.tempo),
+            timeSig: entry.timeSig,
+            onChordChange: highlightSounding,
+            onStop: resetPlayUI,
+          });
+        },
+      },
+    },
+    "▶"
+  );
+
   const stripChildren = [
     el(
       "a",
@@ -299,6 +351,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
       "✕"
     ),
     settingsBtn,
+    playBtn,
   ];
   if (nav) stripChildren.push(navButton("prev", nav.prevHref, "Previous section"));
   stripChildren.push(capoBtn, infoSpan);
@@ -354,6 +407,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     }
   }
   buildGrid();
+  applyHighlight();
 
   const root = el("section", { className: "perform-full" }, topBar, grid);
   container.appendChild(root);
@@ -418,6 +472,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     window.removeEventListener("resize", layout);
     document.removeEventListener("visibilitychange", onVisibility);
     unwireNav();
+    audioPlayer.stopPlayback();
     if (wakeLock) {
       wakeLock.release().catch(() => {});
       wakeLock = null;

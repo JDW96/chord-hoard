@@ -833,6 +833,94 @@ a:focus-visible {
   margin-top: var(--sp-2);
 }
 
+/* The chord currently sounding during playback (roadmap 1.1). */
+.chord-block.sounding {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+/* ------------------------------------------------------------------ */
+/* Audio playback transport (roadmap 1.1)                              */
+/* ------------------------------------------------------------------ */
+
+.audio-transport {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+.audio-play-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-md);
+}
+
+.audio-play-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.bpm-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  padding: 0 var(--sp-1);
+}
+
+.bpm-btn {
+  min-width: 2rem;
+  min-height: 2rem;
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.bpm-value {
+  min-width: 3.6rem;
+  text-align: center;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.audio-toggle {
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.audio-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.audio-count-in {
+  color: var(--accent-bright);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+
 .capo-hint {
   margin: 0 0 var(--sp-4);
   padding: var(--sp-3) var(--sp-4);
@@ -2115,6 +2203,26 @@ body[data-route="perform-song"] .tabbar {
   color: var(--on-accent);
 }
 
+/* Play button (roadmap 1.1) — same small pill look as the capo toggle. */
+.perform-play-toggle {
+  flex: 0 0 auto;
+  min-height: 1.6rem;
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.perform-play-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
 /* Previous/next section controls, shown only in song playback
    (#/perform-song/<id>/<index>) — the same physical strip, so a song's
    sections read as one continuous performance rather than a different mode. */
@@ -2190,6 +2298,12 @@ body[data-route="perform-song"] .tabbar {
 .perform-cell.blank {
   border-style: dashed;
   opacity: 0.45;
+}
+
+/* The chord currently sounding during playback (roadmap 1.1). */
+.perform-cell.sounding {
+  border-color: var(--accent);
+  background: var(--accent-wash);
 }
 
 .perform-symbol {

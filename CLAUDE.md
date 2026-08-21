@@ -37,7 +37,11 @@ chords, and explanatory notes should teach gently without jargon walls.
 - Song examples: 2–3 **famous, high-confidence** songs per progression (key + section).
   Omit rather than guess. Obscure progressions may legitimately have none.
 - Dynamic progression builder ships in v1.
-- Audio playback is **v2**: design data/UI so it can slot in, but do not build it.
+- Audio playback: originally scoped as v2 ("design data/UI so it can slot in, but
+  do not build it"). Superseded 2026-08-21 by `docs/roadmap.md`, agreed with Jack,
+  which promoted it to tier 1 ("the multiplier" — everything in the roadmap's
+  teaching tier depends on it) and it shipped in v1. See the phase status entry
+  for roadmap 1.1.
 - Favourites/pins, saved song structures, and playability profiles live in
   `localStorage` on the user's device. Provide JSON export/import for backup/sharing.
 
@@ -763,8 +767,88 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   pattern (`getSoloShapesData()`/`getGuitarData()`/`getMoves()`), so a slow
   or failed fetch degrades to a placeholder rather than blocking the rest of
   the page.
+- **Roadmap 1.1, Web Audio playback engine**, DONE 2026-08-21. Split exactly
+  along the engine/UI line the roadmap specified:
+  - `js/engine/audio-notes.js` (pure, DOM-free): `frequencyOf(note, octave)`
+    (A4 = 440, 12-TET, built on `theory.js`'s `pitchClass`/`parseNote` rather
+    than a parallel note table); `voiceChord(realized, {bassOctave, tonesOctave})`
+    which puts the bass note low (default octave 3) and stacks the chord tones
+    upward from octave 4, bumping each successive tone up an octave whenever
+    its pitch class would otherwise fall at or below the previous tone — a
+    fixed window rather than voice-leading against the prior chord, which is
+    enough to keep consecutive chords from leaping wildly without needing
+    history; `buildSchedule(chords, bpm)` turns a rendered chord list into
+    `{events, totalSec, secPerBeat}`. One deliberate simplification from the
+    roadmap text: a "beat" in scheduling is the data's own beat unit (the
+    time signature's numerator count), not necessarily a quarter note — BPM
+    is the click rate of that unit. This is the right model for a reference
+    player (unlike MIDI export's tick math, which will have to care about
+    the time-signature denominator when roadmap 5.2 is built) and keeps the
+    scheduler simple. `TEMPO_BPM` maps the data's `tempo` feel field to
+    72/104/144 as the roadmap specified. Tested in `tools/test-engine.js`
+    (frequency maths against known reference pitches, voicing stacking
+    including the ascending-bump case, slash-bass placement below the
+    stack — `I/3` in C puts E3 under the C4-E4-G4 stack — BPM mapping, and
+    schedule layout on both a synthetic fixture and a real 6/8 entry run
+    through `progression.render`).
+  - `js/ui/audio-player.js` is the ONE file that owns an `AudioContext`
+    (singleton, created lazily inside `playChord()`/`playProgression()`,
+    which callers only ever invoke from a click handler, satisfying the
+    autoplay-gesture requirement without any extra plumbing). A polysynth
+    voice is one triangle oscillator plus a sine an octave below at low
+    gain, per-note gain envelope (fast attack, gentle release), shared
+    lowpass filter + compressor + master gain. The metronome is a short
+    filtered square-wave blip, accented on beat 1. Scheduling follows the
+    standard lookahead-timer pattern (a `LOOKAHEAD_MS` = 25ms `setInterval`
+    scheduling whatever falls within `SCHEDULE_AHEAD_SEC` = 0.1s of the
+    AudioContext clock) rather than scheduling everything up front or
+    trusting `setInterval`'s own timing — the audio itself sits on the
+    AudioContext clock (sample accurate, immune to a backgrounded tab);
+    only the paired DOM highlight callback rides a `setTimeout` aligned to
+    that clock, so it can drift by a few ms, which is fine for a highlight.
+    Looping is gapless because the next iteration's early events get
+    scheduled inside the same scheduler tick, before the current iteration
+    ends, rather than via a stop/restart. `playProgression()` returns a
+    controller `{stop()}`; only one playback runs at a time — starting a
+    new one stops the last via the module-level `current` reference.
+  - UI wiring: the detail view (`js/ui/detail.js`) gained a compact
+    transport (play/stop, a BPM stepper defaulting to `bpmForTempo(entry.tempo)`,
+    and loop/count-in/metronome toggles) placed between the chord strip and
+    the key picker. Transport state (`bpm`/`loopOn`/`countInOn`/`metronomeOn`)
+    lives at `render()` scope so it survives a redraw (e.g. the per-chord
+    level badge toggle), but `draw()` unconditionally calls
+    `audioPlayer.stopPlayback()` at its own top before rebuilding — a key
+    change swaps out the chord set under any in-flight playback, and
+    stopping on every redraw (rather than only on a real key change) keeps
+    the DOM-bound highlight callbacks from ever running against detached
+    nodes after a rebuild. A `hashchange` listener (registered once per
+    `render()` call, matching the one-shot pattern already used elsewhere)
+    stops playback when the view is left entirely. The sounding chord gets
+    a `.sounding` class via a live `querySelectorAll` lookup inside the
+    `onChordChange` callback rather than a cached node array, so it always
+    targets whichever chord-strip is currently in the DOM.
+    Performance mode (`js/ui/perform.js`) gained a play button in the strip
+    (`.perform-play-toggle`, next to the settings cog) that always plays the
+    real sounding chords at the current tonic, never the capo-played shapes
+    — same precedent as the existing tint rule (harmonic function doesn't
+    change under a capo, only which shape your hands make). Highlighting
+    uses a tracked `soundingIndex` plus `applyHighlight()` (rather than only
+    the live callback) specifically because `buildGrid()` gets called again
+    when capo mode toggles mid-playback, and re-applying immediately after
+    a rebuild avoids a gap until the next chord-change event. `cleanup()`
+    (already wired to `hashchange`, matching the wake-lock teardown) also
+    calls `audioPlayer.stopPlayback()`, so leaving performance mode — via
+    exit, prev/next song-section nav, or backing out — always stops audio.
+  - Verified in a real browser (localhost, mobile viewport): play/stop,
+    the BPM stepper, and all three toggles on the detail view; loop keeps
+    playing past one full pass; count-in shows a counting-down beat label;
+    manual stop and natural end-of-progression stop both reset the button
+    and clear the highlight cleanly; performance mode's play button
+    highlights the grid; navigating away mid-playback (both routes) throws
+    no console errors. `sw.js` precache gained the two new files and
+    `CACHE_VERSION` bumped to v17. `node tools/test-all.js` green throughout.
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
-- v2 backlog: audio playback (Web Audio), shareable song-structure links, MIDI export
+- v2 backlog: shareable song-structure links, MIDI export
 
 ## Workflow rules for agents
 

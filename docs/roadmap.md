@@ -177,7 +177,7 @@ a dozen entries across batches (do the spot-check and report it); test-all green
 
 ## Tier 1: Audio (the multiplier)
 
-### 1.1 Web Audio playback engine  [ ]  (L)
+### 1.1 Web Audio playback engine  [x]  (L)  DONE 2026-08-21
 
 **Goal.** Hear any progression, in any key, on demand. This is the single
 highest-leverage feature in the roadmap: every teaching feature in tier 3 depends on

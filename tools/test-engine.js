@@ -11,6 +11,7 @@ import * as progression from "../js/engine/progression.js";
 import * as harmony from "../js/engine/harmony.js";
 import * as song from "../js/engine/song.js";
 import * as soloScales from "../js/engine/solo-scales.js";
+import * as audioNotes from "../js/engine/audio-notes.js";
 
 let passed = 0;
 const failures = [];
@@ -673,6 +674,71 @@ test("solo-scales: recommend() doesn't throw on a heavily borrowed (chromatic me
   if (!soloScales.SCALE_KEYS.includes(rec.scaleKey)) throw new Error(`unexpected scaleKey ${rec.scaleKey}`);
   if (rec.reason !== "home" && rec.reason !== "relative") throw new Error(`unexpected reason ${rec.reason}`);
   if (!Number.isFinite(rec.score)) throw new Error(`non-finite score ${rec.score}`);
+});
+
+// --------------------------------------------------------------- audio-notes.js
+
+test("audio-notes: frequencyOf matches known reference pitches", () => {
+  const close = (a, b) => Math.abs(a - b) < 0.01;
+  if (!close(audioNotes.frequencyOf("A", 4), 440)) throw new Error("A4 should be 440Hz");
+  if (!close(audioNotes.frequencyOf("C", 4), 261.6255653)) throw new Error("C4 should be ~261.63Hz");
+  if (!close(audioNotes.frequencyOf("A", 3), 220)) throw new Error("A3 should be 220Hz");
+  if (!close(audioNotes.frequencyOf("A", 5), 880)) throw new Error("A5 should be 880Hz");
+});
+
+test("audio-notes: voiceChord stacks root-position tones ascending from tonesOctave", () => {
+  const realized = realize("I", "C"); // {root:"C", notes:["C","E","G"], bassNote:"C"}
+  const voiced = audioNotes.voiceChord(realized);
+  assertEqual(voiced.tones.map((t) => t.note + t.octave).join(","), "C4,E4,G4");
+  assertEqual(voiced.bass.note + voiced.bass.octave, "C3");
+});
+
+test("audio-notes: voiceChord bumps a lower letter up an octave to stay ascending", () => {
+  const realized = realize("V", "C"); // G major: G,B,D — D is below G in pitch class
+  const voiced = audioNotes.voiceChord(realized);
+  assertEqual(voiced.tones.map((t) => t.note + t.octave).join(","), "G4,B4,D5");
+});
+
+test("audio-notes: voiceChord puts a slash bass below the stack, not the triad root", () => {
+  const realized = realize("I/3", "C"); // C/E
+  const voiced = audioNotes.voiceChord(realized);
+  assertEqual(voiced.bass.note + voiced.bass.octave, "E3");
+  assertEqual(voiced.tones.map((t) => t.note + t.octave).join(","), "C4,E4,G4");
+});
+
+test("audio-notes: bpmForTempo maps the feel field and falls back to mid", () => {
+  assertEqual(audioNotes.bpmForTempo("slow"), 72);
+  assertEqual(audioNotes.bpmForTempo("fast"), 144);
+  assertEqual(audioNotes.bpmForTempo("unknown"), 104);
+});
+
+test("audio-notes: buildSchedule lays out chord start times and total length", () => {
+  const chords = [{ beats: 4 }, { beats: 2 }, { beats: 2 }];
+  const sched = audioNotes.buildSchedule(chords, 60); // 60 BPM → 1 sec per beat
+  assertEqual(sched.secPerBeat, 1);
+  assertEqual(sched.events[0].startSec, 0);
+  assertEqual(sched.events[0].durationSec, 4);
+  assertEqual(sched.events[1].startSec, 4);
+  assertEqual(sched.events[2].startSec, 6);
+  assertEqual(sched.totalSec, 8);
+});
+
+test("audio-notes: buildSchedule on a real 6/8 entry from progression.render", () => {
+  const jig = {
+    id: "sched-fixture",
+    numerals: [
+      { numeral: "I", beats: 6 },
+      { numeral: "IV", beats: 6 },
+      { numeral: "V", beats: 6 },
+      { numeral: "I", beats: 6 },
+    ],
+    bars: 4, timeSig: "6/8",
+  };
+  const rendered = progression.render(jig, "G");
+  const sched = audioNotes.buildSchedule(rendered.chords, 120);
+  assertEqual(sched.events.length, 4);
+  assertEqual(sched.events[3].startSec, sched.secPerBeat * 18);
+  assertEqual(sched.totalSec, sched.secPerBeat * 24);
 });
 
 // ------------------------------------------------------------------- report
