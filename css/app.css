@@ -3385,14 +3385,23 @@ body[data-route="scales"] .instrument-toggle {
 
 .word-banner-words {
   flex: 1 1 auto;
+  /* min-width:0 is load-bearing: without it this flex child refuses to
+     shrink below its content, so it grows past the banner instead of
+     reporting the overflow that fit() measures. */
+  min-width: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: baseline;
   gap: var(--sp-2);
   color: var(--ink);
   font-size: var(--fs-md);
   font-weight: 600;
   letter-spacing: 0.01em;
+}
+
+ /* Only reached below the size floor — see fit() in js/ui/words.js. */
+.word-banner-words.wrapped {
+  flex-wrap: wrap;
 }
 
 .word-banner-sep {

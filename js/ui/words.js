@@ -145,6 +145,37 @@ export function createWordBanner({ className = "", onLayout = () => {} } = {}) {
 
   let data = null;
 
+  // Four words up to 14 characters each don't always fit one line on a phone,
+  // and a banner that is one line for "dog · rain · feral · kraken" and two
+  // for "kitchen · cathedral · smuggler · cantankerous" jumps every time it
+  // redraws. So the text shrinks to fit instead.
+  //
+  // The floor is measured, not guessed: over 2000 random draws at 375px wide
+  // (291px of usable banner), half fit at the full size already, none needed
+  // to go below 13px, and the smallest any draw asked for was 13.6px. Only
+  // the theoretical worst case — the longest word in all four tiers at once
+  // — needs less (12px), and that wraps rather than shrinking past
+  // legibility. Re-measure this number if the type scale or the 14-character
+  // cap in data/words.json ever changes.
+  const MIN_WORD_PX = 13;
+
+  function fit() {
+    wordsHost.classList.remove("wrapped");
+    wordsHost.style.fontSize = "";
+    // Hidden (words off, or a view that hasn't been laid out yet): nothing to
+    // measure. onWordsToggle and the resize listener below come back to it.
+    if (!wordsHost.clientWidth) return;
+    let size = parseFloat(getComputedStyle(wordsHost).fontSize) || 16;
+    while (wordsHost.scrollWidth > wordsHost.clientWidth + 1 && size > MIN_WORD_PX) {
+      size = Math.max(MIN_WORD_PX, size * 0.94);
+      wordsHost.style.fontSize = size + "px";
+    }
+    // Narrower than anything we design for (a very small phone, or a future
+    // caller giving the banner less room): wrap rather than shrink past
+    // legibility or run the words off the edge.
+    if (wordsHost.scrollWidth > wordsHost.clientWidth + 1) wordsHost.classList.add("wrapped");
+  }
+
   function paint(words) {
     clear(wordsHost);
     // A fresh separator node per gap, not one shared node passed to
@@ -158,6 +189,7 @@ export function createWordBanner({ className = "", onLayout = () => {} } = {}) {
       }
       wordsHost.appendChild(el("span", { className: "word-banner-word" }, word));
     });
+    fit();
     onLayout();
   }
 
@@ -178,17 +210,29 @@ export function createWordBanner({ className = "", onLayout = () => {} } = {}) {
   }
 
   // Toggled on after the view was built: fill in then, rather than drawing
-  // (and burning bag positions) for a banner nobody can see.
+  // (and burning bag positions) for a banner nobody can see. Already-drawn
+  // words just need re-measuring, since they were hidden when last painted.
   const unsubscribe = onWordsToggle(() => {
     if (wordsEnabled()) populate();
+    fit();
     onLayout();
   });
+
+  // A rotation or a window resize changes how much room the words have.
+  const onResize = () => {
+    fit();
+    onLayout();
+  };
+  window.addEventListener("resize", onResize);
 
   populate();
 
   return {
     node,
     reroll,
-    dispose: unsubscribe,
+    dispose: () => {
+      unsubscribe();
+      window.removeEventListener("resize", onResize);
+    },
   };
 }

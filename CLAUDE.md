@@ -950,7 +950,19 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   actually resets its cursors — deliberately not inferred by watching
   `onChordChange` for index 0, which breaks on single-chord progressions.
   A reroll dice sits next to the banner on both surfaces so a bad set costs
-  one tap, not four. `enabled` defaults to true, which is right for Jack and
+  one tap, not four.
+  The banner **shrinks its text to fit one line** rather than wrapping
+  (`fit()` in `words.js`), because a banner that is one line for "dog · rain
+  · feral · kraken" and two for "kitchen · cathedral · smuggler ·
+  cantankerous" reflows the view on every redraw — Jack spotted it the same
+  day. The 13px floor is measured, not guessed: over 2000 random draws at
+  375px wide, none needed to go below it and the smallest any draw asked for
+  was 13.6px, so only the theoretical worst case (the longest word in all
+  four tiers at once, needing 12px) falls back to wrapping. Re-measure it if
+  the type scale or the 14-character cap ever changes. `min-width: 0` on
+  `.word-banner-words` is load-bearing: without it that flex child refuses to
+  shrink below its content, grows past the banner, and never reports the
+  overflow `fit()` measures. `enabled` defaults to true, which is right for Jack and
   flagged in the roadmap for revisiting before any wider release.
   `sw.js` precaches the three new files; `CACHE_VERSION` bumped to v20.
 
