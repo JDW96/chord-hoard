@@ -65,3 +65,57 @@ nobody in the room has to stop and parse it.
 - [x] Gradient approved by Jack 2026-08-21, after the tier 4 recalibration
   above. All 2,000 words now live in `data/words.json`; this file stays as the
   record of what the gradient was signed off against.
+
+## Tier 4 recalibrated again — words.json version 2, 2026-08-21
+
+Jack's second pass on the full list: a hundred tier 4 words were still too
+wild. They came out and a hundred replacements went in, same 500 total.
+
+What went, and why:
+
+- **Archaic occupations and trades** — `crofter`, `stoker`, `yeoman`,
+  `steeplejack`, `smithy`, `cutpurse`, `knave`, `fop`, `cad`, `blackguard`,
+  `harridan`, `wastrel`, `sluggard`, `mountebank`, `troubadour`, `vassal`.
+- **Nautical and military kit nobody has seen** — `brigantine`, `keelhaul`,
+  `flotilla`, `skiff`, `flagon`, `blunderbuss`, `cudgel`, `dragoon`,
+  `corsair`, `palisade`, `stockade`, `saltpetre`, `dirigible`.
+- **The nonsense-word family**, for consistency with the earlier call on
+  `malarkey` — `balderdash`, `bunkum`, `hokum`.
+- **Latinate or literary adjectives you have to parse** — `apoplectic`,
+  `cadaverous`, `tremulous`, `resplendent`, `rapturous`, `verdant`,
+  `winsome`, `wrathful`, `baleful`, `nonplussed`, `overwrought`, `raffish`,
+  `sinewy`, `squalid`, `wanton`, `waspish`, `wizened`.
+- **Obscure myth**, keeping the well-known creatures — `cockatrice`,
+  `manticore`, `kelpie`, `selkie`, `djinn`.
+- **Rare verbs** — `bedevil`, `despoil`, `emblazon`, `filch`, `foist`,
+  `gambol`, `revile`, `rollick`, `usurp`, `wheedle`, `lambast`, `chivvy`,
+  `bushwhack`, `carouse`, `lollygag`.
+- Plus a handful of duplicate word-forms (`befuddle` next to `befuddled`,
+  `glowering` next to `glower`) and single obscure objects (`bellows`,
+  `ingot`, `grimoire`, `reliquary`, `sepulchre`, `rookery`, `semaphore`,
+  `whirligig`, `hinterland`, `menagerie`, `harlequin`, `fandango`,
+  `hacienda`, `swagman`, `thunderhead`, `firmament`, `gadfly`, `malcontent`,
+  `pestilent`, `reprobate`, `tribulation`, `brackish`, `sallow`, `fracas`,
+  `knavery`, `rakish`).
+
+What replaced them, pitched at the same kraken / cantankerous level: trouble
+words (`havoc`, `heist`, `sabotage`-adjacent `saboteur`, `showdown`,
+`onslaught`, `uprising`-adjacent `rebellion`, `massacre`, `mayhem`'s
+neighbours `commotion` and `shambles`), character types anyone can picture
+(`accomplice`, `culprit`, `daredevil`, `gangster`, `hustler`, `mastermind`,
+`mobster`, `prankster`, `prowler`, `renegade`, `sidekick`, `tycoon`,
+`lunatic`, `maniac`, `brute`, `fanatic`, `hostage`, `prodigy`, `survivor`,
+`thug`, `adversary`, `barbarian`), strong adjectives that need no unpacking
+(`infamous`, `notorious`, `insidious`, `vindictive`, `treacherous`,
+`shameless`, `scathing`, `outrageous`, `mischievous`, `extravagant`,
+`egotistical`, `hysterical`, `miraculous`, `phenomenal`, `unstoppable`,
+`unbearable`, `cowardly`, `crafty`, `boastful`, `conceited`, `clueless`,
+`bewildered`, `abysmal`, `obsessive`, `immaculate`), and active verbs
+(`demolish`, `evade`, `gloat`, `hijack`, `infiltrate`, `outrun`,
+`overthrow`, `provoke`, `retaliate`, `scheme`, `smuggle`, `unleash`,
+`vandalise`).
+
+`version` went 1 → 2, which resets everyone's shuffle bags — that is what the
+field is for. It costs nothing but the current position in the walk, and the
+alternative (a cursor pointing into a list that changed underneath it) would
+quietly break the no-repeat guarantee.

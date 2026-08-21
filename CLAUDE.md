@@ -915,7 +915,15 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   `tiers` keyed "1"-"4"), written against a 50-word sample Jack signed off in
   `docs/words-sample.md` — the calibration that matters is in tier 4: rare
   enough not to be an everyday word, familiar enough that nobody in the room
-  has to stop and parse it. No tags of any kind on any word, and words are
+  has to stop and parse it. Tier 4 has now been recalibrated TWICE against
+  that line (the sample, then 100 words swapped out of the finished list at
+  `version` 2 — archaic trades, nautical kit, obscure myth and latinate
+  adjectives out; trouble words, character types, strong plain adjectives and
+  active verbs in). If it needs a third pass, `docs/words-sample.md` records
+  what was cut and why, so the same judgement can be applied rather than
+  re-derived. A `version` bump deliberately resets every stored shuffle bag;
+  that costs only the current position in the walk, and the alternative is a
+  cursor pointing into a list that changed underneath it. No tags of any kind on any word, and words are
   deliberately NOT coupled to the harmony (mood tagging and function biasing
   were both designed and both rejected). `data/schema.md` documents the
   authoring rules; `tools/validate.js` checks four tiers, 500 each, lowercase
