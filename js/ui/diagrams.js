@@ -164,6 +164,92 @@ export function guitarChordSVG(voicing, { title } = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// CAGED pentatonic box shape (roadmap 0.3) — a moveable two-notes-per-string
+// fretboard diagram, similar bones to guitarChordSVG (vertical strings, low
+// E on the left, a fret-position label) but wider (a box can span 4-5 frets,
+// not the fixed 5-row chord grid) and with a scale-degree number inside
+// each dot instead of a bare fret dot, since a box diagram's whole point is
+// showing WHICH finger plays which degree, not just where the notes are.
+
+const S = {
+  stringGap: 14,
+  fretGap: 16,
+  gridX: 15,
+  gridY: 30,
+};
+
+/**
+ * `position` is one entry from solo-scales.js's cagedPositions():
+ * { id, box, referenceFret, notes: [{ string, fret, degree }] }.
+ */
+export function cagedShapeSVG(position, { title } = {}) {
+  const { referenceFret, notes } = position;
+  const { stringGap, fretGap, gridX, gridY } = S;
+  const offsets = notes.map((n) => n.fret - referenceFret);
+  const minOffset = Math.min(0, ...offsets);
+  const maxOffset = Math.max(...offsets);
+  const rows = maxOffset - minOffset + 1;
+  const gridW = stringGap * 5;
+  const gridH = fretGap * rows;
+  const xOfString = (n) => gridX + (6 - n) * stringGap; // n = string number 6…1
+  const yOfOffset = (off) => gridY + (off - minOffset + 0.5) * fretGap;
+
+  const parts = [];
+
+  if (title) {
+    parts.push(
+      `<text x="50" y="11" text-anchor="middle" font-size="9" ` +
+        `fill="currentColor" class="title">${escapeXml(title)}</text>`
+    );
+  }
+
+  for (let row = 0; row <= rows; row += 1) {
+    const y = gridY + row * fretGap;
+    parts.push(
+      `<line x1="${gridX}" y1="${y}" x2="${gridX + gridW}" y2="${y}" ` +
+        `stroke="currentColor" stroke-width="1" class="fret"/>`
+    );
+  }
+  for (let i = 0; i < 6; i += 1) {
+    const x = xOfString(6 - i);
+    parts.push(
+      `<line x1="${x}" y1="${gridY}" x2="${x}" y2="${gridY + gridH}" ` +
+        `stroke="currentColor" stroke-width="1" class="string"/>`
+    );
+  }
+
+  // Every box is a moveable shape (never assumed to start at the nut), so
+  // the position label always shows, unlike a chord grid's baseFret > 1 gate.
+  const firstFret = referenceFret + minOffset;
+  parts.push(
+    `<text x="${gridX - 4}" y="${yOfOffset(minOffset) + 2.5}" text-anchor="end" ` +
+      `font-size="7" fill="currentColor" class="fret-label">` +
+      `${firstFret === 0 ? "open" : firstFret + "fr"}</text>`
+  );
+
+  for (const note of notes) {
+    const x = xOfString(note.string);
+    const y = yOfOffset(note.fret - referenceFret);
+    const isRoot = note.degree === "1";
+    parts.push(
+      `<circle cx="${x}" cy="${y}" r="5.5" fill="currentColor" ` +
+        `class="solo-dot${isRoot ? " root" : ""}"/>`
+    );
+    parts.push(
+      `<text x="${x}" y="${y + 2.5}" text-anchor="middle" font-size="6" ` +
+        `class="solo-degree${isRoot ? " root" : ""}">${escapeXml(note.degree)}</text>`
+    );
+  }
+
+  const label = title ? escapeXml(title) : `${position.id}-shape pentatonic box`;
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 ${gridY + gridH + 10}" ` +
+    `class="chord-diagram chord-diagram--guitar solo-shape" role="img" ` +
+    `aria-label="${label}">${parts.join("")}</svg>`
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Piano keyboard
 
 const P = {

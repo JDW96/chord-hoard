@@ -9,6 +9,8 @@ import * as capo from "../js/engine/capo.js";
 import * as complexity from "../js/engine/complexity.js";
 import * as progression from "../js/engine/progression.js";
 import * as harmony from "../js/engine/harmony.js";
+import * as song from "../js/engine/song.js";
+import * as soloScales from "../js/engine/solo-scales.js";
 
 let passed = 0;
 const failures = [];
@@ -441,6 +443,236 @@ test("harmony: modal cases stay diatonic to their own mode", () => {
 
 test("harmony: unknown mode throws", () => {
   assertThrows(() => harmony.scalePitchClasses("C", "harmonic-major"));
+});
+
+// -------------------------------------------------------------------- song.js
+// Fixture entries, deliberately minimal (no need to satisfy the beats/bars
+// arithmetic progression.render() enforces — scoreCandidate/sectionSuggestions
+// never realize the chords, only read numerals/mode/homeKey/moods).
+
+const SONG_TONICS_FOR = (entry) =>
+  entry.mode === "major"
+    ? ["C", "G", "D", "A", "E", "B", "F#", "F", "Bb", "Eb", "Ab", "Db"]
+    : ["A", "E", "B", "F#", "C#", "G#", "D", "G", "C", "F", "Bb", "Eb"];
+
+function fixtureEntry(id, overrides) {
+  return {
+    id,
+    name: id,
+    mode: "major",
+    numerals: [{ numeral: "I", beats: 4 }],
+    bars: 1,
+    timeSig: "4/4",
+    homeKey: "C",
+    tempo: "mid",
+    moods: [],
+    genres: [],
+    instrument: "both",
+    notes: "",
+    songs: [],
+    ...overrides,
+  };
+}
+
+test("song: keyRelation — same, relative (both directions), and unrelated", () => {
+  assertEqual(song.keyRelation(fixtureEntry("e", { homeKey: "G", mode: "major" }), "G"), "same");
+  // E minor is G major's relative minor.
+  assertEqual(song.keyRelation(fixtureEntry("e", { homeKey: "E", mode: "minor" }), "G"), "relative");
+  // G major is E minor's relative major (same pair, other direction).
+  assertEqual(song.keyRelation(fixtureEntry("e", { homeKey: "G", mode: "major" }), "E"), "relative");
+  // D major is G major's dominant, not its relative.
+  assertEqual(song.keyRelation(fixtureEntry("e", { homeKey: "D", mode: "major" }), "G"), "none");
+});
+
+test("song: scoreCandidate weighs key relation same > relative > none", () => {
+  const same = fixtureEntry("s1", { homeKey: "C", mode: "major" });
+  const relative = fixtureEntry("s2", { homeKey: "A", mode: "minor" });
+  const none = fixtureEntry("s3", { homeKey: "D", mode: "major" });
+  const entriesById = new Map();
+  const scoreSame = song.scoreCandidate(same, [], "C", entriesById);
+  const scoreRelative = song.scoreCandidate(relative, [], "C", entriesById);
+  const scoreNone = song.scoreCandidate(none, [], "C", entriesById);
+  if (!(scoreSame > scoreRelative && scoreRelative > scoreNone)) {
+    throw new Error(`expected same > relative > none, got ${scoreSame} / ${scoreRelative} / ${scoreNone}`);
+  }
+});
+
+test("song: scoreCandidate rewards shared moods with the chosen sections", () => {
+  const verse = fixtureEntry("a", { homeKey: "C", mode: "major", moods: ["hopeful", "gentle"] });
+  const entriesById = new Map([["a", verse]]);
+  const currentSections = [{ label: "verse", progId: "a", tonicOverride: null }];
+  const highMood = fixtureEntry("b1", {
+    homeKey: "C",
+    mode: "major",
+    moods: ["hopeful", "gentle"],
+    numerals: [{ numeral: "V", beats: 2 }],
+  });
+  const noMood = fixtureEntry("b2", {
+    homeKey: "C",
+    mode: "major",
+    moods: [],
+    numerals: [{ numeral: "V", beats: 2 }],
+  });
+  const scoreHigh = song.scoreCandidate(highMood, currentSections, "C", entriesById);
+  const scoreLow = song.scoreCandidate(noMood, currentSections, "C", entriesById);
+  if (!(scoreHigh > scoreLow)) {
+    throw new Error(`expected shared moods to score higher: ${scoreHigh} vs ${scoreLow}`);
+  }
+});
+
+test("song: sectionSuggestions ranks by score and excludes already-used progIds", () => {
+  const verse = fixtureEntry("a", { homeKey: "C", mode: "major", moods: ["hopeful"] });
+  const strongCandidate = fixtureEntry("b1", { homeKey: "C", mode: "major", moods: ["hopeful"] });
+  const weakCandidate = fixtureEntry("b2", { homeKey: "F#", mode: "major", moods: [] });
+  const entries = [verse, strongCandidate, weakCandidate];
+  const currentSections = [{ label: "verse", progId: "a", tonicOverride: null }];
+  const ranked = song.sectionSuggestions(entries, currentSections, "C");
+  assertDeepEqual(
+    ranked.map((e) => e.id),
+    ["b1", "b2"],
+    "used progId excluded, stronger candidate first"
+  );
+});
+
+test("song: sectionTonic uses the override when given, else re-spells the song tonic onto the entry's family", () => {
+  const majorEntry = fixtureEntry("m", { homeKey: "C", mode: "major" });
+  const minorEntry = fixtureEntry("n", { homeKey: "A", mode: "minor" });
+  const songObj = { id: "s", name: "Test", tonic: "Db", sections: [] };
+  assertEqual(
+    song.sectionTonic(songObj, majorEntry, { tonicOverride: "G" }, SONG_TONICS_FOR),
+    "G",
+    "explicit override wins"
+  );
+  assertEqual(
+    song.sectionTonic(songObj, majorEntry, { tonicOverride: null }, SONG_TONICS_FOR),
+    "Db",
+    "major-family entry keeps the song tonic's own spelling"
+  );
+  const songInDb = { id: "s2", name: "Test", tonic: "Db", sections: [] };
+  assertEqual(
+    song.sectionTonic(songInDb, minorEntry, { tonicOverride: null }, SONG_TONICS_FOR),
+    "C#",
+    "minor-family entry re-spells Db's pitch class as C# (its own family's spelling)"
+  );
+});
+
+test("song: renderSong tolerates a missing progId instead of throwing", () => {
+  const verse = fixtureEntry("a", {
+    homeKey: "C",
+    mode: "major",
+    numerals: [
+      { numeral: "I", beats: 4 },
+      { numeral: "IV", beats: 4 },
+      { numeral: "V", beats: 4 },
+      { numeral: "I", beats: 4 },
+    ],
+    bars: 4,
+    timeSig: "4/4",
+  });
+  const entriesById = new Map([["a", verse]]);
+  const songObj = {
+    id: "song-1",
+    name: "Test song",
+    tonic: "C",
+    sections: [
+      { label: "verse", progId: "a", tonicOverride: null },
+      { label: "chorus", progId: "deleted-built-id", tonicOverride: null },
+    ],
+  };
+  const rendered = song.renderSong(songObj, entriesById, SONG_TONICS_FOR);
+  assertEqual(rendered.length, 2);
+  assertEqual(rendered[0].missing, false);
+  assertEqual(rendered[0].entry.id, "a");
+  assertEqual(rendered[0].tonic, "C");
+  assertEqual(rendered[0].rendered.chords.length, 4);
+  assertEqual(rendered[1].missing, true);
+  assertEqual(rendered[1].section.progId, "deleted-built-id");
+});
+
+// ------------------------------------------------------------- solo-scales.js
+
+test("solo-scales: Bb blues spells the blue note as a raised 4th (E), not a flat 5th (Fb)", () => {
+  const notes = soloScales.scaleNotes("blues", "Bb").map((n) => theory.formatNote(n.note));
+  assertDeepEqual(notes, ["Bb", "Db", "Eb", "E", "F", "Ab"]);
+  // The 4th and the blue note share a letter — the "two notes on one letter" case.
+  assertEqual(notes[2][0], "E");
+  assertEqual(notes[3][0], "E");
+});
+
+test("solo-scales: F# minor pentatonic spells cleanly (no double accidentals)", () => {
+  const notes = soloScales.scaleNotes("minorPentatonic", "F#").map((n) => theory.formatNote(n.note));
+  assertDeepEqual(notes, ["F#", "A", "B", "C#", "E"]);
+});
+
+test("solo-scales: major pentatonic omits the 4th and 7th degrees", () => {
+  const notes = soloScales.scaleNotes("majorPentatonic", "C").map((n) => theory.formatNote(n.note));
+  assertDeepEqual(notes, ["C", "D", "E", "G", "A"]);
+});
+
+test("solo-scales: every scale realises for every supported tonic on both mode families", () => {
+  const tonics = [
+    "C", "G", "D", "A", "E", "B", "F#", "F", "Bb", "Eb", "Ab", "Db", // major-family
+    "A", "E", "B", "F#", "C#", "G#", "D", "G", "C", "F", "Bb", "Eb", // minor-family
+  ];
+  for (const t of tonics) {
+    for (const key of soloScales.SCALE_KEYS) {
+      soloScales.scaleNotes(key, t); // throws on a bad spelling
+    }
+  }
+});
+
+test("solo-scales: recommend() picks the obviously-correct scale for a pentatonic-only progression", () => {
+  const entry = {
+    id: "ctrl", name: "ctrl", mode: "major",
+    numerals: [{ numeral: "I", beats: 4 }, { numeral: "vi", beats: 4 }],
+    bars: 2, timeSig: "4/4", homeKey: "C", tempo: "mid",
+    moods: [], genres: [], instrument: "both", notes: "", songs: [],
+  };
+  // I-vi in C only ever sounds C, E, G, A — all five degrees of C major
+  // pentatonic cover it with zero clashes, so this should win outright over
+  // its exact tie-in-notes relative (A minor pentatonic, same pitch classes)
+  // by the "prefer home" tie-break, and over every other candidate on score.
+  const rec = soloScales.recommend(entry);
+  assertEqual(rec.scaleKey, "majorPentatonic");
+  assertEqual(rec.tonic, "C");
+  assertEqual(rec.reason, "home");
+  assertEqual(rec.score, 1);
+});
+
+test("solo-scales: recommend() doesn't throw on a modal entry", () => {
+  const entry = {
+    id: "dorian-fix", name: "dorian-fix", mode: "dorian",
+    numerals: [
+      { numeral: "i", beats: 4 },
+      { numeral: "IV", beats: 4 },
+      { numeral: "bVII", beats: 4 },
+      { numeral: "i", beats: 4 },
+    ],
+    bars: 4, timeSig: "4/4", homeKey: "D", tempo: "mid",
+    moods: [], genres: [], instrument: "both", notes: "", songs: [],
+  };
+  const rec = soloScales.recommend(entry);
+  if (!soloScales.SCALE_KEYS.includes(rec.scaleKey)) throw new Error(`unexpected scaleKey ${rec.scaleKey}`);
+  if (rec.reason !== "home" && rec.reason !== "relative") throw new Error(`unexpected reason ${rec.reason}`);
+  if (!Number.isFinite(rec.score)) throw new Error(`non-finite score ${rec.score}`);
+});
+
+test("solo-scales: recommend() doesn't throw on a heavily borrowed (chromatic mediant) entry", () => {
+  const entry = {
+    id: "borrowed-fix", name: "borrowed-fix", mode: "major",
+    numerals: [
+      { numeral: "I", beats: 4 },
+      { numeral: "bIII", beats: 4 },
+      { numeral: "bVI", beats: 4 },
+      { numeral: "I", beats: 4 },
+    ],
+    bars: 4, timeSig: "4/4", homeKey: "C", tempo: "mid",
+    moods: [], genres: [], instrument: "both", notes: "", songs: [],
+  };
+  const rec = soloScales.recommend(entry);
+  if (!soloScales.SCALE_KEYS.includes(rec.scaleKey)) throw new Error(`unexpected scaleKey ${rec.scaleKey}`);
+  if (rec.reason !== "home" && rec.reason !== "relative") throw new Error(`unexpected reason ${rec.reason}`);
+  if (!Number.isFinite(rec.score)) throw new Error(`non-finite score ${rec.score}`);
 });
 
 // ------------------------------------------------------------------- report

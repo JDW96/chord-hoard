@@ -13,17 +13,61 @@
 // chords that turn up in this mode most often. Explanations for both chord
 // lists come from chord-copy.js, shared with the chord library.
 
-import { parseNote, pitchClass } from "../engine/theory.js";
+import { parseNote, pitchClass, formatNote } from "../engine/theory.js";
 import { realize } from "../engine/chords.js";
 import { formatDisplay } from "../engine/numeral.js";
 import { DIATONIC_NUMERALS } from "../engine/harmony.js";
-import { pianoScaleSVG } from "./diagrams.js";
+import { scaleNotes as soloScaleNotes, cagedPositions } from "../engine/solo-scales.js";
+import { pianoScaleSVG, cagedShapeSVG } from "./diagrams.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { chordHref } from "./chords-lib.js";
 import { tintClass, legendCaption } from "./function-tint.js";
 import { copyFor, borrowedFor, copyBlock, revealList } from "./chord-copy.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
-import { el, prettySymbol, prettyNote, capitalise } from "./util.js";
+import { state } from "./app.js";
+import { el, clear, fetchJSON, prettySymbol, prettyNote, capitalise } from "./util.js";
+
+// data/solo-shapes.json, fetched once and shared across visits (same lazy
+// pattern as util.getGuitarData / builder.js's getMoves).
+let soloShapesPromise = null;
+function getSoloShapesData() {
+  if (!soloShapesPromise) {
+    soloShapesPromise = fetchJSON("data/solo-shapes.json").catch((err) => {
+      soloShapesPromise = null; // retry on next visit
+      throw err;
+    });
+  }
+  return soloShapesPromise;
+}
+
+async function fillCagedShapes(host, tonic) {
+  let data;
+  try {
+    data = await getSoloShapesData();
+  } catch {
+    host.appendChild(
+      el(
+        "div",
+        { className: "diagram-placeholder" },
+        el("p", {}, "Position shapes wouldn't load"),
+        el("p", { className: "muted" }, "Check the connection and come back.")
+      )
+    );
+    return;
+  }
+  for (const position of cagedPositions(tonic, data)) {
+    const svgHost = el("div", { className: "diagram-svg" });
+    svgHost.innerHTML = cagedShapeSVG(position, { title: `${position.id}-shape` });
+    host.appendChild(
+      el(
+        "figure",
+        { className: "diagram-cell guitar caged-shape-cell" },
+        svgHost,
+        el("figcaption", {}, `Box ${position.box}`)
+      )
+    );
+  }
+}
 
 // ---------------------------------------------------------------------------
 // The six modes. `numerals` are the diatonic chords measured against the
@@ -283,6 +327,95 @@ export function render(container, params) {
       revealList(borrowed, visitorCard, "visitor-list")
     )
   );
+
+  // ---- Soloing (roadmap 0.3) -------------------------------------------
+  // Pentatonic and blues are deliberately NOT modes (see solo-scales.js):
+  // they don't get a row in the mode picker above, just a section here.
+  // `relRoot` (computed above for the guitar tip) is this mode's own true
+  // parent-major/relative-minor root, so the "same notes, different home"
+  // card stays consistent with what the guitar tip already told the reader.
+  const minorRootedTonic = mode.family === "major" ? relRoot : tonic;
+  const soloCards = [
+    {
+      title: `${prettyNote(tonic)} ${mode.family === "major" ? "major" : "minor"} pentatonic`,
+      scaleKey: mode.family === "major" ? "majorPentatonic" : "minorPentatonic",
+      tonic,
+    },
+    {
+      title: `${prettyNote(minorRootedTonic)} blues`,
+      scaleKey: "blues",
+      tonic: minorRootedTonic,
+    },
+    {
+      title: `${prettyNote(relRoot)} ${mode.family === "major" ? "minor" : "major"} pentatonic`,
+      scaleKey: mode.family === "major" ? "minorPentatonic" : "majorPentatonic",
+      tonic: relRoot,
+      note: "Same five notes as the first card, a different note as home.",
+    },
+  ];
+  const soloingSection = el(
+    "div",
+    { className: "soloing" },
+    el("h3", {}, "Soloing"),
+    el(
+      "p",
+      { className: "where-next-lead" },
+      "Pentatonic and blues scales for improvising over chords in this key, not chords built from it."
+    ),
+    el(
+      "div",
+      { className: "solo-scale-grid" },
+      soloCards.map((card) => {
+          const notes = soloScaleNotes(card.scaleKey, card.tonic);
+          const pianoHost = el("div", { className: "diagram-svg solo-scale-piano" });
+          pianoHost.innerHTML = pianoScaleSVG(notes.map(({ note }) => formatNote(note)));
+          return el(
+            "div",
+            { className: "solo-scale-card" },
+            el("h4", { className: "solo-scale-title" }, card.title),
+            el(
+              "div",
+              { className: "solo-scale-notes" },
+              notes.map(({ note, degree }) =>
+                el(
+                  "span",
+                  { className: "solo-note" },
+                  el("span", { className: "solo-note-name" }, prettyNote(formatNote(note))),
+                  el("span", { className: "solo-note-degree" }, degree)
+                )
+              )
+            ),
+            el("figure", { className: "diagram-cell piano solo-scale-piano-cell" }, pianoHost),
+            card.note ? el("p", { className: "solo-scale-note" }, card.note) : null
+          );
+        })
+      )
+    );
+  section.appendChild(soloingSection);
+
+  // ---- CAGED positions (roadmap 0.3, guitar only) ------------------------
+  // One set of shapes serves both pentatonic cards above (see the comment
+  // on minorRootedTonic) — rooted here at whichever tonic reads as "1" in
+  // them, i.e. the minor pentatonic root.
+  if (state.instrument === "guitar") {
+    const cagedHost = el("div", { className: "diagram-strip caged-strip" });
+    soloingSection.appendChild(
+      el(
+        "div",
+        { className: "caged-section" },
+        el("h4", { className: "solo-scale-title" }, "CAGED positions"),
+        el(
+          "p",
+          { className: "where-next-lead" },
+          `Five moveable shapes that tile the neck for ${prettyNote(minorRootedTonic)} minor pentatonic ` +
+            `(and equally for ${prettyNote(mode.family === "major" ? tonic : relRoot)} major pentatonic, ` +
+            "same notes from a different home)."
+        ),
+        cagedHost
+      )
+    );
+    fillCagedShapes(cagedHost, minorRootedTonic);
+  }
 
   container.appendChild(section);
 }

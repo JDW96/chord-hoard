@@ -5,6 +5,8 @@
 // "chordhoard.keychoice" as an object of id → tonic.
 
 import * as capo from "../engine/capo.js";
+import { parseNote, pitchClass } from "../engine/theory.js";
+import { recommend } from "../engine/solo-scales.js";
 import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
 import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
@@ -32,6 +34,31 @@ export const MINOR_FAMILY_TONICS = ["A", "E", "B", "F#", "C#", "G#", "D", "G", "
 const MAJOR_FAMILY_MODES = new Set(["major", "mixolydian", "lydian"]);
 
 const KEYCHOICE_KEY = "chordhoard.keychoice";
+
+// Soloing scale line (roadmap 0.3): recommend() only knows about pentatonic
+// keys and pitch classes, not the Scales tab's #/scales/<tonic>/<mode>
+// routing, so the mapping from a recommendation to a deep link and its
+// display words lives here, in the UI layer.
+const SOLO_SCALE_LABEL = {
+  majorPentatonic: "major pentatonic",
+  minorPentatonic: "minor pentatonic",
+  blues: "blues",
+};
+// Which Scales tab mode shows this scale family's own "Soloing" section —
+// blues is built on the minor pentatonic, so it links there too.
+const SOLO_SCALE_FAMILY_MODE = {
+  majorPentatonic: "major",
+  minorPentatonic: "minor",
+  blues: "minor",
+};
+
+function soloScaleHref(rec) {
+  const modeId = SOLO_SCALE_FAMILY_MODE[rec.scaleKey];
+  const tonics = modeId === "major" ? MAJOR_FAMILY_TONICS : MINOR_FAMILY_TONICS;
+  const pc = pitchClass(parseNote(rec.tonic));
+  const snapped = tonics.find((t) => pitchClass(parseNote(t)) === pc) || tonics[0];
+  return "#/scales/" + encodeURIComponent(snapped) + "/" + modeId;
+}
 
 export function isMajorFamily(entry) {
   return MAJOR_FAMILY_MODES.has(entry.mode);
@@ -271,6 +298,25 @@ export function render(container, params) {
       el("div", { className: "diagrams" }, el("h3", {}, "Chord shapes"), diagrams)
     );
     fillDiagrams(diagrams, rendered);
+
+    // ---- Solo scale (roadmap 0.3) ------------------------------------------
+    // Computed fresh every render, never stored — see solo-scales.js's own
+    // notes on why. Follows the currently chosen tonic (not always the home
+    // key), same as the capo hint and diagrams below.
+    const solo = recommend(entry, tonic);
+    const soloReasonText =
+      solo.reason === "home"
+        ? "matches this progression's own key."
+        : "the relative of this progression's key, same notes with a different note as home.";
+    body.appendChild(
+      el(
+        "p",
+        { className: "solo-scale-line" },
+        el("strong", {}, solo.score < 0.15 ? "Closest fit: " : "Solo with: "),
+        el("a", { href: soloScaleHref(solo) }, `${prettyNote(solo.tonic)} ${SOLO_SCALE_LABEL[solo.scaleKey]}`),
+        " · " + soloReasonText
+      )
+    );
 
     // ---- Notes -------------------------------------------------------------
     if (entry.notes) {

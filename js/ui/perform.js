@@ -1,23 +1,33 @@
-// perform.js — Performance Mode (#/perform/<id> and #/perform/<id>/<tonic>).
+// perform.js — Performance Mode: a single progression (#/perform/<id>[/<tonic>])
+// or a saved song, section by section (#/perform-song/<songId>[/<sectionIndex>]).
 //
 // Full-viewport takeover: the shell hides its header and tab bar via
-// body[data-route="perform"] (see app.css), and this view pins itself to the
-// viewport. The whole progression must FIT — zero scrolling, portrait or
-// landscape — so we lay chords in a grid whose column count follows the
-// orientation and chord count, then shrink a single font-size variable until
-// nothing overflows. Everything but the chord symbols is deliberately dim.
+// body[data-route="perform"|"perform-song"] (see app.css), and this view
+// pins itself to the viewport. The whole progression must FIT — zero
+// scrolling, portrait or landscape — so we lay chords in a grid whose column
+// count follows the orientation and chord count, then shrink a single
+// font-size variable until nothing overflows. Everything but the chord
+// symbols is deliberately dim.
 //
 // Screen Wake Lock: requested on entry, re-acquired when the tab becomes
 // visible again, released on exit. Where unsupported (or refused) we degrade
 // silently — a tiny indicator only appears when the lock is actually held.
+//
+// Both routes share one rendering core, buildPerformanceView(): a song is
+// just a single progression's view plus previous/next controls (swipe target
+// is the same physical grid; "swipe" here is v1's arrow buttons + arrow
+// keys, not a touch gesture) and an exit link back to the song editor
+// instead of the progression's detail page.
 
 import { parseNote, pitchClass } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
+import { renderSong as realizeSong } from "../engine/song.js";
 import { state, renderIn, buildSettingsPanel } from "./app.js";
 import { chosenTonic, tonicsFor, isMajorFamily } from "./detail.js";
+import { songById } from "./songs-store.js";
 import { tintClass, legendCaption } from "./function-tint.js";
 import { openSettingsPanel } from "./settings-panel.js";
-import { el, clear, prettySymbol, prettyNote } from "./util.js";
+import { el, clear, prettySymbol, prettyNote, capitalise } from "./util.js";
 
 // The settings cog (backlog item 15) lives in the header, which perform mode
 // hides entirely for its full-viewport takeover — so it needs its own small
@@ -31,6 +41,10 @@ const SETTINGS_ICON =
 function playedTonicFor(hint) {
   return hint.playAs.endsWith("m") ? hint.playAs.slice(0, -1) : hint.playAs;
 }
+
+// ---------------------------------------------------------------------------
+// A single progression (#/perform/<id>[/<tonic>])
+// ---------------------------------------------------------------------------
 
 export function render(container, params) {
   const id = decodeURIComponent(params[0] || "");
@@ -62,6 +76,143 @@ export function render(container, params) {
     }
   }
 
+  buildPerformanceView(container, {
+    entry,
+    tonic,
+    exitHref: "#/prog/" + encodeURIComponent(entry.id),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// A saved song, section by section
+// (#/perform-song/<songId>[/<sectionIndex>])
+// ---------------------------------------------------------------------------
+
+function songSectionHref(songId, index) {
+  return "#/perform-song/" + encodeURIComponent(songId) + "/" + index;
+}
+
+export function renderSong(container, params) {
+  const songId = decodeURIComponent(params[0] || "");
+  const song = songById(songId);
+  if (!song) {
+    container.appendChild(
+      el(
+        "section",
+        { className: "coming-soon" },
+        el("h2", {}, "That song isn't here"),
+        el("p", {}, `We couldn't find a song called "${songId}".`),
+        el("p", {}, el("a", { href: "#/songs" }, "Back to Songs"))
+      )
+    );
+    return;
+  }
+
+  const total = song.sections.length;
+  const exitHref = "#/songs/" + encodeURIComponent(song.id);
+  if (!total) {
+    container.appendChild(
+      el(
+        "section",
+        { className: "coming-soon" },
+        el("h2", {}, "Nothing to play yet"),
+        el("p", {}, "This song has no sections."),
+        el("p", {}, el("a", { href: exitHref }, "Back to the song"))
+      )
+    );
+    return;
+  }
+
+  let index = parseInt(params[1], 10);
+  if (!Number.isInteger(index) || index < 0 || index >= total) index = 0;
+
+  const sections = realizeSong(song, state.byId, tonicsFor);
+  const current = sections[index];
+  const nav = {
+    prevHref: index > 0 ? songSectionHref(song.id, index - 1) : null,
+    nextHref: index < total - 1 ? songSectionHref(song.id, index + 1) : null,
+  };
+
+  if (current.missing) {
+    buildMissingSectionView(container, {
+      title: (song.name || "Untitled song") + " · " + capitalise(current.section.label),
+      index,
+      total,
+      exitHref,
+      nav,
+    });
+    return;
+  }
+
+  buildPerformanceView(container, {
+    entry: current.entry,
+    tonic: current.tonic,
+    exitHref,
+    nav,
+    labelPrefix: `${song.name || "Untitled song"} · ${capitalise(current.section.label)} (${index + 1}/${total}) · `,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Shared rendering core
+// ---------------------------------------------------------------------------
+
+/** ArrowLeft/ArrowRight move between sections; a no-op with nav === null. */
+function wireArrowNav(nav) {
+  if (!nav) return () => {};
+  function onKey(ev) {
+    if (ev.key === "ArrowLeft" && nav.prevHref) location.hash = nav.prevHref;
+    else if (ev.key === "ArrowRight" && nav.nextHref) location.hash = nav.nextHref;
+  }
+  document.addEventListener("keydown", onKey);
+  return () => document.removeEventListener("keydown", onKey);
+}
+
+function navButton(direction, href, label) {
+  const props = {
+    className: "perform-nav-btn " + direction + (href ? "" : " disabled"),
+    attrs: { "aria-label": label },
+  };
+  if (href) props.href = href;
+  else props.attrs["aria-disabled"] = "true";
+  return el("a", props, direction === "prev" ? "‹" : "›");
+}
+
+/**
+ * A brief full-viewport placeholder for a song section whose progression no
+ * longer resolves (a deleted built-* entry) — a visible state, not a throw,
+ * with the same exit/nav chrome as a real section so the user can skip past
+ * it rather than getting stuck.
+ */
+function buildMissingSectionView(container, { title, index, total, exitHref, nav }) {
+  const strip = el(
+    "div",
+    { className: "perform-strip" },
+    el("a", { className: "perform-exit", href: exitHref, attrs: { "aria-label": "Exit performance mode" } }, "✕"),
+    navButton("prev", nav.prevHref, "Previous section"),
+    el("span", { className: "perform-strip-info" }, `${title} (${index + 1}/${total})`),
+    navButton("next", nav.nextHref, "Next section")
+  );
+  const topBar = el("div", { className: "perform-topbar" }, strip);
+  const body = el(
+    "div",
+    { className: "perform-missing" },
+    el("p", {}, "This section's progression isn't in the hoard any more."),
+    el("p", {}, el("a", { href: exitHref }, "Back to the song"))
+  );
+  container.appendChild(el("section", { className: "perform-full" }, topBar, body));
+
+  const unwireNav = wireArrowNav(nav);
+  window.addEventListener("hashchange", () => unwireNav(), { once: true });
+}
+
+/**
+ * The real performance grid for one progression in one key. `nav`, when
+ * given ({ prevHref, nextHref }), adds previous/next section controls (a
+ * song context); omitted entirely for a single standalone progression.
+ * `labelPrefix` prepends the song/section context to the info strip text.
+ */
+function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPrefix }) {
   const rendered = renderIn(entry, tonic);
   const chords = rendered.chords;
 
@@ -90,12 +241,13 @@ export function render(container, params) {
   wakeDot.style.display = "none";
 
   function infoText() {
+    const prefix = labelPrefix || "";
     const base = `${prettyNote(tonic)} ${entry.mode} · ${entry.timeSig}`;
-    if (!hint) return base;
+    if (!hint) return prefix + base;
     if (capoMode) {
-      return `Capo ${hint.capo} · playing as ${hint.playAs} · sounds ${prettyNote(tonic)} ${entry.mode}`;
+      return `${prefix}Capo ${hint.capo} · playing as ${hint.playAs} · sounds ${prettyNote(tonic)} ${entry.mode}`;
     }
-    return `${base} · capo ${hint.capo} (as ${hint.playAs})`;
+    return `${prefix}${base} · capo ${hint.capo} (as ${hint.playAs})`;
   }
 
   const infoSpan = el("span", { className: "perform-strip-info" }, infoText());
@@ -136,23 +288,24 @@ export function render(container, params) {
   );
   settingsBtn.innerHTML = SETTINGS_ICON;
 
-  const strip = el(
-    "div",
-    { className: "perform-strip" },
+  const stripChildren = [
     el(
       "a",
       {
         className: "perform-exit",
-        href: "#/prog/" + encodeURIComponent(entry.id),
+        href: exitHref,
         attrs: { "aria-label": "Exit performance mode" },
       },
       "✕"
     ),
     settingsBtn,
-    capoBtn,
-    infoSpan,
-    wakeDot
-  );
+  ];
+  if (nav) stripChildren.push(navButton("prev", nav.prevHref, "Previous section"));
+  stripChildren.push(capoBtn, infoSpan);
+  if (nav) stripChildren.push(navButton("next", nav.nextHref, "Next section"));
+  stripChildren.push(wakeDot);
+
+  const strip = el("div", { className: "perform-strip" }, ...stripChildren);
   // Wrapped with the legend so layout() has one element to measure the
   // fixed "chrome" height from (see .perform-topbar in app.css).
   const topBar = el("div", { className: "perform-topbar" }, strip, legendCaption("perform-legend"));
@@ -257,11 +410,14 @@ export function render(container, params) {
     if (document.visibilityState === "visible") acquireWakeLock();
   }
 
+  const unwireNav = wireArrowNav(nav);
+
   function cleanup() {
     alive = false;
     window.removeEventListener("hashchange", cleanup);
     window.removeEventListener("resize", layout);
     document.removeEventListener("visibilitychange", onVisibility);
+    unwireNav();
     if (wakeLock) {
       wakeLock.release().catch(() => {});
       wakeLock = null;

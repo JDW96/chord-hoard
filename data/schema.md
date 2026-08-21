@@ -100,3 +100,32 @@ Suggestion rules for the Build tab. Three parts:
   bVII in mixolydian) drops out by itself.
 
 Every numeral must parse and realise; `tools/validate.js` checks the file.
+
+## data/solo-shapes.json (CAGED pentatonic box shapes, roadmap 0.3)
+
+The 5 standard moveable minor-pentatonic "box" shapes on 6-string guitar,
+CAGED order (`id`: `"E"`, `"D"`, `"C"`, `"A"`, `"G"` → `box`: 1–5). Pure
+geometry, nothing musical is stored twice:
+
+- `tuning`: open strings low to high, `["E","A","D","G","B","E"]`.
+- Each shape's `strings` object maps a string number (6 = low E, 1 = high E)
+  to the fret OFFSETS played on it, relative to the shape's own reference
+  fret (offset 0). Every string has exactly two offsets except Box 3's
+  string 2, which has the well-known 3-fret "stretch" (`[1, 4]` instead of
+  the usual 2-fret gap) — see `docs/research/caged-pentatonic-shapes.md` for
+  the sourcing and cross-checks behind this data.
+- `root`: `{ string, offset }` — which note in the shape is scale degree 1,
+  used to work out the reference fret for a given tonic.
+
+Scale-degree labels (`1`, `♭3`, `4`, `5`, `♭7`) are NOT stored here — they're
+recomputed from the tuning and the declared root by
+`js/engine/solo-scales.js`'s `cagedPositions()`, which throws if a fret
+offset doesn't land on a real minor-pentatonic interval. `tools/test-diagrams.js`
+runs that check over this file as a standing test, so a transcription
+mistake fails the suite rather than silently mislabelling a fret.
+
+Major pentatonic and blues do NOT get their own shape data: major pentatonic
+of a tonic is the identical five notes as minor pentatonic of its relative
+minor (same shapes, rooted differently — see `cagedPositions()`'s own
+comment), and blues fretboard positions are a deliberately deferred follow-up
+(v1 ships the plain minor-pentatonic boxes only).

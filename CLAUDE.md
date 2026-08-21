@@ -71,8 +71,11 @@ chord-hoard/
       capo.js           # capo suggestions for guitar
       complexity.js     # complexity rating + playability profiles
       progression.js    # progression-level API (load entry, render in key)
+      song.js           # song-builder suggestion scoring + section realization
     ui/                 # DOM code (phase 2+)
       chord-copy.js     # the ONE place chord explanations are written
+      songs.js          # song builder view (#/songs, #/songs/<id>)
+      songs-store.js    # chordhoard.songs storage
   data/
     schema.md           # human-readable schema description
     vocab.json          # controlled vocabularies (moods, genres, feels)
@@ -512,6 +515,13 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
 
 ## Phases & status
 
+Beyond the phases below, `docs/roadmap.md` (written 2026-08-21, agreed with Jack) is
+the detailed implementation plan for everything after phase 4: song builder, audio
+playback, soloing scales, ear training, voice leading, setlists, similarity links,
+reverse lookup, MIDI and more, each with design reasoning, gotchas and acceptance
+criteria. Executing agents should read it before starting any post-phase-4 feature
+and tick items off there as they land.
+
 - [x] **Phase 0** — plan agreed, CLAUDE.md written
 - [x] **Phase 1** — scaffold, chord engine, schema, vocab, ~24 seed progressions,
       validation + engine tests
@@ -545,7 +555,7 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       if it is ever extended.
       Each batch must spread time signatures and bar counts deliberately, because the
       dedupe rule (mode + numeral sequence + timeSig) bites harder as the library grows.
-- [ ] **Phase 4** ← **current** — pins, playability profiles, song builder, dynamic
+- [x] **Phase 4** — pins, playability profiles, song builder, dynamic
       builder (moves.json), PWA/service worker, export/import.
       Landed 2026-08-15: **pins** (`js/ui/pins.js`, `chordhoard.pins` as id → tonic;
       shared pinButton() on Hoard cards and the detail top bar; the recorded key
@@ -582,7 +592,177 @@ Working doc: `docs/phase-2.5-copy.md` (tables, sources, review notes).
       file. The header instrument toggle is UNHIDDEN on #/build now (suggestion
       buttons carry per-instrument complexity badges, so it does something
       there again).
-      Still open: song builder.
+      Closed phase 4, 2026-08-21: the **song builder** (roadmap item 0.1),
+      `js/engine/song.js` + `js/ui/songs.js` + `js/ui/songs-store.js`, new
+      routes `#/songs[/<id>]` (list, and an editor for `id` "new" or an
+      existing song) and `#/perform-song/<id>[/<sectionIndex>]`. A song is a
+      small object — `{ id, name, tonic, sections: [{ label, progId,
+      tonicOverride }] }` — stored as an array under `chordhoard.songs`
+      (`js/ui/songs-store.js`, same read-modify-write-the-whole-blob pattern
+      as `pins.js`; rides along in backup automatically via the prefix
+      sweep). Sections reference progressions by id only, same discipline as
+      everywhere else in the schema, so `built-*` ids work here for free and
+      nothing goes stale when a referenced progression's data changes.
+      `js/engine/song.js` is pure and DOM-free per the engine rule: `tonicsFor`
+      (which lives in `js/ui/detail.js`, a UI module) is passed IN as a
+      parameter rather than imported, so the engine never depends on UI code.
+      `scoreCandidate(entry, currentSections, songTonic, entriesById)` ranks a
+      candidate progression for the next empty section slot — shared mood
+      tags weighted highest, then key relationship to the song's own tonic
+      (same pitch class, or its relative major/minor, computed both
+      directions from one symmetric formula so the song doesn't need a
+      stored mode), then mode continuity with whatever mode dominates the
+      sections chosen so far, then a small "lift" bonus (different opening
+      chord, quicker average pace) against the most recently chosen section.
+      `sectionSuggestions()` wraps it into a ranked, already-used-ids-excluded
+      list; the editor shows the top 5 plus a name-search fallback per
+      section. `renderSong(song, entriesById, tonicsFor)` realizes every
+      section, returning `{ missing: true }` instead of throwing for a
+      section whose `progId` no longer resolves (a deleted `built-*` entry) —
+      both the editor (a "Choose another" recovery slot) and performance mode
+      (a full-viewport "this section's progression isn't in the hoard any
+      more" placeholder with working exit/prev/next) render that state
+      rather than crashing. Sections are capped at 2–4 per the roadmap's own
+      framing of a song (2 minimum enforced on save, "Add section" hidden at
+      4); the label dropdown offers the full `data/vocab.json` `sections`
+      list rather than just verse/chorus/bridge, since a song may reasonably
+      want an intro or outro too.
+      `perform.js` was refactored (not duplicated) to serve both routes: the
+      chord-grid-building, fit-to-viewport `layout()`, capo mode and wake
+      lock logic all moved into one shared `buildPerformanceView()`, called
+      by the existing single-progression `render()` with no `nav` (unchanged
+      behaviour, verified against the pre-existing route) and by the new
+      `renderSong()` with a `{ prevHref, nextHref }` nav object that adds
+      strip buttons AND ArrowLeft/ArrowRight keyboard handling (wired and torn
+      down alongside the view's other listeners in the same `cleanup()`). Per
+      the roadmap's own gotcha note, prev/next are plain hash-changing links
+      rather than in-place DOM patches — that re-triggers the view's full
+      teardown/rebuild on every section change, which is cheap because
+      `renderIn()` is cached, and keeps this feature from needing a special
+      exception to the app's normal "a route change fully rebuilds the view"
+      lifecycle. Songs are deliberately NOT registered into `state.entries`
+      or the Hoard's Collection filter (a song is a different kind of thing
+      from a single progression) but DO get a 5th tab bar entry
+      (`index.html`, `TAB_FOR_ROUTE`) since — unlike a builder draft — a
+      saved song has nowhere else discoverable to live. `js/ui/songs.js`
+      imports `state`/`renderIn` from `app.js` and `app.js` imports
+      `songs.js`'s `render`; this is the same circular-import shape already
+      established between `app.js` and `builder.js`, safe because neither
+      side touches the other's exports at module-evaluation time, only
+      inside function bodies called later.
+      Verified end to end in a real browser (localhost, mobile viewport):
+      built a 2-section song from suggestions, saved, reloaded the editor
+      from storage, played it through with next/prev (strip buttons, arrow
+      keys, and the disabled state at each end), forced a missing-progression
+      section and confirmed both the editor and performance-mode placeholders
+      degrade without throwing (console clean throughout), confirmed the
+      existing single-progression `#/perform/<id>` route is byte-for-byte
+      unaffected, and round-tripped a saved song through
+      `backup.exportData()`/`importBackup()`. No permanent jsdom boot-check
+      file was added (CLAUDE.md's existing references to one are one-off
+      scripts run during earlier phases, never committed under `tools/`, and
+      `test-all.js`'s header requires Node standard library only — adding
+      jsdom as a devDependency to get one would break that); `node
+      tools/test-engine.js` gained 6 new song.js tests instead (key relation
+      both directions, score ordering by mood/key/contrast, suggestion
+      ranking and used-id exclusion, override vs re-spelled section tonic,
+      and the missing-progId non-throw), and manual browser verification
+      covered the DOM/routing/storage integration that a unit test can't.
+
+Post-phase-4 work follows `docs/roadmap.md`, tier by tier; land an item, tick
+its checkbox there, and note any new architectural fact here. Landed so far:
+
+- **Roadmap 0.1, song builder** — see the phase 4 entry above (closed the
+  phase).
+- **Roadmap 0.2, manual light/dark override**, DONE 2026-08-21. A
+  `chordhoard.theme` key (`"light"` | `"dark"` | absent for "follow system"),
+  applied synchronously at the top of `app.js` (before `init()`'s async data
+  fetch, so a returning visitor with an explicit choice never sees a flash of
+  the system default) and exposed as `setTheme()`/`currentTheme()`. A third
+  `settingsRow()` in `buildSettingsPanel()` (System / Light / Dark, same
+  segmented-control look as the instrument toggle) — CSS-only, no re-render,
+  same pattern as the existing function-tint toggle.
+  Fixed a real gap while wiring this up: `css/app.css` only ever had ONE
+  place declaring dark colours, `:root:not([data-theme="light"])` nested
+  inside `@media (prefers-color-scheme: dark)`. That lets `data-theme="light"`
+  cancel an OS-dark device back to light, but a `data-theme="dark"` override
+  did nothing on an OS-light device, because the media query itself never
+  matches there regardless of the attribute. There are now two dark blocks
+  (same tokens, kept in sync by hand, noted in a comment on both): the
+  existing media-query one, and a new `:root[data-theme="dark"]` block
+  outside any media query so forcing dark works unconditionally. Verified in
+  a real browser both directions (`resize_window`'s `colorScheme` param
+  standing in for the OS setting): system-follows-OS in both light and dark,
+  forced light cancels OS-dark, forced dark overrides OS-light, and a real
+  page reload (not a same-document hash change) confirmed the choice
+  persists with the attribute set before first paint.
+- **Roadmap 0.3, soloing scales**, DONE 2026-08-21. Pentatonic/blues scales,
+  a computed per-progression recommendation, and CAGED guitar cheat sheets.
+  `js/engine/solo-scales.js` (pure, DOM-free):
+  - `SCALES` holds major pentatonic, minor pentatonic and blues as
+    letter-step + semitone formulas, spelled via `theory.js`'s `spellFrom()`
+    — that one function does all the real work, including the blues scale's
+    "blue note" sharing a LETTER with the 4th (spelled as a raised 4th, e.g.
+    Bb blues has both Eb and E natural) rather than as a flattened 5th,
+    because its letter-step is deliberately the same as the 4th's.
+  - `recommend(entry, tonic = entry.homeKey)` scores 6 candidates (major/
+    minor pentatonic and blues, rooted at `tonic` and at its relative) by
+    coverage of the progression's realised pitch classes minus a
+    beats-weighted clash penalty, returns `{ scaleKey, tonic, reason, score }`
+    with `reason` "home" or "relative". Takes `tonic` as a parameter
+    (defaulting to `entry.homeKey`) specifically so the detail view can pass
+    its currently-chosen key and have the recommendation follow transposition
+    the same way the capo hint and diagrams already do. The "relative"
+    candidate always uses the plain natural-minor-style relative (a minor
+    3rd), even for dorian and phrygian entries, which is NOT an
+    approximation: pentatonic scales omit exactly the 2nd and 6th degrees
+    that dorian/phrygian/natural-minor differ on, so "this tonic's minor
+    pentatonic" is diatonically safe in all three, and is structurally
+    identical to "the relative major's major pentatonic" — see the function's
+    own comment for the derivation. A spot-check across all 14 batches (one
+    entry per collection) came back sane on inspection, including two
+    instructive edge cases worth knowing about: a 12-bar blues built entirely
+    on dominant 7ths scored only 0.06 (no single pentatonic covers three
+    different dominant-7th colours well, which is honest, not a bug) and a
+    bossa nova scored negative (extended jazz harmony genuinely doesn't suit
+    a straight pentatonic) — both correctly trigger the detail view's
+    "Closest fit" wording (see below) instead of a confident "Solo with".
+  - `cagedPositions(tonicStr, shapesData)` transposes the 5 CAGED
+    minor-pentatonic box shapes (`data/solo-shapes.json` — geometry only,
+    fetched by the UI layer and passed in, engine modules never fetch their
+    own data) to a given tonic, and RECOMPUTES each note's scale degree from
+    the string tuning rather than trusting a stored label, throwing if a fret
+    offset isn't actually a minor-pentatonic interval from the shape's root.
+    `tools/test-diagrams.js` runs this over the real data file as a standing
+    check, so a future transcription error in the JSON fails the suite.
+  - `data/solo-shapes.json` itself came from a dedicated research pass
+    (`docs/research/caged-pentatonic-shapes.md`): cross-checked against an
+    interactive fretboard tool's raw SVG data AND independent pitch-class
+    arithmetic, both agreeing on all 30 string-transitions across the 5
+    boxes, plus a second source confirming the CAGED shape-order convention
+    (Box 1 = E-shape). Verified again by hand against the engine's own output
+    before shipping. Box 3 (C-shape) has a real, sourced irregularity — its B
+    string spans a 3-fret gap instead of the usual 2 — which is exactly the
+    kind of fact freehand guessing would have gotten wrong, hence the
+    research pass rather than writing the data from memory.
+  UI: `js/ui/scales-lib.js` gained a "Soloing" section (three scale cards —
+  the family-appropriate pentatonic at the tab's own tonic, blues, and the
+  relative pentatonic — each with a piano diagram via the existing
+  `pianoScaleSVG()`, reused as-is since it already accepted a plain note-name
+  array) and, guitar-only, a "CAGED positions" strip rendering all 5 boxes
+  via a new `js/ui/diagrams.js` export `cagedShapeSVG()` (same classed-shape,
+  no-colour-attributes convention as the rest of the file; a scale-degree
+  number sits inside each dot instead of a bare dot, since a box diagram's
+  whole point is which finger plays which degree). `js/ui/detail.js` gained
+  a one-line "Solo with: <scale> · <reason>" recommendation linking into the
+  Scales tab's matching `#/scales/<tonic>/<mode>` route (reusing the EXISTING
+  route scheme exactly, no new hash parameter needed, since major/minor
+  pentatonic map onto the "major"/"minor" mode tabs that already exist); a
+  low score (<0.15) softens the copy to "Closest fit" instead of "Solo with".
+  Data flow for both UI spots follows the existing lazy-fetch-and-fill-in
+  pattern (`getSoloShapesData()`/`getGuitarData()`/`getMoves()`), so a slow
+  or failed fetch degrades to a placeholder rather than blocking the rest of
+  the page.
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: audio playback (Web Audio), shareable song-structure links, MIDI export
 

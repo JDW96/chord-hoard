@@ -2,12 +2,14 @@
 // data loading. Views are small modules that export render(container, params).
 //
 // Routes:
-//   #/hoard                    browse/search the hoard (default)
-//   #/prog/<id>                progression detail
-//   #/perform/<id>[/<tonic>]   performance mode (full-screen, wake lock)
-//   #/chords[/<root>/<qual>]   chord library
-//   #/scales[/<tonic>/<mode>]  scale library
-//   #/build                    dynamic builder (phase-4 placeholder)
+//   #/hoard                        browse/search the hoard (default)
+//   #/prog/<id>                    progression detail
+//   #/perform/<id>[/<tonic>]       performance mode (full-screen, wake lock)
+//   #/chords[/<root>/<qual>]       chord library
+//   #/scales[/<tonic>/<mode>]      scale library
+//   #/build                        dynamic builder
+//   #/songs[/<id>]                 song list / editor (id "new" for a draft)
+//   #/perform-song/<id>[/<index>]  performance mode through a song's sections
 
 import * as progression from "../engine/progression.js";
 import * as complexity from "../engine/complexity.js";
@@ -18,10 +20,53 @@ import * as perform from "./perform.js";
 import * as chordsLib from "./chords-lib.js";
 import * as scalesLib from "./scales-lib.js";
 import * as builder from "./builder.js";
+import * as songs from "./songs.js";
 import { builtEntries } from "./built.js";
 import { openSettingsPanel, settingsRow } from "./settings-panel.js";
 import { legendCaption } from "./function-tint.js";
 import { downloadBackup, importBackup } from "./backup.js";
+
+// ---------------------------------------------------------------------------
+// Theme override (backlog item 15's second half / roadmap 0.2) — applied
+// synchronously at module load, BEFORE init()'s async data fetch and before
+// first paint, so a returning visitor with an explicit choice never sees a
+// flash of the system-default theme. ":root[data-theme]" is already wired up
+// in css/app.css (dark colours are declared twice: once for
+// prefers-color-scheme, once for this attribute, so the attribute always
+// wins over the OS setting once set).
+// ---------------------------------------------------------------------------
+
+const THEME_KEY = "chordhoard.theme";
+
+if (typeof document !== "undefined") {
+  const saved = storageGet(THEME_KEY, null);
+  if (saved === "light" || saved === "dark") {
+    document.documentElement.dataset.theme = saved;
+  }
+}
+
+/** "system" | "light" | "dark" — the user's explicit choice, or "system". */
+export function currentTheme() {
+  const saved = storageGet(THEME_KEY, null);
+  return saved === "light" || saved === "dark" ? saved : "system";
+}
+
+/** Set the theme override. "system" clears it and the OS setting takes back
+ * over. Instant — this only ever flips an attribute CSS already keys off,
+ * never a re-render. */
+export function setTheme(theme) {
+  if (theme === "light" || theme === "dark") {
+    document.documentElement.dataset.theme = theme;
+    storageSet(THEME_KEY, theme);
+  } else {
+    delete document.documentElement.dataset.theme;
+    try {
+      localStorage.removeItem(THEME_KEY);
+    } catch {
+      /* storage unavailable — the app still works, it just forgets */
+    }
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Shared state
@@ -103,6 +148,8 @@ const views = {
   chords: { render: chordsLib.render },
   scales: { render: scalesLib.render },
   build: { render: builder.render },
+  songs: { render: songs.render },
+  "perform-song": { render: perform.renderSong },
 };
 
 // Which bottom tab lights up for each route.
@@ -113,6 +160,8 @@ const TAB_FOR_ROUTE = {
   chords: "chords",
   scales: "scales",
   build: "build",
+  songs: "songs",
+  "perform-song": "songs",
 };
 
 // ---------------------------------------------------------------------------
@@ -274,6 +323,39 @@ export function buildSettingsPanel(body) {
     )
   );
   body.appendChild(legendCaption());
+
+  // ---- Theme override (roadmap 0.2) --------------------------------------
+  const THEME_OPTIONS = [
+    ["system", "System"],
+    ["light", "Light"],
+    ["dark", "Dark"],
+  ];
+  const themeRow = el("div", { className: "theme-toggle", attrs: { role: "group", "aria-label": "Theme" } });
+  for (const [value, label] of THEME_OPTIONS) {
+    const active = currentTheme() === value;
+    const btn = el(
+      "button",
+      {
+        type: "button",
+        className: "theme-btn" + (active ? " active" : ""),
+        attrs: { "aria-pressed": String(active) },
+        on: {
+          click: () => {
+            setTheme(value);
+            for (const b of themeRow.children) {
+              const on = b.dataset.value === value;
+              b.classList.toggle("active", on);
+              b.setAttribute("aria-pressed", String(on));
+            }
+          },
+        },
+      },
+      label
+    );
+    btn.dataset.value = value;
+    themeRow.appendChild(btn);
+  }
+  body.appendChild(settingsRow("Theme", "Follow your system, or pin light or dark.", themeRow));
 
   // ---- Backup: export / import (phase 4) --------------------------------
   // Everything personal (pins, key choices, voicing picks, playability,

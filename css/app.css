@@ -156,6 +156,56 @@
   }
 }
 
+/* Forcing dark from the settings panel (roadmap 0.2) on a device whose OS
+   is set to light: prefers-color-scheme never matches there, so the block
+   above never runs regardless of data-theme. This is the same token set,
+   just reachable without the media query, so "Dark" wins outright rather
+   than only being able to cancel an OS dark mode back to light. Keep the
+   two blocks' values in sync by hand — same reason the media query above
+   duplicates rather than shares with this one: CSS custom properties can't
+   be composed across a media query boundary. */
+:root[data-theme="dark"] {
+  --bg: #111112;
+  --bg-raised: #1a1a1c;
+  --bg-sunken: #0b0b0c;
+  --bg-sheet: #1a1a1c;
+  --line: #34343a;
+  --line-soft: #2a2a2c;
+
+  --ink: #f2f2ef;
+  --ink-dim: #a8a8a3;
+  --ink-faint: #8c8c88;
+
+  --accent: #9fc4ee;
+  --accent-bright: #c2daf5;
+  --accent-dim: #5d7fa5;
+  --accent-wash: rgba(159, 196, 238, 0.14);
+  --on-accent: #0a1a2b;
+
+  --header-bg: rgba(17, 17, 18, 0.92);
+  --tabbar-bg: rgba(11, 11, 12, 0.96);
+
+  --key-white: #f7f7f4;
+  --key-black: #33333a;
+  --key-line: #111112;
+  --key-press: #7fd8b6;
+  --key-root: #2fb98d;
+  --key-label: #a8a8a3;
+
+  --lv-1: #97c459;
+  --lv-2: #ef9f27;
+  --lv-3: #f0997b;
+  --lv-4: #e24b4a;
+  --on-level: #16160f;
+
+  --fn-tonic: #56dab3;
+  --fn-subdominant: #b7a0e8;
+  --fn-dominant: #f0ac3f;
+  --fn-borrowed: #ff8f6b;
+
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
 /* ------------------------------------------------------------------ */
 /* Base                                                                */
 /* ------------------------------------------------------------------ */
@@ -1011,6 +1061,27 @@ a:focus-visible {
   fill: var(--ink-faint);
 }
 
+/* CAGED pentatonic box shapes (roadmap 0.3) — every dot carries its scale
+   degree, so unlike a chord grid's plain dots these need a contrasting
+   fill/text pair. The root dot takes the accent, same convention as the
+   piano diagram's root key. */
+.solo-dot {
+  fill: var(--ink-dim);
+}
+
+.solo-dot.root {
+  fill: var(--accent);
+}
+
+.solo-degree {
+  fill: var(--bg-raised);
+  font-weight: 700;
+}
+
+.solo-degree.root {
+  fill: var(--on-accent);
+}
+
 /* ------------------------------------------------------------------ */
 /* Circle-of-fifths key wheel (backlog item 3) — a memorisation aid     */
 /* alongside the plain key-button rows in the detail view and the      */
@@ -1425,6 +1496,30 @@ a:focus-visible {
   color: var(--on-accent);
 }
 
+/* Theme override (roadmap 0.2): System / Light / Dark, same segmented-
+   control look as the header's instrument toggle. */
+.theme-toggle {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--bg-sunken);
+}
+
+.theme-btn {
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink-dim);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-btn.active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
 .settings-panel .fn-legend {
   margin: var(--sp-2) 0 0;
 }
@@ -1809,6 +1904,103 @@ a.chord-note.note-link:focus-visible {
 }
 
 /* ------------------------------------------------------------------ */
+/* Soloing (roadmap 0.3) — pentatonic/blues scales, Scales tab and the  */
+/* progression detail view's one-line recommendation.                  */
+/* ------------------------------------------------------------------ */
+
+.soloing {
+  margin-bottom: var(--sp-5);
+}
+
+.solo-scale-grid {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 700px) {
+  .solo-scale-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.solo-scale-card {
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.solo-scale-title {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-sm);
+}
+
+.solo-scale-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.solo-note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 2.4rem;
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+}
+
+.solo-note-name {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.solo-note-degree {
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+}
+
+.solo-scale-note {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--ink-faint);
+}
+
+/* Smaller than the tab's hero piano (.lib-piano-cell) — three of these sit
+   side by side in the card grid on wider screens. */
+.solo-scale-piano-cell {
+  width: 100%;
+  max-width: 18rem;
+  margin: var(--sp-2) 0 0;
+}
+
+.caged-section {
+  margin-top: var(--sp-4);
+}
+
+.caged-shape-cell {
+  width: var(--diagram-guitar-w);
+}
+
+/* Detail view's one-line recommendation (roadmap 0.3) — quiet, constant
+   height, same left-border treatment as the neutral capo-hint-none state
+   since it's informational rather than an action to take. */
+.solo-scale-line {
+  margin: 0 0 var(--sp-5);
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 3px solid var(--line);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+}
+
+.solo-scale-line strong {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ */
 /* Performance mode (wave 2 — js/ui/perform.js)                        */
 /*                                                                     */
 /* Full-viewport takeover: the shell's header and tab bar are hidden   */
@@ -1817,13 +2009,16 @@ a.chord-note.note-link:focus-visible {
 /* is driven by --perform-fs, set (and shrunk to fit) from JS.         */
 /* ------------------------------------------------------------------ */
 
-body[data-route="perform"] {
+body[data-route="perform"],
+body[data-route="perform-song"] {
   padding-bottom: 0;
   overflow: hidden;
 }
 
 body[data-route="perform"] .app-header,
-body[data-route="perform"] .tabbar {
+body[data-route="perform"] .tabbar,
+body[data-route="perform-song"] .app-header,
+body[data-route="perform-song"] .tabbar {
   display: none;
 }
 
@@ -1918,6 +2113,48 @@ body[data-route="perform"] .tabbar {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--on-accent);
+}
+
+/* Previous/next section controls, shown only in song playback
+   (#/perform-song/<id>/<index>) — the same physical strip, so a song's
+   sections read as one continuous performance rather than a different mode. */
+.perform-nav-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  color: var(--ink-dim);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.perform-nav-btn:hover,
+.perform-nav-btn:focus-visible {
+  color: var(--ink);
+}
+
+.perform-nav-btn.disabled {
+  color: var(--ink-faint);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* A song section whose progression was deleted after the song was built —
+   a visible state, not a throw, with the same exit/nav chrome as a real
+   section so the player can skip past it. */
+.perform-missing {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+  color: var(--ink-dim);
 }
 
 .wake-dot {
@@ -2335,6 +2572,416 @@ body[data-route="scales"] .instrument-toggle {
 .build-saved-load:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Song builder (#/songs, backlog item 0.1)                            */
+/* ------------------------------------------------------------------ */
+
+.songs-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.songs-head h2 {
+  margin: 0;
+}
+
+.songs-new-btn {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.songs-new-btn:hover,
+.songs-new-btn:focus-visible {
+  background: var(--accent-bright);
+}
+
+.songs-cards {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 700px) {
+  .songs-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.song-card {
+  padding: var(--sp-4);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.song-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.song-card-name {
+  margin: 0;
+  font-size: var(--fs-md);
+}
+
+.song-card-sections {
+  margin: var(--sp-2) 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+}
+
+.song-slot-unfilled,
+.song-slot-empty p.song-slot-hint {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.song-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+
+.song-card-edit,
+.song-card-play {
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.song-card-play {
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+
+.song-card-edit:hover,
+.song-card-edit:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.song-card-delete {
+  margin-left: auto;
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.song-card-delete:hover,
+.song-card-delete:focus-visible {
+  border-color: var(--lv-4);
+  color: var(--lv-4);
+}
+
+/* ---- Editor -------------------------------------------------------- */
+
+.song-back {
+  display: inline-block;
+  margin-bottom: var(--sp-3);
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+}
+
+.song-back:hover,
+.song-back:focus-visible {
+  color: var(--ink);
+}
+
+.song-head {
+  margin-bottom: var(--sp-4);
+}
+
+.song-title {
+  margin: 0 0 var(--sp-3);
+}
+
+.song-name-input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-base);
+  font-family: inherit;
+}
+
+.song-sections {
+  display: grid;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+@media (min-width: 700px) {
+  .song-sections {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.song-slot {
+  padding: var(--sp-3);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.song-slot-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.song-slot-label {
+  min-height: var(--tap);
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.song-slot-remove,
+.song-slot-change {
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.song-slot-remove:hover,
+.song-slot-remove:focus-visible {
+  border-color: var(--lv-4);
+  color: var(--lv-4);
+}
+
+.song-slot-change:hover,
+.song-slot-change:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.song-slot-name {
+  display: block;
+  margin-bottom: var(--sp-1);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.song-slot-name:hover,
+.song-slot-name:focus-visible {
+  color: var(--accent);
+}
+
+.song-slot-numerals,
+.song-slot-chords {
+  margin: 0 0 var(--sp-1);
+  font-size: var(--fs-sm);
+}
+
+.song-slot-missing {
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+}
+
+.song-slot-hint {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-xs);
+}
+
+.song-suggest-group h4 {
+  margin: 0 0 var(--sp-1);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.song-suggest-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.song-suggest-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  text-align: left;
+  cursor: pointer;
+}
+
+.song-suggest-card:hover,
+.song-suggest-card:focus-visible {
+  border-color: var(--accent-dim);
+}
+
+.song-suggest-name {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+
+.song-suggest-numerals {
+  font-size: var(--fs-xs);
+}
+
+.song-suggest-moods {
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+}
+
+.song-search {
+  margin-top: var(--sp-2);
+}
+
+.song-search-input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 var(--sp-3);
+  margin-bottom: var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-family: inherit;
+}
+
+.song-add-section {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: var(--sp-3);
+}
+
+.song-add-section:hover,
+.song-add-section:focus-visible {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+.song-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+
+.song-save-btn {
+  min-height: var(--tap);
+  padding: 0 var(--sp-5);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.song-save-btn:hover,
+.song-save-btn:focus-visible {
+  background: var(--accent-bright);
+}
+
+.song-play-btn {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--accent-bright);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.song-play-btn:hover,
+.song-play-btn:focus-visible {
+  background: var(--accent-wash);
+}
+
+.song-delete-btn {
+  margin-left: auto;
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.song-delete-btn:hover,
+.song-delete-btn:focus-visible {
+  border-color: var(--lv-4);
+  color: var(--lv-4);
+}
+
+.song-status {
+  margin: var(--sp-2) 0 0;
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+}
+
+.song-status:empty {
+  display: none;
 }
 
 /* ------------------------------------------------------------------ */

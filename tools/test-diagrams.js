@@ -11,12 +11,14 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { realize } from "../js/engine/chords.js";
+import { cagedPositions } from "../js/engine/solo-scales.js";
 import {
   shapeKeyFor,
   voicingsFor,
   guitarChordSVG,
   pianoChordSVG,
   pianoScaleSVG,
+  cagedShapeSVG,
 } from "../js/ui/diagrams.js";
 
 let passed = 0;
@@ -48,6 +50,9 @@ function assertEqual(actual, expected, label = "") {
 const here = path.dirname(fileURLToPath(import.meta.url));
 const data = JSON.parse(
   readFileSync(path.join(here, "..", "data", "guitar-chords.json"), "utf8")
+);
+const soloShapesData = JSON.parse(
+  readFileSync(path.join(here, "..", "data", "solo-shapes.json"), "utf8")
 );
 
 // Independent re-implementation of the gate (do not import the generator).
@@ -303,6 +308,70 @@ test("piano SVGs render every distinct chord quality without throwing", () => {
       const svg = pianoChordSVG(realize(n, tonic));
       assert(svg.startsWith("<svg") && svg.endsWith("</svg>"), `${n} in ${tonic}`);
       assert(!svg.includes("NaN") && !svg.includes("undefined"), "no bad numbers");
+    }
+  }
+});
+
+// --------------------------------------------------------- CAGED box shapes
+
+const MAJOR_FAMILY_TONICS_TEST = ["C", "G", "D", "A", "E", "B", "F#", "F", "Bb", "Eb", "Ab", "Db"];
+const MINOR_FAMILY_TONICS_TEST = ["A", "E", "B", "F#", "C#", "G#", "D", "G", "C", "F", "Bb", "Eb"];
+
+test("data/solo-shapes.json has 5 shapes, CAGED order, every note a valid minor pentatonic degree", () => {
+  assertEqual(soloShapesData.shapes.length, 5, "five shapes");
+  assertEqual(
+    soloShapesData.shapes.map((s) => s.id).join(""),
+    "EDCAG",
+    "CAGED shape order"
+  );
+  // cagedPositions() throws if any note isn't a minor-pentatonic interval
+  // from its shape's declared root — this exercises that check for real.
+  const positions = cagedPositions("A", soloShapesData);
+  assertEqual(positions.length, 5, "five positions");
+  for (const p of positions) {
+    assertEqual(p.notes.length, 12, `box ${p.box}: 6 strings x 2 notes`);
+    const roots = p.notes.filter((n) => n.degree === "1");
+    assert(roots.length >= 1, `box ${p.box} has at least one root`);
+  }
+});
+
+test("cagedPositions() renders without throwing for every supported tonic, both mode families", () => {
+  for (const t of [...MAJOR_FAMILY_TONICS_TEST, ...MINOR_FAMILY_TONICS_TEST]) {
+    const positions = cagedPositions(t, soloShapesData);
+    assertEqual(positions.length, 5, `${t}: five shapes`);
+  }
+});
+
+test("cagedPositions() places A minor pentatonic Box 1 (E-shape) at fret 5", () => {
+  const box1 = cagedPositions("A", soloShapesData).find((p) => p.id === "E");
+  assertEqual(box1.referenceFret, 5, "reference fret");
+  const rootOnLowE = box1.notes.find((n) => n.string === 6 && n.degree === "1");
+  assertEqual(rootOnLowE.fret, 5, "root on the low E string at fret 5");
+});
+
+test("cagedPositions() Box 3 (C-shape) has the known string-2 stretch (frets +1 to +4)", () => {
+  const box3 = cagedPositions("A", soloShapesData).find((p) => p.id === "C");
+  const string2Frets = box3.notes.filter((n) => n.string === 2).map((n) => n.fret - box3.referenceFret).sort();
+  assertEqual(JSON.stringify(string2Frets), JSON.stringify([1, 4]), "3-fret gap, not the usual 2");
+});
+
+test("cagedShapeSVG renders a well-formed SVG with root and degree markers", () => {
+  const box1 = cagedPositions("A", soloShapesData).find((p) => p.id === "E");
+  const svg = cagedShapeSVG(box1, { title: "A minor pentatonic" });
+  assert(svg.startsWith("<svg") && svg.endsWith("</svg>"), "well-formed shell");
+  assert(!svg.includes("NaN") && !svg.includes("undefined"), "no bad numbers");
+  assert(svg.includes('class="solo-dot root"'), "root dot marked");
+  assert(svg.includes('class="solo-dot"'), "non-root dot present");
+  assert(svg.includes(">5fr<"), "position label");
+  assert(svg.includes(">A minor pentatonic</text>"), "title text");
+});
+
+test("cagedShapeSVG renders every shape for every supported tonic without throwing", () => {
+  for (const t of [...MAJOR_FAMILY_TONICS_TEST, ...MINOR_FAMILY_TONICS_TEST]) {
+    for (const position of cagedPositions(t, soloShapesData)) {
+      const svg = cagedShapeSVG(position);
+      assert(svg.startsWith("<svg") && svg.endsWith("</svg>"), `${t} box ${position.box}`);
+      assert(!svg.includes("NaN") && !svg.includes("undefined"), `${t} box ${position.box}: no bad numbers`);
     }
   }
 });
