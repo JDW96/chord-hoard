@@ -3370,6 +3370,77 @@ body[data-route="scales"] .instrument-toggle {
   color: var(--ink-dim);
 }
 
+/* Lyric prompt words (roadmap 2.4) — four words, plain to rare, left to
+   right. Deliberately understated: it sits alongside the chords as a second
+   thing to read, not as a headline competing with them. The tiers are NOT
+   styled differently — position in the row is the whole gradient, and
+   labelling it would explain a joke that works better unexplained. */
+.word-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 2rem;
+  margin: 0 0 var(--sp-3);
+}
+
+.word-banner-words {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  color: var(--ink);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.word-banner-sep {
+  color: var(--ink-faint);
+  font-weight: 400;
+}
+
+.word-banner-reroll {
+  flex: 0 0 auto;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  font-size: var(--fs-sm);
+}
+
+/* Performance mode's variant shares the topbar's third row with the colour
+   legend (only ever one of the two is shown, see below), so it matches the
+   legend's tight padding and keeps the chrome at three rows. */
+.word-banner.perform-words {
+  min-height: 0;
+  margin: 0;
+  padding: 0 var(--sp-2) var(--sp-1) var(--sp-1);
+}
+
+.perform-words .word-banner-words {
+  font-size: var(--fs-sm);
+}
+
+.perform-words .word-banner-reroll {
+  min-width: 1.8rem;
+  min-height: 1.6rem;
+  font-size: var(--fs-xs);
+}
+
+/* The on/off switch, CSS-only like the tint toggle: both nodes are always in
+   the DOM and this decides which one paints. In performance mode the words
+   replace the colour legend rather than stacking on top of it — during a
+   performance a lyric prompt outranks a reminder of what the colours mean. */
+body[data-words="off"] .word-banner {
+  display: none;
+}
+
+body[data-words="on"] .perform-legend {
+  display: none;
+}
+
 /* ------------------------------------------------------------------ */
 /* Harmonic function tinting (backlog item 9) — js/ui/function-tint.js  */
 /* wraps js/engine/harmony.js's classify() and returns one of these     */

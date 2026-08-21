@@ -350,6 +350,77 @@ if (existsSync(MOVES_PATH)) {
   warnings.push("data/moves.json not found — builder rule checks skipped");
 }
 
+// --------------------------------------- data/words.json (lyric prompt words)
+// Four tiers of 500 plain lowercase words, drawn one per tier by the word
+// generator. The duplicate check is the important one: the shuffle bag
+// promises no repeats until a tier is exhausted, and a word appearing twice
+// (in the same tier or across two of them) silently breaks that promise.
+
+const WORDS_PATH = join(ROOT, "data", "words.json");
+const WORD_TIERS = ["1", "2", "3", "4"];
+const WORDS_PER_TIER = 500;
+const WORD_MAX_LENGTH = 14;
+
+if (existsSync(WORDS_PATH)) {
+  const where = "data/words.json";
+  try {
+    const words = JSON.parse(readFileSync(WORDS_PATH, "utf8"));
+
+    if (!Number.isInteger(words.version) || words.version < 1) {
+      problem(where, "version must be a positive integer");
+    }
+
+    if (!words.tiers || typeof words.tiers !== "object") {
+      problem(where, "missing tiers object");
+    } else {
+      const extra = Object.keys(words.tiers).filter((k) => !WORD_TIERS.includes(k));
+      if (extra.length > 0) {
+        problem(where, `unexpected tier(s) ${extra.join(", ")} (want exactly 1, 2, 3, 4)`);
+      }
+
+      const seenWords = new Map(); // word → tier it was first seen in
+      for (const tier of WORD_TIERS) {
+        const list = words.tiers[tier];
+        if (!Array.isArray(list)) {
+          problem(where, `tiers["${tier}"] must be an array`);
+          continue;
+        }
+        if (list.length !== WORDS_PER_TIER) {
+          problem(where, `tiers["${tier}"] has ${list.length} words (want ${WORDS_PER_TIER})`);
+        }
+        for (const word of list) {
+          if (typeof word !== "string") {
+            problem(where, `tiers["${tier}"] contains a non-string entry`);
+            continue;
+          }
+          if (!/^[a-z]+$/.test(word)) {
+            problem(where, `tiers["${tier}"] "${word}": want plain lowercase a–z only`);
+          }
+          if (word.length > WORD_MAX_LENGTH) {
+            problem(
+              where,
+              `tiers["${tier}"] "${word}": ${word.length} characters (cap is ${WORD_MAX_LENGTH})`
+            );
+          }
+          const first = seenWords.get(word);
+          if (first !== undefined) {
+            problem(
+              where,
+              `"${word}" appears twice (tier ${first} and tier ${tier}) — breaks the no-repeat guarantee`
+            );
+          } else {
+            seenWords.set(word, tier);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    problem(where, `unreadable JSON: ${err.message}`);
+  }
+} else {
+  warnings.push("data/words.json not found — word list checks skipped");
+}
+
 for (const w of warnings) console.warn(`Warning: ${w}`);
 if (problems.length > 0) {
   console.error(`\n${problems.length} problem(s) in ${entryCount} entries:`);

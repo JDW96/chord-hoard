@@ -14,6 +14,7 @@ import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
 import { chordHref } from "./chord-link.js";
 import { tintClass, legendCaption } from "./function-tint.js";
+import { createWordBanner } from "./words.js";
 import { isPinned, pin, pinButton } from "./pins.js";
 import { playabilityRow } from "./playability.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
@@ -120,6 +121,9 @@ export function render(container, params) {
   let loopOn = false;
   let countInOn = false;
   let metronomeOn = false;
+  // The word banner (roadmap 2.4) is rebuilt with the rest of the body on
+  // every draw(), so the old one's toggle subscription goes with it.
+  let wordBanner = null;
 
   const body = el("div", { className: "detail-body" });
   // The href gains the current tonic in draw(), so the chosen key survives
@@ -148,10 +152,19 @@ export function render(container, params) {
   // under any in-flight playback), so every redraw stops it rather than
   // trying to keep old DOM-bound callbacks alive across a rebuild; leaving
   // the route entirely does the same.
-  window.addEventListener("hashchange", () => audioPlayer.stopPlayback(), { once: true });
+  window.addEventListener(
+    "hashchange",
+    () => {
+      audioPlayer.stopPlayback();
+      if (wordBanner) wordBanner.dispose();
+    },
+    { once: true }
+  );
 
   function draw() {
     audioPlayer.stopPlayback();
+    if (wordBanner) wordBanner.dispose();
+    wordBanner = null;
     clear(body);
     performLink.href =
       "#/perform/" + encodeURIComponent(entry.id) + "/" + encodeURIComponent(tonic);
@@ -277,6 +290,13 @@ export function render(container, params) {
               onCountIn: (beatsLeft) => {
                 countInLabel.textContent = beatsLeft ? String(beatsLeft) : "";
               },
+              // A fresh set of words each time round, never on chord change:
+              // at 104bpm a chord goes by faster than anyone can finish a
+              // sung line (roadmap 2.4). With Loop off this never fires,
+              // which is the intended behaviour on this view.
+              onLoop: () => {
+                if (wordBanner) wordBanner.reroll();
+              },
               onStop: resetAudioUI,
             });
           },
@@ -356,6 +376,8 @@ export function render(container, params) {
     );
 
     body.appendChild(strip);
+    wordBanner = createWordBanner();
+    body.appendChild(wordBanner.node);
     body.appendChild(legendCaption());
 
     // ---- Key selector ----------------------------------------------------

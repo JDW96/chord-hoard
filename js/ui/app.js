@@ -27,6 +27,7 @@ import * as setlists from "./setlists.js";
 import { builtEntries } from "./built.js";
 import { openSettingsPanel, settingsRow } from "./settings-panel.js";
 import { legendCaption } from "./function-tint.js";
+import { wordsEnabled, setWordsEnabled, reflectWords } from "./words.js";
 import { downloadBackup, importBackup } from "./backup.js";
 
 // ---------------------------------------------------------------------------
@@ -364,6 +365,37 @@ export function buildSettingsPanel(body) {
   }
   body.appendChild(settingsRow("Theme", "Follow your system, or pin light or dark.", themeRow));
 
+  // ---- Lyric prompt words (roadmap 2.4) ---------------------------------
+  // On/off lives here rather than as a per-view button, and it's CSS-only
+  // (body[data-words], like the colour toggle above), so flipping it takes
+  // effect instantly — including on the performance view underneath, which
+  // is where this panel is most likely to be opened mid-rehearsal.
+  const wordsBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "settings-switch" + (wordsEnabled() ? " active" : ""),
+      attrs: { "aria-pressed": String(wordsEnabled()) },
+      on: {
+        click: () => {
+          const on = !wordsEnabled();
+          setWordsEnabled(on);
+          wordsBtn.classList.toggle("active", on);
+          wordsBtn.setAttribute("aria-pressed", String(on));
+          wordsBtn.textContent = on ? "On" : "Off";
+        },
+      },
+    },
+    wordsEnabled() ? "On" : "Off"
+  );
+  body.appendChild(
+    settingsRow(
+      "Lyric prompt words",
+      "Four random words above the chords, plain to rare, on the detail and performance views.",
+      wordsBtn
+    )
+  );
+
   // ---- Backup: export / import (phase 4) --------------------------------
   // Everything personal (pins, key choices, voicing picks, playability,
   // settings) lives under chordhoard.* keys; backup.js sweeps the prefix.
@@ -434,6 +466,7 @@ function wireHeader() {
     settingsBtn.addEventListener("click", () => openSettingsPanel(buildSettingsPanel));
   }
   reflectFunctionTint();
+  reflectWords();
 }
 
 // ---------------------------------------------------------------------------

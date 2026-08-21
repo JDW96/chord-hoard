@@ -131,7 +131,13 @@ export function stopPlayback() {
  * Play a rendered chord list (progression.render(entry, tonic).chords).
  *
  * opts: { bpm, timeSig, loop, countIn, metronome, muted, onChordChange(index|null),
- * onCountIn(beatsLeft|null), onStop() }.
+ * onCountIn(beatsLeft|null), onLoop(), onStop() }.
+ *
+ * `onLoop` fires at each loop boundary (roadmap 2.4, which rotates the lyric
+ * prompt words there). It is deliberately a real event raised where the
+ * scheduler actually resets its cursors, rather than something a caller
+ * infers by watching onChordChange for index 0 — that breaks on
+ * single-chord progressions, where the index is always 0.
  *
  * `muted` (roadmap 2.3, auto-advance) keeps the AudioContext clock driving
  * the schedule — so timing is still sample-accurate and immune to a
@@ -159,6 +165,7 @@ export function playProgression(chords, opts = {}) {
     muted = false,
     onChordChange = () => {},
     onCountIn = () => {},
+    onLoop = () => {},
     onStop = () => {},
   } = opts;
 
@@ -238,9 +245,11 @@ export function playProgression(chords, opts = {}) {
 
       if (chordCursor >= schedule.events.length && clickCursor >= clickEvents.length) {
         if (loop) {
+          const boundary = iterStart + loopLength;
           iteration += 1;
           chordCursor = 0;
           clickCursor = 0;
+          domAt(boundary, () => onLoop());
         } else {
           const endTime = iterStart + loopLength;
           domAt(endTime, () => {

@@ -12,6 +12,7 @@ import * as harmony from "../js/engine/harmony.js";
 import * as song from "../js/engine/song.js";
 import * as soloScales from "../js/engine/solo-scales.js";
 import * as audioNotes from "../js/engine/audio-notes.js";
+import * as wordBag from "../js/engine/word-bag.js";
 
 let passed = 0;
 const failures = [];
@@ -739,6 +740,134 @@ test("audio-notes: buildSchedule on a real 6/8 entry from progression.render", (
   assertEqual(sched.events.length, 4);
   assertEqual(sched.events[3].startSec, sched.secPerBeat * 18);
   assertEqual(sched.totalSec, sched.secPerBeat * 24);
+});
+
+// ------------------------------------------------------- word-bag (2.4)
+
+// A counting seed source, so every test below is deterministic — the whole
+// point of a seeded PRNG here is that "the shuffle is correct" is a thing a
+// test can assert rather than a thing we hope about.
+function seedSource(start = 1) {
+  let n = start;
+  return () => {
+    n += 1;
+    return n * 2654435761 >>> 0; // Knuth's multiplicative hash, well spread
+  };
+}
+
+const TINY_TIERS = {
+  "1": ["a", "b", "c"],
+  "2": ["d", "e", "f"],
+  "3": ["g", "h", "i"],
+  "4": ["j", "k", "l"],
+};
+const TINY_SIZES = { "1": 3, "2": 3, "3": 3, "4": 3 };
+
+test("word-bag: mulberry32 is deterministic for a fixed seed", () => {
+  const a = wordBag.mulberry32(12345);
+  const b = wordBag.mulberry32(12345);
+  const runA = [a(), a(), a(), a()];
+  const runB = [b(), b(), b(), b()];
+  assertDeepEqual(runA, runB, "same seed, same sequence");
+  for (const v of runA) {
+    if (!(v >= 0 && v < 1)) throw new Error(`out of range: ${v}`);
+  }
+  const other = wordBag.mulberry32(12346);
+  if (other() === runA[0]) throw new Error("different seeds gave the same first value");
+});
+
+test("word-bag: shuffleOrder is a real permutation, stable per seed", () => {
+  const order = wordBag.shuffleOrder(500, 99);
+  assertEqual(order.length, 500);
+  assertEqual(new Set(order).size, 500, "every index exactly once");
+  assertDeepEqual(order, wordBag.shuffleOrder(500, 99), "same seed, same order");
+  const other = wordBag.shuffleOrder(500, 100);
+  if (JSON.stringify(order) === JSON.stringify(other)) {
+    throw new Error("a different seed gave an identical order");
+  }
+});
+
+test("word-bag: drawSet takes one word per tier, in tier order", () => {
+  const seedFn = seedSource();
+  const bags = wordBag.freshBags(1, seedFn);
+  const { words } = wordBag.drawSet(bags, TINY_TIERS, seedFn);
+  assertEqual(words.length, 4);
+  words.forEach((word, i) => {
+    const tier = TINY_TIERS[String(i + 1)];
+    if (!tier.includes(word)) throw new Error(`word ${i + 1} ("${word}") is not from tier ${i + 1}`);
+  });
+});
+
+test("word-bag: drawSet does not mutate the bags it was given", () => {
+  const seedFn = seedSource();
+  const bags = wordBag.freshBags(1, seedFn);
+  const before = JSON.stringify(bags);
+  wordBag.drawSet(bags, TINY_TIERS, seedFn);
+  assertEqual(JSON.stringify(bags), before, "input untouched");
+});
+
+test("word-bag: a full pass through a tier repeats nothing", () => {
+  // The whole promise of the bag: 500 draws, 500 different words, and only
+  // then does anything come round again.
+  const tier = Array.from({ length: 500 }, (_, i) => "w" + i);
+  const tiers = { "1": tier, "2": tier, "3": tier, "4": tier };
+  const sizes = { "1": 500, "2": 500, "3": 500, "4": 500 };
+  const seedFn = seedSource(7);
+  let state = wordBag.normaliseBags(null, 1, sizes, seedFn);
+  const seen = [];
+  for (let i = 0; i < 500; i += 1) {
+    const { words, next } = wordBag.drawSet(state, tiers, seedFn);
+    seen.push(words[0]);
+    state = { version: 1, bags: next.bags };
+  }
+  assertEqual(new Set(seen).size, 500, "500 draws, 500 distinct words");
+  // The 501st draw starts a fresh shuffle rather than running off the end.
+  const { words } = wordBag.drawSet(state, tiers, seedFn);
+  assertEqual(typeof words[0], "string");
+  assertEqual(state.bags["1"].cursor, 0, "cursor reset at exhaustion");
+});
+
+test("word-bag: the draw order survives a reload (same seed, same walk)", () => {
+  const seedFn = seedSource(3);
+  let state = wordBag.normaliseBags(null, 1, TINY_SIZES, seedFn);
+  const first = wordBag.drawSet(state, TINY_TIERS, seedFn);
+  // Round-trip the stored shape through JSON, as localStorage would.
+  const reloaded = JSON.parse(JSON.stringify({ version: 1, bags: first.next.bags }));
+  const restored = wordBag.normaliseBags(reloaded, 1, TINY_SIZES, seedSource(999));
+  const afterReload = wordBag.drawSet(restored, TINY_TIERS, seedSource(999));
+  const withoutReload = wordBag.drawSet(
+    { version: 1, bags: first.next.bags },
+    TINY_TIERS,
+    seedSource(1234)
+  );
+  assertDeepEqual(afterReload.words, withoutReload.words, "a reload doesn't change the walk");
+});
+
+test("word-bag: a version bump resets the bags", () => {
+  const seedFn = seedSource();
+  const bags = wordBag.freshBags(1, seedFn);
+  bags.bags["1"].cursor = 2;
+  const same = wordBag.normaliseBags(bags, 1, TINY_SIZES, seedFn);
+  assertEqual(same.bags["1"].cursor, 2, "same version keeps walking");
+  const bumped = wordBag.normaliseBags(bags, 2, TINY_SIZES, seedFn);
+  assertEqual(bumped.version, 2);
+  assertEqual(bumped.bags["1"].cursor, 0, "a version bump starts over");
+});
+
+test("word-bag: malformed or overrun storage is repaired, not trusted", () => {
+  const seedFn = seedSource();
+  const junk = wordBag.normaliseBags({ version: 1, bags: { "1": "nope" } }, 1, TINY_SIZES, seedFn);
+  assertEqual(junk.bags["1"].cursor, 0);
+  assertEqual(typeof junk.bags["1"].seed, "number");
+  // A cursor past the end of a tier that shrank under it.
+  const overrun = wordBag.normaliseBags(
+    { version: 1, bags: { "1": { seed: 5, cursor: 99 }, "2": { seed: 6, cursor: 1 } } },
+    1,
+    TINY_SIZES,
+    seedFn
+  );
+  assertEqual(overrun.bags["1"].cursor, 0, "overrun cursor reset");
+  assertEqual(overrun.bags["2"].cursor, 1, "healthy cursor left alone");
 });
 
 // ------------------------------------------------------------------- report

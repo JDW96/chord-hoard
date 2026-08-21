@@ -417,11 +417,58 @@ correctly; the new row does not overflow the strip at 360 width or 780×360
 landscape, including the worst case (auto row + reroll dice + capo toggle
 all present together).
 
-### 2.4 Random word generator  [ ]  (L)
+### 2.4 Random word generator  [x]  (L)
 
-Designed with Jack 2026-08-21 in a full requirements pass. Every decision below
-was argued through and settled; the "rejected" list at the end is as binding as
-the rest, so do not re-propose those.
+**DONE 2026-08-21.** Shipped in two passes, both in one day.
+
+*The words.* `data/words.json` holds all 2000 (four tiers of 500, version 1,
+33.5KB — a little over the 25-30KB estimate below, which was made before the
+tier 4 recalibration lengthened the average word). The 50-word sample went to
+Jack in `docs/words-sample.md`; he approved the gradient after asking for tier
+4 to come down slightly (`flotsam`, `malarkey` and `skulduggery` were judged
+just past the line and were replaced by `scoundrel`, `ravenous` and
+`treachery`), and that note set the calibration the remaining 1,950 were
+written against. `tools/validate.js` checks the file — four tiers, 500 each,
+lowercase a-z, the 14-character cap, and no duplicate anywhere — and
+`data/schema.md` documents the authoring rules.
+
+*The feature.* `js/engine/word-bag.js` (pure) is mulberry32 plus
+`shuffleOrder`/`freshBags`/`normaliseBags`/`drawSet`, with `seedFn` passed IN
+rather than the module reaching for `Math.random()` — that is what makes "the
+shuffle is correct" testable, and `tools/test-engine.js` gained 8 tests for it
+(determinism, permutation validity, a full 500-draw pass with no repeat, a
+JSON round-trip proving a reload doesn't change the walk, version-bump reset,
+and repair of malformed or overrun storage). `js/ui/words.js` owns the fetch,
+`chordhoard.words` storage and the banner component.
+
+One design change from the text below, made while wiring it up: on/off is
+**`body[data-words]`, CSS-only**, exactly like the function-tint toggle, and
+the banner and the colour legend are BOTH always in the DOM with CSS choosing
+which one paints. The plan implied re-rendering the view when the setting
+flips, and that is wrong here — the settings cog is reachable from inside
+performance mode, where a re-render would rebuild the view out from under its
+wake lock and resize listeners. The banner also holds off drawing until it is
+actually visible, so toggling it on later doesn't silently burn bag positions
+for a banner nobody saw.
+
+`playProgression()` gained the `onLoop` option as specified (fired where the
+scheduler resets its cursors, not inferred from `onChordChange` index 0).
+Verified in a real browser at 375×812 and 780×360: words rotate exactly once
+per pass (measured at 9.26s apart for a 16-beat progression at 104bpm, on both
+the detail view's Loop and performance mode's auto-advance), the reroll dice
+draws a fresh set in place, each perform route and each song section gets its
+own set, the topbar stays three rows with the legend correctly hidden, and
+nothing overflows in either orientation (landscape shrinks the chord type from
+55.9px to 53.6px to pay for the banner, which is the trade this item asked
+for). The no-repeat guarantee was checked the hard way rather than assumed:
+after ten draws, `shuffleOrder()` recomputed from the stored seed reproduced
+every tier 1 word seen that session, in order, and a real page reload served
+the exact word the recomputed order said was next. `sw.js` precaches the three
+new files, `CACHE_VERSION` bumped to v20.
+
+Still deliberately open: **`enabled` defaults to true**, which is right for
+Jack and wrong for a stranger — see "flagged for release" at the end of this
+item.
 
 **Goal.** Lyric prompts sitting alongside the chords. Four random words per
 progression, so a rehearsal or a gig has a starting point for words as well as
@@ -968,13 +1015,15 @@ into audio's highlight) → 0.3 soloing scales → 3.1 ear training → 3.2 voic
 4.4 melody hints → 4.5 share links → 0.2 theme toggle (anytime, it is an hour) →
 tier 5 when the mood strikes.
 
-Updated 2026-08-21 after tier 2 landed: next up is **2.4 random word generator**,
-then 2.5 metronome/tap tempo, then 2.6 performance mode fixes. Jack chose words
-first explicitly. That is safe despite 2.6 fixing a layout bug the banner sits on
-top of, because 2.4 hides the colour legend whenever words are showing, so the
-perform topbar stays at three rows and the banner adds no net chrome height. One
-coupling to expect: 2.4 adds an `onLoop` callback to `audio-player.js`, the same
-file 2.6 touches for the Play-loop fix.
+Updated 2026-08-21 after 2.4 landed: next up is **2.5 metronome/tap tempo**, then
+2.6 performance mode fixes. Words went first at Jack's explicit choice, and the
+bet paid off — hiding the colour legend whenever words are showing held the
+perform topbar at three rows, so the banner shipped without needing 2.6's layout
+fix underneath it. The predicted coupling is now real rather than expected:
+`playProgression()` has an `onLoop` option, and 2.6's Play-loop fix touches the
+same scheduler, so read `audio-player.js`'s loop-reset block before changing it.
+Backlog items 18 (perform view restructure) and 19 (per-chord word attachment)
+both unblock after 2.6.
 
 Rationale: the song builder closes phase 4 and unblocks setlists containing songs;
 audio is the multiplier everything in tier 3 wants; roulette and setlists are the

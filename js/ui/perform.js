@@ -36,6 +36,7 @@ import { setlistById } from "./setlists-store.js";
 import * as roulette from "./roulette.js";
 import { tintClass, legendCaption } from "./function-tint.js";
 import { openSettingsPanel } from "./settings-panel.js";
+import { createWordBanner } from "./words.js";
 import { el, clear, prettySymbol, prettyNote, capitalise } from "./util.js";
 
 // The settings cog (backlog item 15) lives in the header, which perform mode
@@ -481,6 +482,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
             bpm: bpmForTempo(entry.tempo),
             timeSig: entry.timeSig,
             onChordChange: highlightSounding,
+            onLoop: rotateWords,
             onStop: resetPlayUI,
           });
         },
@@ -526,6 +528,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
             loop: true,
             muted: true,
             onChordChange: highlightSounding,
+            onLoop: rotateWords,
             onStop: resetAutoUI,
           });
         },
@@ -591,13 +594,29 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
 
   const strip = el("div", { className: "perform-strip" }, ...stripChildren);
   const autoRow = el("div", { className: "perform-auto-row" }, autoBtn, autoBpmStepper);
-  // Wrapped with the legend so layout() has one element to measure the
-  // fixed "chrome" height from (see .perform-topbar in app.css).
+
+  // ---- Lyric prompt words (roadmap 2.4) ---------------------------------
+  // The banner MUST live inside .perform-topbar: that's the only element
+  // layout() measures the chrome height from, and anything between the
+  // topbar and the grid is invisible to that maths (which is exactly how
+  // chords end up overflowing their cells). The colour legend and the
+  // banner share the third row — CSS shows whichever the words setting
+  // selects — so the topbar stays three rows tall either way and the
+  // banner adds no net chrome height. During a performance a lyric prompt
+  // outranks a reminder of what the tint colours mean.
+  const wordBanner = createWordBanner({
+    className: "perform-words",
+    onLayout: () => layout(),
+  });
+  function rotateWords() {
+    wordBanner.reroll();
+  }
   const topBar = el(
     "div",
     { className: "perform-topbar" },
     strip,
     autoRow,
+    wordBanner.node,
     legendCaption("perform-legend")
   );
 
@@ -710,6 +729,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     window.removeEventListener("resize", layout);
     document.removeEventListener("visibilitychange", onVisibility);
     unwireNav();
+    wordBanner.dispose();
     audioPlayer.stopPlayback();
     if (wakeLock) {
       wakeLock.release().catch(() => {});

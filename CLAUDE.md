@@ -908,6 +908,52 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   takeover underneath a still-visible header — both rules now list all
   three perform route names. `sw.js` precache gained the three new files;
   `CACHE_VERSION` bumped to v19.
+- **Roadmap 2.4, random word generator**, DONE 2026-08-21. Four random
+  lyric-prompt words alongside the chords, plain to rare, for improv where
+  the chords are only half of what you have to invent.
+  `data/words.json` is 2000 curated words in four tiers of 500 (`version`,
+  `tiers` keyed "1"-"4"), written against a 50-word sample Jack signed off in
+  `docs/words-sample.md` — the calibration that matters is in tier 4: rare
+  enough not to be an everyday word, familiar enough that nobody in the room
+  has to stop and parse it. No tags of any kind on any word, and words are
+  deliberately NOT coupled to the harmony (mood tagging and function biasing
+  were both designed and both rejected). `data/schema.md` documents the
+  authoring rules; `tools/validate.js` checks four tiers, 500 each, lowercase
+  a-z, a 14-character cap, and no duplicate anywhere in the file — that last
+  one is what keeps the no-repeat guarantee honest.
+  `js/engine/word-bag.js` (pure, DOM-free) is the shuffle bag: mulberry32,
+  plus a `{ seed, cursor }` pair per tier. The seed defines a deterministic
+  shuffle recomputed every session and the cursor walks it, reseeding only
+  when a tier is exhausted — so all 500 words in a tier are seen before any
+  repeat, and that survives reloads on two stored numbers per tier. `seedFn`
+  is passed IN rather than the module reaching for `Math.random()`, which is
+  what makes the shuffle unit-testable; `tools/test-engine.js` has 8 tests
+  including a full 500-draw no-repeat pass and a JSON round-trip proving a
+  reload doesn't change the walk.
+  `js/ui/words.js` owns the lazy fetch (getMoves pattern), `chordhoard.words`
+  storage (`{ enabled, version, bags }`, riding backups via the prefix sweep)
+  and `createWordBanner()`, shared by the detail view (under the chord strip:
+  the strip is what you're playing, the words are what you're singing about)
+  and all three perform routes. In performance mode the banner MUST sit
+  inside `.perform-topbar` — that is the only element `layout()` measures
+  chrome height from — and it shares the third row with the colour legend,
+  CSS showing exactly one of them, so the topbar stays three rows tall.
+  **On/off is `body[data-words]`, CSS-only**, like the function-tint toggle,
+  with a `settingsRow()` in the cog panel. That is not a stylistic choice:
+  the cog is reachable from inside performance mode, and re-rendering that
+  view to apply a setting would rebuild it out from under its wake lock and
+  resize listeners. The banner also holds off drawing until it is visible, so
+  toggling it on later doesn't burn bag positions nobody saw.
+  Words rotate on **loop boundaries only**, never on chord change (at 104bpm
+  a chord goes by faster than anyone can finish a sung line). That needed a
+  new `onLoop` option on `playProgression()`, fired where the scheduler
+  actually resets its cursors — deliberately not inferred by watching
+  `onChordChange` for index 0, which breaks on single-chord progressions.
+  A reroll dice sits next to the banner on both surfaces so a bad set costs
+  one tap, not four. `enabled` defaults to true, which is right for Jack and
+  flagged in the roadmap for revisiting before any wider release.
+  `sw.js` precaches the three new files; `CACHE_VERSION` bumped to v20.
+
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export
 

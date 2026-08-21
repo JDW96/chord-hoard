@@ -129,3 +129,44 @@ of a tonic is the identical five notes as minor pentatonic of its relative
 minor (same shapes, rooted differently — see `cagedPositions()`'s own
 comment), and blues fretboard positions are a deliberately deferred follow-up
 (v1 ships the plain minor-pentatonic boxes only).
+
+## data/words.json (lyric prompt words, roadmap 2.4)
+
+Four tiers of 500 plain lowercase words, 2000 in total. The word generator
+draws one word per tier and shows them in tier order, so a banner reads plain
+to rare from left to right.
+
+- `version`: bump it whenever the word lists change. The shuffle bag stores
+  this alongside its cursors and resets itself when the number moves, rather
+  than leaving a cursor pointing into a list that changed underneath it.
+- `tiers`: keys `"1"` to `"4"`, exactly 500 words each, sorted alphabetically
+  so a duplicate is easy to spot by eye as well as by validator.
+- **The axis is familiarity in everyday English**, tier 1 most common through
+  to tier 4 rarest. Syllable count and abstractness correlate with it
+  naturally; they are not the axis. The gradient is never explained in the
+  UI, it just reads as four flavours of inspiration.
+- **Tier 4 is vivid and rare, never academic and rare.** A word you have to
+  stop and parse is useless on stage. `cantankerous` and `curmudgeon` are in,
+  `perspicacious` and `lugubrious` are out. Signed off with Jack against the
+  50-word sample in `docs/words-sample.md`, which also records where the line
+  sits: rare enough not to be an everyday word, familiar enough that nobody in
+  the room has to work it out.
+- No tags of any kind are stored on a word. Nothing would read them, and this
+  codebase does not store what it does not use.
+- Words are deliberately NOT coupled to the harmony. Mood tagging and
+  harmonic-function biasing were both designed and both rejected; for improv
+  the words work better as an orthogonal axis.
+- Category balance is an authoring guideline, not stored data. Each tier is
+  written to spread across concrete nouns, people and occupational figures,
+  places and geography, adjectives and moods, verbs, and a small number of
+  archetype or myth names.
+- Proper nouns stay inside archetypes, myth, generic geography and
+  occupational figures (`atlantis`, `kraken`, `pharaoh`). No real people, no
+  places with political weight: a generator shown to a room must not be able
+  to surface either.
+- UK spelling throughout (`harbour`, `sulphur`, `marvellous`, `smoulder`).
+
+`tools/validate.js` checks the mechanical half: four tiers, 500 each,
+lowercase a–z only, a hard 14-character cap, and no duplicate word anywhere
+in the file. That last one is what keeps the shuffle bag's no-repeat
+guarantee honest.
