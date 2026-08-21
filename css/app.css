@@ -221,6 +221,17 @@ html {
 body {
   margin: 0;
   min-height: 100%;
+  /* Kill double-tap-to-zoom app-wide. The app is full of things you tap in
+     quick succession — cycling a chord voicing, rerolling words, stepping
+     BPM, tapping round the circle of fifths — and a second tap landing
+     inside the browser's double-tap window zooms the page instead.
+     "manipulation" allows panning and pinch-zoom and only drops the
+     double-tap gesture, so this does NOT cost anyone the ability to zoom in
+     and read: user-scalable=no in the viewport meta would have done that,
+     which is why it isn't used. touch-action isn't inherited, but the
+     browser intersects the value with every ancestor of the element you
+     touch, so setting it here covers the whole app. */
+  touch-action: manipulation;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font);

@@ -966,6 +966,20 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   flagged in the roadmap for revisiting before any wider release.
   `sw.js` precaches the three new files; `CACHE_VERSION` bumped to v20.
 
+- **Double-tap-to-zoom disabled**, 2026-08-21 (Jack, on the phone). `body`
+  in `css/app.css` sets `touch-action: manipulation`. The app is full of
+  things you tap in quick succession — cycling a chord voicing, rerolling
+  words, stepping BPM, tapping round the circle of fifths — and a second tap
+  landing inside the browser's double-tap window was zooming the page.
+  `manipulation` allows panning and pinch-zoom and only drops the double-tap
+  gesture, so nobody loses the ability to zoom in and read; `user-scalable=no`
+  in the viewport meta would have taken that away, which is why it is NOT
+  used and the meta is unchanged. `touch-action` is not inherited, but the
+  browser intersects it with every ancestor of the touched element, so one
+  declaration on `body` covers the whole app including the fixed
+  full-viewport performance view. Nothing in the app listens for `dblclick`
+  or raw touch events, so there was nothing to break.
+
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export
 
