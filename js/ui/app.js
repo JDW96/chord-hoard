@@ -10,6 +10,8 @@
 //   #/build                        dynamic builder
 //   #/songs[/<id>]                 song list / editor (id "new" for a draft)
 //   #/perform-song/<id>[/<index>]  performance mode through a song's sections
+//   #/setlists[/<id>]              setlist list / editor (id "new" for a draft)
+//   #/perform-setlist/<id>[/<i>]   performance mode through a setlist's items
 
 import * as progression from "../engine/progression.js";
 import * as complexity from "../engine/complexity.js";
@@ -21,6 +23,7 @@ import * as chordsLib from "./chords-lib.js";
 import * as scalesLib from "./scales-lib.js";
 import * as builder from "./builder.js";
 import * as songs from "./songs.js";
+import * as setlists from "./setlists.js";
 import { builtEntries } from "./built.js";
 import { openSettingsPanel, settingsRow } from "./settings-panel.js";
 import { legendCaption } from "./function-tint.js";
@@ -150,6 +153,8 @@ const views = {
   build: { render: builder.render },
   songs: { render: songs.render },
   "perform-song": { render: perform.renderSong },
+  setlists: { render: setlists.render },
+  "perform-setlist": { render: perform.renderSetlist },
 };
 
 // Which bottom tab lights up for each route.
@@ -162,6 +167,8 @@ const TAB_FOR_ROUTE = {
   build: "build",
   songs: "songs",
   "perform-song": "songs",
+  setlists: "hoard",
+  "perform-setlist": "hoard",
 };
 
 // ---------------------------------------------------------------------------

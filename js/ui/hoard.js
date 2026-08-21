@@ -10,6 +10,7 @@ import { tintClass, legendCaption } from "./function-tint.js";
 import { isPinned, pinButton } from "./pins.js";
 import { isPlayable } from "./playability.js";
 import { chosenTonic } from "./detail.js";
+import * as roulette from "./roulette.js";
 import { el, clear, interleave, prettySymbol, capitalise, levelClass } from "./util.js";
 
 // Module-level UI state so search/filters survive a trip into a detail view.
@@ -202,6 +203,29 @@ export function render(container) {
     },
   });
 
+  // "Surprise me" (roadmap 2.1) — a random pick from whatever the CURRENT
+  // filters/search turn up, straight into performance mode in its home key.
+  // Disabled rather than silently doing nothing when that set is empty.
+  const rouletteBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "roulette-btn",
+      attrs: { "aria-label": "Surprise me — jump to a random match in performance mode" },
+      on: {
+        click: () => {
+          const found = results();
+          if (!found.length) return;
+          roulette.setPool(found.map((e) => e.id));
+          const entry = found[Math.floor(Math.random() * found.length)];
+          location.hash =
+            "#/perform/" + encodeURIComponent(entry.id) + "/" + encodeURIComponent(entry.homeKey);
+        },
+      },
+    },
+    "🎲 Surprise me"
+  );
+
   buildSheet(sheet);
 
   container.appendChild(
@@ -209,6 +233,7 @@ export function render(container) {
       "section",
       { className: "hoard" },
       el("div", { className: "search-row" }, search, filterBtn),
+      el("div", { className: "roulette-row" }, rouletteBtn),
       sheet,
       legendCaption(),
       count,
@@ -218,6 +243,7 @@ export function render(container) {
 
   function redrawResults() {
     const found = results();
+    rouletteBtn.disabled = !found.length;
     clear(list);
     const n = found.length;
     count.textContent =
@@ -312,7 +338,18 @@ function buildSheet(sheet) {
       chipRow.appendChild(chip);
     }
     sheet.appendChild(
-      el("div", { className: "filter-group" }, el("h3", {}, label), chipRow)
+      el(
+        "div",
+        { className: "filter-group" },
+        el("h3", {}, label),
+        chipRow,
+        // Setlists (roadmap 2.2) live alongside pins rather than as a new
+        // top-level tab — curated pins with an order, not a different kind
+        // of thing.
+        key === "pinned"
+          ? el("a", { className: "setlists-link", href: "#/setlists" }, "Manage setlists →")
+          : null
+      )
     );
   }
 

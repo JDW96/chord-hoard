@@ -537,6 +537,46 @@ a:focus-visible {
   color: var(--accent-bright);
 }
 
+/* "Surprise me" (roadmap 2.1) — a full-width pill under the search row so
+   it reads as its own action, not another filter chip. Disabled (empty
+   filtered set) rather than hidden, so it's clear why it can't be tapped. */
+.roulette-row {
+  margin-bottom: var(--sp-3);
+}
+
+.roulette-btn {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px dashed var(--accent-dim);
+  border-radius: var(--radius-pill);
+  background: var(--accent-wash);
+  color: var(--accent-bright);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.roulette-btn:disabled {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--ink-faint);
+}
+
+/* Setlists (roadmap 2.2) live with pins, not as a new tab. */
+.setlists-link {
+  display: inline-block;
+  margin-top: var(--sp-2);
+  color: var(--accent-bright);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.setlists-link:hover,
+.setlists-link:focus-visible {
+  text-decoration: underline;
+}
+
 .filter-sheet {
   display: none;
   margin-bottom: var(--sp-4);
@@ -2123,7 +2163,8 @@ a.chord-note.note-link:focus-visible {
 /* ------------------------------------------------------------------ */
 
 body[data-route="perform"],
-body[data-route="perform-song"] {
+body[data-route="perform-song"],
+body[data-route="perform-setlist"] {
   padding-bottom: 0;
   overflow: hidden;
 }
@@ -2131,7 +2172,9 @@ body[data-route="perform-song"] {
 body[data-route="perform"] .app-header,
 body[data-route="perform"] .tabbar,
 body[data-route="perform-song"] .app-header,
-body[data-route="perform-song"] .tabbar {
+body[data-route="perform-song"] .tabbar,
+body[data-route="perform-setlist"] .app-header,
+body[data-route="perform-setlist"] .tabbar {
   display: none;
 }
 
@@ -2246,6 +2289,76 @@ body[data-route="perform-song"] .tabbar {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--on-accent);
+}
+
+/* Improv roulette reroll (roadmap 2.1) — same small pill as capo/play. */
+.perform-reroll {
+  flex: 0 0 auto;
+  min-height: 1.6rem;
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+/* Auto-advance (roadmap 2.3) — a second row under the main strip rather
+   than more squeezed into it; layout()'s fit-to-viewport measures the whole
+   .perform-topbar, so this is accounted for automatically. */
+.perform-auto-row {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-2) var(--sp-1) var(--sp-1);
+}
+
+.perform-auto-toggle {
+  flex: 0 0 auto;
+  min-height: 1.6rem;
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.perform-auto-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.perform-bpm-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 0 var(--sp-1);
+}
+
+.perform-bpm-btn {
+  min-width: 1.6rem;
+  min-height: 1.6rem;
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.perform-bpm-value {
+  min-width: 3.4rem;
+  text-align: center;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--ink-dim);
 }
 
 /* Previous/next section controls, shown only in song playback
@@ -3148,6 +3261,113 @@ body[data-route="scales"] .instrument-toggle {
 
 .song-status:empty {
   display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Setlists (roadmap 2.2) — list/editor chrome reuses the song builder's   */
+/* generic classes (.song-card, .song-slot, .song-back, .song-save-btn…)   */
+/* since the visual language is identical; only what's genuinely new to a  */
+/* setlist (reorder buttons, the kind badge, the add-item search) gets its */
+/* own classes here.                                                       */
+/* ------------------------------------------------------------------ */
+
+.setlists-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.setlists-head h2 {
+  margin: 0;
+}
+
+.setlists-new-btn {
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.setlists-new-btn:hover,
+.setlists-new-btn:focus-visible {
+  background: var(--accent-bright);
+}
+
+.setlists-cards {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 700px) {
+  .setlists-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* One column always — a setlist's order is the whole point, so items read
+   top to bottom rather than wrapping into a 2-up grid like song sections. */
+.setlist-items {
+  display: grid;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.setlist-item-kind {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.setlist-reorder {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.setlist-reorder-btn {
+  min-width: 1.8rem;
+  min-height: 1.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink-dim);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.setlist-reorder-btn:disabled {
+  color: var(--ink-faint);
+  opacity: 0.4;
+}
+
+.setlist-reorder-btn:not(:disabled):hover,
+.setlist-reorder-btn:not(:disabled):focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.setlist-tonic-row {
+  margin-top: var(--sp-2);
+}
+
+.setlist-add {
+  margin-bottom: var(--sp-3);
+}
+
+.setlist-add h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-dim);
 }
 
 /* ------------------------------------------------------------------ */

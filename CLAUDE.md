@@ -869,6 +869,33 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   placing, the add-button still places correctly afterwards, and the chord
   library's audition button fires with no console errors and no route
   change. This closes roadmap tier 1.
+- **Roadmap tier 2, performance quick wins**, DONE 2026-08-21 (2.1 improv
+  roulette, 2.2 setlists, 2.3 auto-advance — see `docs/roadmap.md` for full
+  build notes on each). New files: `js/ui/roulette.js` (ephemeral,
+  non-persisted filtered-id pool for "Surprise me" + reroll), `js/ui/setlists.js`
+  and `js/ui/setlists-store.js` (`chordhoard.setlists`, mirroring
+  `songs-store.js`'s shape and read-modify-write pattern exactly). New
+  routes: `#/setlists[/<id>]` and `#/perform-setlist/<id>[/<index>]` — the
+  latter is a THIRD mode `perform.js` now serves (alongside a lone
+  progression and a song), flattening a setlist's items into one linear
+  step sequence (a "song" item expands into all of its own sections) before
+  handing off to the shared `buildPerformanceView()` core, so prev/next,
+  arrow-key nav, capo mode, tinting and the missing-reference placeholder
+  all work on it for free. No new top-level tab: setlists are reached from
+  the Hoard's Pins filter group ("Manage setlists →"), same reasoning as
+  pins themselves living there rather than on the tab bar.
+  `audio-player.js`'s `playProgression()` gained a `muted` option (skips the
+  actual tones/clicks, keeps the AudioContext clock scheduling the
+  callbacks) so auto-advance's silent highlight walk and the audible Play
+  button are one code path, not two; a local `activeControl` flag in
+  `perform.js` keeps the two controls mutually exclusive without either one
+  silently stopping the other on a stray tap. Fixed while wiring up the new
+  `perform-setlist` route: `css/app.css`'s
+  `body[data-route="perform"|"perform-song"]` header/tab-bar-hiding rules
+  did not list the new route name, so it initially rendered the full-viewport
+  takeover underneath a still-visible header — both rules now list all
+  three perform route names. `sw.js` precache gained the three new files;
+  `CACHE_VERSION` bumped to v19.
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export
 

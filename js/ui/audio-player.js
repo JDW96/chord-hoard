@@ -130,8 +130,13 @@ export function stopPlayback() {
 /**
  * Play a rendered chord list (progression.render(entry, tonic).chords).
  *
- * opts: { bpm, timeSig, loop, countIn, metronome, onChordChange(index|null),
+ * opts: { bpm, timeSig, loop, countIn, metronome, muted, onChordChange(index|null),
  * onCountIn(beatsLeft|null), onStop() }.
+ *
+ * `muted` (roadmap 2.3, auto-advance) keeps the AudioContext clock driving
+ * the schedule — so timing is still sample-accurate and immune to a
+ * backgrounded tab — but skips every actual tone/click, for a silent
+ * tempo-driven highlight walk rather than a second, parallel scheduler.
  *
  * Uses the standard lookahead-timer pattern: a ~25ms setInterval schedules
  * whatever audio falls in the next ~100ms of AudioContext time. The audio
@@ -151,6 +156,7 @@ export function playProgression(chords, opts = {}) {
     loop = false,
     countIn = false,
     metronome = false,
+    muted = false,
     onChordChange = () => {},
     onCountIn = () => {},
     onStop = () => {},
@@ -188,7 +194,7 @@ export function playProgression(chords, opts = {}) {
   // metronome toggle — a silent count-in would defeat its purpose.
   for (let b = 0; b < countInBeats; b += 1) {
     const t = anchorTime + b * schedule.secPerBeat;
-    scheduleClick(t, b === 0);
+    if (!muted) scheduleClick(t, b === 0);
     domAt(t, () => onCountIn(countInBeats - b));
   }
   if (countInBeats > 0) domAt(loopStartTime, () => onCountIn(null));
@@ -222,11 +228,11 @@ export function playProgression(chords, opts = {}) {
 
       if (nextChordTime <= nextClickTime) {
         const ev = nextChord;
-        scheduleChordAudio(ev.chord, nextChordTime, ev.durationSec);
+        if (!muted) scheduleChordAudio(ev.chord, nextChordTime, ev.durationSec);
         domAt(nextChordTime, () => onChordChange(ev.index));
         chordCursor += 1;
       } else {
-        scheduleClick(nextClickTime, nextClick.accent);
+        if (!muted) scheduleClick(nextClickTime, nextClick.accent);
         clickCursor += 1;
       }
 

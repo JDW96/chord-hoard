@@ -1,11 +1,12 @@
-// perform.js — Performance Mode: a single progression (#/perform/<id>[/<tonic>])
-// or a saved song, section by section (#/perform-song/<songId>[/<sectionIndex>]).
+// perform.js — Performance Mode: a single progression (#/perform/<id>[/<tonic>]),
+// a saved song section by section (#/perform-song/<songId>[/<sectionIndex>]),
+// or a saved setlist step by step (#/perform-setlist/<setlistId>[/<index>]).
 //
 // Full-viewport takeover: the shell hides its header and tab bar via
-// body[data-route="perform"|"perform-song"] (see app.css), and this view
-// pins itself to the viewport. The whole progression must FIT — zero
-// scrolling, portrait or landscape — so we lay chords in a grid whose column
-// count follows the orientation and chord count, then shrink a single
+// body[data-route="perform"|"perform-song"|"perform-setlist"] (see app.css),
+// and this view pins itself to the viewport. The whole progression must FIT
+// — zero scrolling, portrait or landscape — so we lay chords in a grid whose
+// column count follows the orientation and chord count, then shrink a single
 // font-size variable until nothing overflows. Everything but the chord
 // symbols is deliberately dim.
 //
@@ -13,11 +14,15 @@
 // visible again, released on exit. Where unsupported (or refused) we degrade
 // silently — a tiny indicator only appears when the lock is actually held.
 //
-// Both routes share one rendering core, buildPerformanceView(): a song is
-// just a single progression's view plus previous/next controls (swipe target
-// is the same physical grid; "swipe" here is v1's arrow buttons + arrow
-// keys, not a touch gesture) and an exit link back to the song editor
-// instead of the progression's detail page.
+// All three routes share one rendering core, buildPerformanceView(): a song
+// or setlist step is just a single progression's view plus previous/next
+// controls (swipe target is the same physical grid; "swipe" here is v1's
+// arrow buttons + arrow keys, not a touch gesture — which doubles as the
+// page-turner-pedal story, since those pedals present as keyboards sending
+// arrow keys) and an exit link back to the song/setlist editor instead of
+// the progression's detail page. The improv-roulette reroll dice (roadmap
+// 2.1) and the silent auto-advance walk (roadmap 2.3) are the other two
+// controls layered onto that same shared core.
 
 import { parseNote, pitchClass } from "../engine/theory.js";
 import * as capo from "../engine/capo.js";
@@ -27,6 +32,8 @@ import * as audioPlayer from "./audio-player.js";
 import { state, renderIn, buildSettingsPanel } from "./app.js";
 import { chosenTonic, tonicsFor, isMajorFamily } from "./detail.js";
 import { songById } from "./songs-store.js";
+import { setlistById } from "./setlists-store.js";
+import * as roulette from "./roulette.js";
 import { tintClass, legendCaption } from "./function-tint.js";
 import { openSettingsPanel } from "./settings-panel.js";
 import { el, clear, prettySymbol, prettyNote, capitalise } from "./util.js";
@@ -82,7 +89,40 @@ export function render(container, params) {
     entry,
     tonic,
     exitHref: "#/prog/" + encodeURIComponent(entry.id),
+    extra: rerollControl(entry),
   });
+}
+
+// ---------------------------------------------------------------------------
+// Improv roulette reroll (roadmap 2.1) — only shown when the entry currently
+// on screen came from a "Surprise me" pool with more than one member, so a
+// perform link reached the ordinary way (from the detail view) never grows a
+// dice it has nothing to reroll within.
+// ---------------------------------------------------------------------------
+
+function rerollControl(entry) {
+  if (!roulette.isActivePool(entry.id)) return null;
+  return el(
+    "button",
+    {
+      type: "button",
+      className: "perform-reroll",
+      attrs: {
+        "aria-label": "Surprise me again",
+        title: "Draw another from the same filtered set",
+      },
+      on: {
+        click: () => {
+          const nextId = roulette.pickFrom(entry.id);
+          const next = nextId ? state.byId.get(nextId) : null;
+          if (!next) return;
+          location.hash =
+            "#/perform/" + encodeURIComponent(next.id) + "/" + encodeURIComponent(next.homeKey);
+        },
+      },
+    },
+    "🎲"
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -156,6 +196,104 @@ export function renderSong(container, params) {
 }
 
 // ---------------------------------------------------------------------------
+// A saved setlist, step by step (#/perform-setlist/<setlistId>[/<index>])
+// (roadmap 2.2) — flattened into a linear sequence of playable steps: a
+// "prog" item is one step, a "song" item expands into ALL of that song's own
+// sections in order, so a whole song plays through inside the setlist rather
+// than needing its own nested prev/next. This reuses realizeSong() (the same
+// engine call renderSong() above uses) so a song's sections never need a
+// second implementation of key/tonic resolution.
+// ---------------------------------------------------------------------------
+
+function setlistStepHref(setlistId, index) {
+  return "#/perform-setlist/" + encodeURIComponent(setlistId) + "/" + index;
+}
+
+function setlistSteps(setlist) {
+  const steps = [];
+  for (const item of setlist.items) {
+    if (item.kind === "song") {
+      const song = songById(item.refId);
+      if (!song) {
+        steps.push({ missing: true, label: "a deleted song" });
+        continue;
+      }
+      const sections = realizeSong(song, state.byId, tonicsFor);
+      sections.forEach((sec) => {
+        const label = `${song.name || "Untitled song"} · ${capitalise(sec.section.label)}`;
+        if (sec.missing) steps.push({ missing: true, label });
+        else steps.push({ entry: sec.entry, tonic: sec.tonic, label });
+      });
+    } else {
+      const entry = state.byId.get(item.refId);
+      if (!entry) {
+        steps.push({ missing: true, label: "a deleted progression" });
+        continue;
+      }
+      const tonic = tonicsFor(entry).includes(item.tonic) ? item.tonic : entry.homeKey;
+      steps.push({ entry, tonic, label: entry.name });
+    }
+  }
+  return steps;
+}
+
+export function renderSetlist(container, params) {
+  const setlistId = decodeURIComponent(params[0] || "");
+  const setlist = setlistById(setlistId);
+  if (!setlist) {
+    container.appendChild(
+      el(
+        "section",
+        { className: "coming-soon" },
+        el("h2", {}, "That setlist isn't here"),
+        el("p", {}, `We couldn't find a setlist called "${setlistId}".`),
+        el("p", {}, el("a", { href: "#/setlists" }, "Back to Setlists"))
+      )
+    );
+    return;
+  }
+
+  const exitHref = "#/setlists/" + encodeURIComponent(setlist.id);
+  const steps = setlistSteps(setlist);
+  const total = steps.length;
+  if (!total) {
+    container.appendChild(
+      el(
+        "section",
+        { className: "coming-soon" },
+        el("h2", {}, "Nothing to play yet"),
+        el("p", {}, "This setlist has no items."),
+        el("p", {}, el("a", { href: exitHref }, "Back to the setlist"))
+      )
+    );
+    return;
+  }
+
+  let index = parseInt(params[1], 10);
+  if (!Number.isInteger(index) || index < 0 || index >= total) index = 0;
+
+  const current = steps[index];
+  const nav = {
+    prevHref: index > 0 ? setlistStepHref(setlist.id, index - 1) : null,
+    nextHref: index < total - 1 ? setlistStepHref(setlist.id, index + 1) : null,
+  };
+  const title = (setlist.name || "Untitled setlist") + " · " + current.label;
+
+  if (current.missing) {
+    buildMissingSectionView(container, { title, index, total, exitHref, nav, backLabel: "the setlist" });
+    return;
+  }
+
+  buildPerformanceView(container, {
+    entry: current.entry,
+    tonic: current.tonic,
+    exitHref,
+    nav,
+    labelPrefix: `${setlist.name || "Untitled setlist"} · ${current.label} (${index + 1}/${total}) · `,
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Shared rendering core
 // ---------------------------------------------------------------------------
 
@@ -181,12 +319,14 @@ function navButton(direction, href, label) {
 }
 
 /**
- * A brief full-viewport placeholder for a song section whose progression no
- * longer resolves (a deleted built-* entry) — a visible state, not a throw,
- * with the same exit/nav chrome as a real section so the user can skip past
- * it rather than getting stuck.
+ * A brief full-viewport placeholder for a song/setlist step whose
+ * progression no longer resolves (a deleted built-* entry, or a setlist
+ * item pointing at a deleted song) — a visible state, not a throw, with the
+ * same exit/nav chrome as a real step so the user can skip past it rather
+ * than getting stuck. `backLabel` names what exitHref returns to ("the
+ * song" / "the setlist").
  */
-function buildMissingSectionView(container, { title, index, total, exitHref, nav }) {
+function buildMissingSectionView(container, { title, index, total, exitHref, nav, backLabel = "the song" }) {
   const strip = el(
     "div",
     { className: "perform-strip" },
@@ -199,8 +339,8 @@ function buildMissingSectionView(container, { title, index, total, exitHref, nav
   const body = el(
     "div",
     { className: "perform-missing" },
-    el("p", {}, "This section's progression isn't in the hoard any more."),
-    el("p", {}, el("a", { href: exitHref }, "Back to the song"))
+    el("p", {}, "This one isn't in the hoard any more."),
+    el("p", {}, el("a", { href: exitHref }, `Back to ${backLabel}`))
   );
   container.appendChild(el("section", { className: "perform-full" }, topBar, body));
 
@@ -211,10 +351,12 @@ function buildMissingSectionView(container, { title, index, total, exitHref, nav
 /**
  * The real performance grid for one progression in one key. `nav`, when
  * given ({ prevHref, nextHref }), adds previous/next section controls (a
- * song context); omitted entirely for a single standalone progression.
- * `labelPrefix` prepends the song/section context to the info strip text.
+ * song or setlist context); omitted entirely for a single standalone
+ * progression. `labelPrefix` prepends the song/section context to the info
+ * strip text. `extra`, when given, is one more control node placed in the
+ * strip (the improv-roulette reroll dice — see rerollControl()).
  */
-function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPrefix }) {
+function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPrefix, extra }) {
   const rendered = renderIn(entry, tonic);
   const chords = rendered.chords;
 
@@ -291,11 +433,16 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   );
   settingsBtn.innerHTML = SETTINGS_ICON;
 
-  // ---- Play button (roadmap 1.1) ------------------------------------------
-  // Always plays the real sounding chords (`chords`, at `tonic`), never the
-  // capo-played shapes — same precedent as the tint above: the harmony
-  // doesn't change under a capo, only which shape your hands make.
+  // ---- Play button (roadmap 1.1) + auto-advance (roadmap 2.3) -------------
+  // Always plays/walks the real sounding chords (`chords`, at `tonic`),
+  // never the capo-played shapes — same precedent as the tint above: the
+  // harmony doesn't change under a capo, only which shape your hands make.
+  // Both controls share ONE audioPlayer transport (only one playback runs
+  // at a time), so starting either one stops the other; `activeControl`
+  // tracks which button is "on" so a click always means "start (or stop)
+  // THIS control", never an accidental stop-only tap on the other one.
   let soundingIndex = null;
+  let activeControl = null; // "play" | "auto" | null
   function applyHighlight() {
     grid.querySelectorAll(".perform-cell:not(.blank)").forEach((node, i) => {
       node.classList.toggle("sounding", i === soundingIndex);
@@ -306,6 +453,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     applyHighlight();
   }
   function resetPlayUI() {
+    if (activeControl === "play") activeControl = null;
     playBtn.textContent = "▶";
     playBtn.classList.remove("active");
     playBtn.setAttribute("aria-label", "Play");
@@ -320,10 +468,11 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
       attrs: { "aria-label": "Play", "aria-pressed": "false" },
       on: {
         click: () => {
-          if (audioPlayer.isPlaying()) {
+          if (activeControl === "play") {
             audioPlayer.stopPlayback();
             return;
           }
+          activeControl = "play";
           playBtn.textContent = "■";
           playBtn.classList.add("active");
           playBtn.setAttribute("aria-label", "Stop");
@@ -340,6 +489,87 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     "▶"
   );
 
+  // Auto-advance: a silent, tempo-driven highlight walk for hands-free
+  // play-along, reusing the SAME scheduler with the synth muted rather than
+  // a second parallel timer — one code path, not two (roadmap 2.3). Loops,
+  // per the acceptance criteria, so it keeps walking until stopped.
+  let autoBpm = bpmForTempo(entry.tempo);
+  function resetAutoUI() {
+    if (activeControl === "auto") activeControl = null;
+    autoBtn.textContent = "Auto-advance";
+    autoBtn.classList.remove("active");
+    autoBtn.setAttribute("aria-pressed", "false");
+    highlightSounding(null);
+  }
+  const autoBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "perform-auto-toggle",
+      attrs: {
+        "aria-pressed": "false",
+        title: "Silently walk the grid chord by chord at this tempo, hands-free",
+      },
+      on: {
+        click: () => {
+          if (activeControl === "auto") {
+            audioPlayer.stopPlayback();
+            return;
+          }
+          activeControl = "auto";
+          autoBtn.textContent = "Stop";
+          autoBtn.classList.add("active");
+          autoBtn.setAttribute("aria-pressed", "true");
+          audioPlayer.playProgression(chords, {
+            bpm: autoBpm,
+            timeSig: entry.timeSig,
+            loop: true,
+            muted: true,
+            onChordChange: highlightSounding,
+            onStop: resetAutoUI,
+          });
+        },
+      },
+    },
+    "Auto-advance"
+  );
+  const autoBpmValue = el("span", { className: "perform-bpm-value" }, `${autoBpm} BPM`);
+  const autoBpmStepper = el(
+    "div",
+    { className: "perform-bpm-stepper" },
+    el(
+      "button",
+      {
+        type: "button",
+        className: "perform-bpm-btn",
+        attrs: { "aria-label": "Slower" },
+        on: {
+          click: () => {
+            autoBpm = Math.max(40, autoBpm - 4);
+            autoBpmValue.textContent = `${autoBpm} BPM`;
+          },
+        },
+      },
+      "−"
+    ),
+    autoBpmValue,
+    el(
+      "button",
+      {
+        type: "button",
+        className: "perform-bpm-btn",
+        attrs: { "aria-label": "Faster" },
+        on: {
+          click: () => {
+            autoBpm = Math.min(220, autoBpm + 4);
+            autoBpmValue.textContent = `${autoBpm} BPM`;
+          },
+        },
+      },
+      "+"
+    )
+  );
+
   const stripChildren = [
     el(
       "a",
@@ -352,6 +582,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     ),
     settingsBtn,
     playBtn,
+    extra || null,
   ];
   if (nav) stripChildren.push(navButton("prev", nav.prevHref, "Previous section"));
   stripChildren.push(capoBtn, infoSpan);
@@ -359,9 +590,16 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   stripChildren.push(wakeDot);
 
   const strip = el("div", { className: "perform-strip" }, ...stripChildren);
+  const autoRow = el("div", { className: "perform-auto-row" }, autoBtn, autoBpmStepper);
   // Wrapped with the legend so layout() has one element to measure the
   // fixed "chrome" height from (see .perform-topbar in app.css).
-  const topBar = el("div", { className: "perform-topbar" }, strip, legendCaption("perform-legend"));
+  const topBar = el(
+    "div",
+    { className: "perform-topbar" },
+    strip,
+    autoRow,
+    legendCaption("perform-legend")
+  );
 
   // ---- Chord grid ----------------------------------------------------------
   // Fixed at TWO columns, always (backlog item 16): four chords are 2×2,

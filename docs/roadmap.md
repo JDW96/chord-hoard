@@ -268,7 +268,7 @@ tapping rapidly.
 Cheap, high-joy items. Do them as palate cleansers between big tiers if preferred;
 none depend on audio.
 
-### 2.1 Improv roulette  [ ]  (S)
+### 2.1 Improv roulette  [x]  (S)  DONE 2026-08-21
 
 **Goal.** For musical-improv rehearsal and warmups: "something villainous in 3/4,
 now". One tap from filters to a full-screen playable progression.
@@ -288,7 +288,28 @@ more than one member.
 **Acceptance.** Filter to a mood + time signature, one tap lands in performance mode
 on a matching entry, reroll cycles within the filter, works offline.
 
-### 2.2 Setlists  [ ]  (M)
+Implementation note: the filtered id pool is ephemeral module-scoped state in
+a new `js/ui/roulette.js` (`setPool`/`isActivePool`/`pickFrom`), not
+persisted — like the performance view's capo toggle, it only needs to
+survive the hash change from Hoard into Performance mode. `hoard.js` gained
+a full-width "🎲 Surprise me" pill under the search row (disabled, not
+hidden, when the filtered set is empty) that calls `roulette.setPool()` with
+the current `results()` ids and jumps to `#/perform/<id>/<homeKey>` (home
+key explicitly, not the remembered per-progression key choice, since a
+surprise should surprise). `perform.js`'s standalone `render()` builds a
+small reroll dice via `rerollControl()`, shown only when
+`roulette.isActivePool(entry.id)` (pool has more than one member and
+includes the entry on screen) — so a perform link reached the ordinary way
+(from the detail view) never grows a dice it has nothing to reroll within.
+Reroll excludes the current entry per `roulette.pickFrom(excludeId)`; it
+changes the URL (`location.hash`) rather than patching the grid in place,
+which is the same "a route change fully rebuilds the view" pattern already
+used for song section prev/next. Verified in a real browser: filtering to
+zero results disables the button; repeated rerolls cycle through the
+filtered set without repeating; the strip (dice + capo hint together, the
+worst case) does not overflow at 360 width or 780×360 landscape.
+
+### 2.2 Setlists  [x]  (M)  DONE 2026-08-21
 
 **Goal.** An ordered list of items (progressions with a chosen key, or songs once 0.1
 lands) for a gig or rehearsal, playable start to finish in performance mode.
@@ -311,7 +332,49 @@ exists renders as a skippable missing state.
 **Acceptance.** Build a 5-item setlist, play it end to end using only arrow keys;
 survives reload and export/import; missing references degrade gracefully.
 
-### 2.3 Auto-advance (play-along highlight without audio)  [ ]  (S)
+Implementation note: `js/ui/setlists-store.js` mirrors `songs-store.js`
+exactly (`chordhoard.setlists`, read-modify-write-the-whole-array, rides
+along in backup automatically via the prefix sweep). `js/ui/setlists.js` is
+the list (#/setlists) and editor (#/setlists/new, #/setlists/<id>), styled
+by reusing the song builder's generic CSS classes (`.song-card`,
+`.song-slot`, `.song-back`, `.song-save-btn`…) since the visual language is
+identical; only what's genuinely new to a setlist (up/down reorder buttons,
+the kind badge, the add-item search across both progressions and songs)
+gets its own `.setlist-*` classes. No new top-level tab: the Hoard's Pins
+filter group gained a "Manage setlists →" link (`hoard.js`'s `buildSheet()`,
+gated on `key === "pinned"`) since a setlist is curated pins with an order.
+Reordering is plain up/down buttons (disabled at each end), not
+drag-and-drop, per the roadmap's own reasoning about mobile drag.
+Performance mode gained a THIRD route, `#/perform-setlist/<id>[/<index>]`
+(`perform.js`'s `renderSetlist()`), which flattens a setlist into a linear
+sequence of playable steps before handing off to the same
+`buildPerformanceView()` core: a "prog" item is one step, a "song" item
+expands into ALL of that song's own sections in order (reusing
+`renderSong()`'s `realizeSong()` call, so a song's key/tonic resolution
+never needs a second implementation) — so a whole song plays through inside
+the setlist rather than needing its own nested prev/next, and the
+page-turner-pedal story (arrow keys = ArrowLeft/ArrowRight, already wired
+for song sections) covers a whole gig set for free. A missing "prog" or
+"song" reference renders as a skippable placeholder (`buildMissingSectionView`,
+now parameterised with a `backLabel` so the placeholder correctly says "Back
+to the setlist" rather than the song-only wording it used to hardcode).
+Caught and fixed while wiring this up: `css/app.css`'s
+`body[data-route="perform"|"perform-song"]` rules (hiding the header/tabbar
+for the full-viewport takeover) did not list `"perform-setlist"`, so the new
+route would have kept the ordinary header and tab bar visible underneath the
+performance grid — fixed by adding the new route to both rules. Verified in
+a real browser: built and saved a 5-item setlist (mixed progressions across
+different keys) from the search-based picker, reordered an item, reloaded
+the editor from storage, played it through with ArrowRight/ArrowLeft
+(stepping via real separate keyboard events, since firing several in the
+same synchronous tick only ever applies the first — location.hash changes
+are asynchronous), confirmed Next/prev disable correctly at both ends,
+forced a missing-reference item and confirmed the placeholder degrades
+without throwing and reads correctly, round-tripped the setlist through
+`backup.exportData()`/`importBackup()`, and confirmed the header/tab bar
+now hide correctly on `#/perform-setlist/...`.
+
+### 2.3 Auto-advance (play-along highlight without audio)  [x]  (S)  DONE 2026-08-21
 
 **Goal.** In performance mode, a tempo-driven highlight that walks the grid cell by
 cell so you can play along hands-free. With audio (1.1) present it is the same
@@ -326,6 +389,33 @@ audio player's highlight path with the synth muted, one code path, not two.
 **Acceptance.** Highlight timing matches the chord durations including odd metres
 (test a 6/8 and a 5/4 entry); stays smooth with the screen kept awake; blank filler
 cells are skipped.
+
+Implementation note: one code path, exactly as specified. `audio-player.js`'s
+`playProgression()` gained a `muted` option that skips `scheduleChordAudio()`/
+`scheduleClick()` calls but keeps the AudioContext clock driving the
+schedule and still fires `onChordChange`/`onStop` on time, so the highlight
+stays sample-accurate and immune to a backgrounded tab exactly like real
+playback, just silent. `perform.js`'s `buildPerformanceView()` gained a
+second strip row (`.perform-auto-row`, inside `.perform-topbar` so
+`layout()`'s fit-to-viewport measurement of the topbar's whole height
+already accounts for it) with an "Auto-advance" toggle and a compact BPM
+stepper (defaulting to `bpmForTempo(entry.tempo)`, independent of the Play
+button's fixed tempo). Auto-advance calls `audioPlayer.playProgression(...,
+{ loop: true, muted: true, onChordChange: highlightSounding })` — the SAME
+`highlightSounding`/`applyHighlight` the audible Play button already used,
+so the two controls are visually identical, per the acceptance criteria.
+Because only one `audioPlayer` transport runs at a time, Play and
+Auto-advance are mutually exclusive; a local `activeControl` variable
+("play" | "auto" | null) tracks which button is currently "on" so a click on
+either one always means "start or stop THIS control" rather than a stray
+tap on one silently stopping the other without starting anything. Verified
+in a real browser: toggling Auto-advance walks the highlight across the
+grid and keeps looping past a full pass; the BPM stepper adjusts in
+4-BPM steps; clicking Play while Auto-advance is running stops the walk and
+starts audible playback (and vice versa), each button's own UI resetting
+correctly; the new row does not overflow the strip at 360 width or 780×360
+landscape, including the worst case (auto row + reroll dice + capo toggle
+all present together).
 
 ---
 
