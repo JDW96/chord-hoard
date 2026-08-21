@@ -494,6 +494,18 @@ Phase 2.5 (design & UX polish) was agreed and inserted before phase 3. Status be
     own concept in the engine; and the recommended scale should be COMPUTED from
     the progression's pitch classes rather than stored on 349 entries, with a
     stored override field only if the computation turns out to be wrong often.
+18. Performance view restructure: show the progression title, and generally give
+    a bit less space to the chords and a bit more to everything else. Raised by
+    Jack 2026-08-21 while scoping the word generator (roadmap 2.4) and explicitly
+    deferred. Do it after roadmap 2.6, which fixes the `layout()` overflow
+    detection this would otherwise have to work around.
+19. Per-chord word attachment: one random word under each chord in the perform
+    grid, rather than roadmap 2.4's four-word banner. This was the original shape
+    of 2.4 and was deferred, not rejected, for two reasons: `layout()` cannot
+    currently take a second line of text per cell without cells silently
+    colliding (roadmap 2.6 fixes that), and a prompt that changes every 2.3
+    seconds is faster than a singer can use. Revisit only after 2.6, and only if
+    the banner turns out to be too few points of inspiration in practice.
 
 ### Chord explanation copy (phase 2.5, agreed with Jack 2026-08-03)
 

@@ -417,6 +417,235 @@ correctly; the new row does not overflow the strip at 360 width or 780×360
 landscape, including the worst case (auto row + reroll dice + capo toggle
 all present together).
 
+### 2.4 Random word generator  [ ]  (L)
+
+Designed with Jack 2026-08-21 in a full requirements pass. Every decision below
+was argued through and settled; the "rejected" list at the end is as binding as
+the rest, so do not re-propose those.
+
+**Goal.** Lyric prompts sitting alongside the chords. Four random words per
+progression, so a rehearsal or a gig has a starting point for words as well as
+harmony. Built for musical improv, where the chords are only half of what you
+have to invent on the spot.
+
+**Design and reasoning.**
+
+Four words shown as a **banner**, not one word per chord. Per-chord attachment
+was the original proposal and was rejected on two grounds. First, performance
+mode's `layout()` cannot take a second line of text under every chord symbol
+without cells silently colliding (its shrink loop cannot see the overflow; see
+2.6). Second, a prompt tied to a chord changes every 2.3 seconds at 104bpm with
+4-beat chords, which is faster than anyone can finish a sung line. Per-chord
+attachment stays on the backlog for after 2.6 hardens the layout.
+
+The four words carry a deliberate **complexity gradient**, tier 1 through tier 4,
+plain to rare ("dog" through to "calamitous"). This is never explained in the UI.
+It reads as four different flavours of inspiration and the gradient is understood
+implicitly. There is no difficulty selector; position in the banner IS the tier.
+
+Words are **not coupled to the music**. Mood tagging (reusing `vocab.json`'s 41
+moods) and harmonic-function biasing (via `harmony.classify`) were both designed
+and both rejected: for improv the words work better as an orthogonal axis, and
+coupling them narrows what you can do with them rather than widening it.
+
+**Data.** New file `data/words.json`, added to the sw.js precache.
+
+```json
+{
+  "comment": "...",
+  "version": 1,
+  "tiers": {
+    "1": ["dog", "..."],
+    "2": ["..."],
+    "3": ["..."],
+    "4": ["calamitous", "..."]
+  }
+}
+```
+
+- 500 plain lowercase strings per tier, 2000 total. No tags of any kind on any
+  word: nothing would read them, and this codebase does not store what it does
+  not use (no complexity field on entries, no stored scale recommendations).
+- **The axis is familiarity.** Tier 1 most common in everyday English, tier 4
+  rarest. Syllable count and abstractness may correlate naturally; they are not
+  the axis.
+- **Hard guard on tier 4: vivid and rare, never academic and rare.** A word you
+  have to parse is useless on stage. "Calamitous" yes, "perspicacious" no. This
+  is the single most important instruction for whoever writes the list, and it is
+  what the sample below exists to prove.
+- Categories (nouns, adjectives, moods, locations, infinitives, proper nouns) are
+  an authoring balance guideline, documented in `data/schema.md`, never stored.
+- Proper nouns restricted to archetypes, myth, generic geography and occupational
+  figures ("the Baron", "Atlantis", "the lighthouse keeper"). No real people. A
+  random generator shown to a room must not be able to surface a real person's
+  name or a place with political weight.
+- **Hard 14-character cap**, validated. 12 was considered and raised because
+  familiar-but-rare tier 4 words run long ("cantankerous" is 12), and a validated
+  constraint beats a responsive one here because the failure shows up on stage.
+- House JSON conventions: 2-space indent, LF, trailing newline, comment as a
+  string key (the `moves.json` pattern). Roughly 25-30KB against a current
+  787KB first-visit payload.
+
+**Sourcing.** Research what categories make good improv prompts, then write
+original lists. Do not copy a word list wholesale from any site: individual
+common words are not copyrightable but a specific curated compilation can be,
+and scraping also imports that source's quality problems. Be honest in planning
+that 2000 curated, tiered, category-balanced words is a content-writing task
+that will dominate the effort on this item.
+
+**Process gate.** Write a **50-word sample split roughly 12-13 per tier** and get
+Jack's sign-off before writing the remaining 1,950. Splitting it across all four
+tiers is the point: he is signing off on the gradient, not just the vocabulary.
+
+**Engine: the shuffle bag.** New pure module (suggested `js/engine/word-bag.js`).
+Jack's requirement is no repeats even across sessions, and drawing at random from
+2000 fails that fast: four words per entry means ~100 words drawn after 25
+progressions, where collisions are already likely. So:
+
+- A small seeded PRNG (mulberry32 or similar, about five lines), deterministic
+  and unit-testable. "The shuffle is correct" is otherwise unfalsifiable.
+- Per tier, a `{ seed, cursor }` pair. Draw sequentially through the deterministic
+  shuffle of that tier; reseed only when the tier is exhausted. This guarantees
+  all 500 words in a band are seen before any repeat.
+- Store `version` from `words.json` alongside the bags. A version bump resets
+  them, rather than leaving cursors pointing into a list that changed underneath.
+- Engine modules never fetch: the UI passes parsed data in, per the
+  `solo-scales.js` / `cagedPositions()` precedent.
+
+**Storage.** `chordhoard.words`, shape
+`{ enabled, version, bags: { "1": {seed, cursor}, … } }`. Rides backups
+automatically via `backup.js`'s prefix sweep. **`enabled` defaults to true.** See
+the release flag at the end of this item.
+
+**Audio.** Add an `onLoop` callback to `playProgression()`'s options, fired at the
+existing loop-reset point in the scheduler (around the `chordCursor`/`clickCursor`
+reset). About three lines. Do NOT infer the loop boundary by watching
+`onChordChange` for index 0: it breaks on single-chord progressions where the
+index is always 0, and it makes a documented event out of a side effect of index
+arithmetic.
+
+**UI.**
+
+- A banner of four words, rendered **in tier order 1 to 4** so the gradient is
+  visible.
+- **Performance mode**: the banner must live **inside `.perform-topbar`**, which
+  is the only element `layout()` measures for chrome height. Anything placed
+  between the topbar and the grid is invisible to that math and reintroduces the
+  overflow bug. **Hide the colour legend (`.perform-legend`) whenever words are
+  showing**, which holds the topbar at three rows so the banner adds no net
+  chrome height. Both are secondary reference text and during a performance a
+  lyric prompt outranks a reminder of what the tint colours mean.
+- Applies to **all three perform routes** (`#/perform`, `#/perform-song`,
+  `#/perform-setlist`), which is free since they share `buildPerformanceView()`.
+  During a setlist each item gets its own fresh four words as you arrow through.
+- **Detail view**: directly under the chord strip, above the transport. The chord
+  strip is "what am I playing", the words are "what am I singing about"; they
+  read as a pair, and it keeps the transport next to the key picker.
+- A **reroll control** next to the banner on both surfaces, reusing the roulette's
+  dice pattern. Without it the only way to reject a bad word set is to leave and
+  re-enter the view, which is four taps mid-rehearsal.
+- Words regenerate on every entry render, and a fresh set arrives **on each loop
+  boundary** via `onLoop`. Never on chord change. On the detail view that means
+  rotation only happens when its Loop toggle is on.
+- On/off is a `settingsRow()` in the existing settings cog panel, not a per-view
+  button.
+
+**Validation.** `tools/validate.js` gains checks on `words.json`: exactly four
+tiers, expected count per tier, consistent lowercase casing, the 14-character
+cap, and **no duplicate word anywhere in the file**. That last one is what keeps
+the no-repeat guarantee honest; a duplicate silently breaks it.
+
+**Gotchas.**
+- `cache.addAll` is atomic, so one wrong precache URL fails the whole service
+  worker install. Bump `CACHE_VERSION`.
+- Lazy-fetch on the `getMoves()` pattern (module-scope promise, nulled in
+  `.catch` so failures are not cached). On failure disable the feature quietly
+  rather than breaking the view.
+- Copy voice applies to the words themselves and to every label: no em-dashes,
+  UK spelling.
+
+**Tests.** The PRNG is deterministic for a fixed seed; a full pass through a tier
+yields all 500 words with no repeat; a version bump resets the bag; the banner
+draws one word per tier in order.
+
+**Acceptance.** Four words appear above the perform grid and under the detail
+chord strip with the toggle on, and nowhere with it off; the topbar stays at
+three rows in perform mode; the gradient is visibly plain-to-rare; reroll draws
+a fresh set without leaving the view; a full pass through a tier never repeats a
+word, across reloads; words survive export/import; `test-all` green.
+
+**Flagged for release.** Defaulting `enabled` to true is right for Jack and wrong
+for a stranger, who gets four random words above their chords before knowing what
+they are. Revisit before any wider release.
+
+**Rejected during design, do not re-propose.** Mood or harmonic-function coupling
+of words. Words on Hoard cards (349 cards of random words destroys the scanning
+the Hoard exists for). Rotation on chord change. A Common/Mixed/Obscure
+difficulty selector, superseded by the positional gradient. Audience suggestion
+capture and genre prompt cards.
+
+### 2.5 Metronome button and tap tempo  [ ]  (S/M)
+
+**Goal.** Give performance mode a metronome, and give both transports a tap
+tempo, so tempo can be set by feel rather than by stepping 4 BPM at a time.
+
+**Design.** Most of the metronome already exists and is simply not wired up.
+`playProgression()` already accepts `metronome` and `countIn` flags and already
+generates an accented downbeat click; perform mode's two call sites just never
+pass them. So this is a small metronome button in the perform strip opening a
+compact popover with metronome on/off, count-in, and tap tempo.
+
+**Tap tempo does not exist anywhere in the repo** and is genuinely new (verified
+by grep: every `tap` in the codebase is the `--tap: 44px` touch-target variable,
+the `.diagram-tap` class, or prose). It is small: average the last four taps,
+discard gaps over two seconds, write the result into the existing stepper value.
+
+**Gotchas.** The perform strip already holds nine controls with no `flex-wrap`,
+and `.perform-strip-info` is the flex spacer that gets ellipsised as things are
+added. A popover is the consolidation move; adding more inline pills is not.
+The BPM stepper is currently duplicated verbatim in `detail.js` and `perform.js`
+(same step of 4, same 40-220 clamp); tap tempo is a reason to share it.
+
+**Acceptance.** Metronome and count-in work in performance mode; four taps set a
+sensible BPM and a stale tap does not poison it; the strip does not overflow at
+360 width or 780x360.
+
+### 2.6 Performance mode fixes  [ ]  (S/M)
+
+**Goal.** Three known defects in performance mode, all in `perform.js`.
+
+**1. Play ignores its own BPM stepper.** `perform.js`'s Play button hardcodes
+`bpmForTempo(entry.tempo)`; the stepper next to it only drives auto-advance.
+Make Play read the stepper.
+
+**2. Play does not loop.** Auto-advance passes `loop: true`, Play passes nothing.
+On stage, playback stopping dead after one pass is almost never wanted. Make Play
+loop, which also makes 2.4's word rotation behave consistently across both
+controls.
+
+**3. Chord symbols overflow their cells.** Jack asked for a blanket 15% shrink.
+Do that for immediate relief, but the blanket shrink is a band-aid: it shrinks
+every chord including the ones that already fit. The real cause is that
+`layout()`'s shrink loop cannot detect the overflow. `.perform-cell` is a centred
+flex column with no `overflow` set, inside `.perform-grid` which is
+`overflow: hidden` with fixed `1fr` rows, so excess content overflows
+symmetrically into neighbouring rows instead of extending the scrollable box, and
+`grid.scrollHeight > grid.clientHeight` stays false while cells visibly collide.
+Fix the detection. Two smaller faults in the same function while in there: the
+shrink loop caps at about 28% total reduction (0.9 twelve times), and the 14px
+floor is applied before the loop rather than inside it, so the loop can drive the
+size far below its own floor.
+
+**Gotchas.** `layout()` is the most load-bearing and least-tested function in
+performance mode, and it is called on initial render, one `requestAnimationFrame`
+later, on resize, and on every capo toggle. Its width guess counts characters of
+the chord symbol only, so a wide sub-line contributes nothing and instead wraps,
+converting a width problem into the height problem that is poorly detected.
+
+**Acceptance.** Play honours the stepper and loops; no chord symbol overflows its
+cell on a 16-chord entry at 360x780 or 780x360; the shrink loop's own floor is
+respected; `test-all` green.
+
 ---
 
 ## Tier 3: Teaching
@@ -738,6 +967,14 @@ into audio's highlight) → 0.3 soloing scales → 3.1 ear training → 3.2 voic
 4.1 similarity → 4.3 chord search → 4.2 reverse lookup → 3.3 tours → 3.4 practice →
 4.4 melody hints → 4.5 share links → 0.2 theme toggle (anytime, it is an hour) →
 tier 5 when the mood strikes.
+
+Updated 2026-08-21 after tier 2 landed: next up is **2.4 random word generator**,
+then 2.5 metronome/tap tempo, then 2.6 performance mode fixes. Jack chose words
+first explicitly. That is safe despite 2.6 fixing a layout bug the banner sits on
+top of, because 2.4 hides the colour legend whenever words are showing, so the
+perform topbar stays at three rows and the banner adds no net chrome height. One
+coupling to expect: 2.4 adds an `onLoop` callback to `audio-player.js`, the same
+file 2.6 touches for the Play-loop fix.
 
 Rationale: the song builder closes phase 4 and unblocks setlists containing songs;
 audio is the multiplier everything in tier 3 wants; roulette and setlists are the
