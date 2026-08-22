@@ -1056,12 +1056,17 @@ its checkbox there, and note any new architectural fact here. Landed so far:
     chord and `fitNow()` only catches an unusually long symbol.
     Everything on the stage is a function of ONE index, so advancing has one
     thing to update rather than four.
-    Two structural facts worth keeping:
+    Three structural facts worth keeping:
     (a) `.stage` must NOT declare `position` — it sits alongside
     `.perform-full`, whose `position: fixed` IS the takeover and is also what
     `.stage-rail` positions against; a later equal-specificity `position:
     relative` quietly cancels both.
-    (b) NOW and NEXT live in a shared `.stage-centre` wrapper. They were
+    (b) The rail container is `pointer-events: none` with the items set
+    back to `auto`. It is full-height (top:0/bottom:0) so its items can sit
+    centred, which means its transparent box also lies over the left end of
+    the control bar — the exit ✕ and the settings cog. Jack hit this: taps on
+    ✕ landed on `.stage-rail` and there was no way out of performance mode.
+    (c) NOW and NEXT live in a shared `.stage-centre` wrapper. They were
     siblings at first, which made "NEXT to the right of NOW" inexpressible in
     CSS, and NEXT kept a full-width row that stole the height the chord
     needed and pushed it over the rail.

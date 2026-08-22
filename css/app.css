@@ -4261,10 +4261,18 @@ body[data-route="hoard"] .view {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  pointer-events: auto;
+  /* The rail is full-height so its ITEMS can sit centred, which means its
+     transparent box also lies over the left end of the control bar — the
+     exit ✕ and the settings cog. Without this it swallowed those taps and
+     there was no way out of performance mode. Only the chord entries below
+     take pointer events back. */
+  pointer-events: none;
 }
 
 .stage-rail-item {
+  /* Re-enabled: the rail container itself is pointer-events:none so it
+     cannot cover the controls (see above). */
+  pointer-events: auto;
   display: block;
   padding: 2px 0 2px 10px;
   margin-left: -13px;
