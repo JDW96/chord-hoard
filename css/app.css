@@ -1696,8 +1696,14 @@ a:focus-visible {
 
 /* Theme override (roadmap 0.2): System / Light / Dark, same segmented-
    control look as the header's instrument toggle. */
+/* flex:0 0 auto is load-bearing, not tidiness. `overflow: hidden` (needed so
+   the active segment's background is clipped by the pill radius) sets this
+   flex item's automatic minimum size to 0, so it shrank to whatever the
+   label left over and silently clipped its last segment — "Dark" was
+   unreachable. Refusing to shrink makes the label wrap instead. */
 .theme-toggle {
   display: flex;
+  flex: 0 0 auto;
   border: 1px solid var(--line);
   border-radius: var(--radius-pill);
   overflow: hidden;
@@ -1720,6 +1726,14 @@ a:focus-visible {
 
 .settings-panel .fn-legend {
   margin: var(--sp-2) 0 0;
+}
+
+/* The legend sits BETWEEN two rows, which breaks the `.settings-row +
+   .settings-row` adjacency above — so Theme was the one row in the panel
+   with no hairline over it. */
+.settings-panel .fn-legend + .settings-row {
+  border-top: 1px solid var(--line-soft);
+  margin-top: var(--sp-3);
 }
 
 .notes p {
@@ -2812,6 +2826,13 @@ body[data-route="scales"] .instrument-toggle {
 .build-sug-symbol {
   font-size: var(--fs-md);
   font-weight: 700;
+  /* Clears the audition button, which is absolutely positioned over this
+     row's top-right corner. The padding is symmetric so the symbol stays
+     centred in the cell (and so the numeral and level badge below it still
+     line up under it) — reserving space on the right only would push every
+     symbol off-centre. Without it the display serif runs straight under the
+     button: "Am" read as "An" and "Bdim" as "Bdi". */
+  padding: 0 1.6rem;
 }
 
 .build-sug-numeral {
@@ -3476,11 +3497,19 @@ body[data-route="scales"] .instrument-toggle {
   min-width: 0;
   display: flex;
   flex-wrap: nowrap;
+  /* The words are a single CENTRED line (§5.4, §5.6). Without this the flex
+     children pack left, which left the row hugging the left edge with the
+     reroll dice stranded on the right — obvious in landscape. */
+  justify-content: center;
   align-items: baseline;
   gap: var(--sp-2);
-  color: var(--ink);
+  /* Display serif italic, quiet: these are a lyric prompt sung OVER the
+     chords, not another thing to read as hard as the chords themselves. */
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-dim);
   font-size: var(--fs-md);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.01em;
 }
 
@@ -3504,23 +3533,16 @@ body[data-route="scales"] .instrument-toggle {
   font-size: var(--fs-sm);
 }
 
-/* Performance mode's variant shares the topbar's third row with the colour
-   legend (only ever one of the two is shown, see below), so it matches the
-   legend's tight padding and keeps the chrome at three rows. */
-.word-banner.perform-words {
-  min-height: 0;
-  margin: 0;
-  padding: 0 var(--sp-2) var(--sp-1) var(--sp-1);
-}
-
-.perform-words .word-banner-words {
-  font-size: var(--fs-sm);
-}
-
-.perform-words .word-banner-reroll {
-  min-width: 1.8rem;
-  min-height: 1.6rem;
-  font-size: var(--fs-xs);
+/* The base size above is the stage's (§5.6: 18px). On the detail view the
+   words are a quieter caption above the chart (§5.4: 15px, --ink-faint) —
+   the chart is what you are playing, these are only what you are singing
+   over it.
+   (The old `.perform-words` variant that lived here was dead: the redesign
+   renamed performance mode's banner class to `.stage-words`, which carries
+   its own padding and centring further down.) */
+.detail-words .word-banner-words {
+  font-size: 0.9375rem;
+  color: var(--ink-faint);
 }
 
 /* The on/off switch, CSS-only like the tint toggle: both nodes are always in
@@ -3648,11 +3670,25 @@ body[data-words="on"] .perform-legend {
 /* file knowing the toggle exists.                                       */
 /* ------------------------------------------------------------------ */
 
+/* Beats run from 2 to 32 in the library, so a single nowrap row is not an
+   option: a 16-beat chord in a 3rem chart bar spilled its dots straight
+   across the barlines into its neighbours, and on the stage it ran off both
+   edges, over the queue rail, and pushed the "N BEATS" label off-screen.
+   Wrapping inside the available width keeps one-dot-per-beat honest (the
+   dots are the only thing carrying duration) without letting the row set
+   the container's width. max-width is what makes wrapping actually happen:
+   the flex parent sizes this to max-content otherwise. */
 .beat-dots {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  flex: none;
+  flex: 0 1 auto;
+  max-width: 100%;
+  /* A wrap container's automatic minimum is its widest ITEM (one dot), so
+     this is belt and braces against a future non-wrapping child. */
+  min-width: 0;
 }
 
 .beat-dot {
@@ -4004,7 +4040,13 @@ body[data-route="hoard"] .view {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* space-between, not center: a chord's dots wrap onto as many rows as its
+     beats need, so centring each bar's stack independently left the numerals
+     sitting at a different height in every bar and the row stopped reading
+     as one engraved line. Pinning the symbol to the top and the numeral to
+     the bottom keeps both aligned across the chart however tall the dots
+     get. */
+  justify-content: space-between;
   gap: 6px;
   padding: 0 4px;
   border-left: 1px solid var(--line);
@@ -4032,6 +4074,10 @@ body[data-route="hoard"] .view {
 
 /* End repeat — a thin rule, a thick rule and two dots, drawn rather than
    typed. Sits flush to the chart's own top and bottom rules. */
+/* `align-self: stretch` only stretches within the flex container's CONTENT
+   box, so the chart's own 14px/12px padding left the rules floating short of
+   the top and bottom rules they are supposed to meet. Negative margins of
+   the same size push them back out to the border box. */
 .chart-repeat {
   flex: none;
   align-self: stretch;
@@ -4039,6 +4085,7 @@ body[data-route="hoard"] .view {
   align-items: center;
   gap: 3px;
   padding-left: 8px;
+  margin: -14px 0 -12px;
 }
 
 .chart-repeat-dots {
@@ -4437,13 +4484,28 @@ body[data-route="hoard"] .view {
 .stage-controls {
   flex: none;
   display: flex;
+  /* A song or setlist adds ‹ and › to the row, which is seven controls on a
+     360px stage. `.pill` deliberately resets min-width to 0, so without
+     flex:none below the pills shrank narrower than their own labels and the
+     text ran out over its neighbours ("PLAY" printed on top of "AUTO").
+     Wrapping to a second row is the honest answer when it genuinely does not
+     fit; space-between still holds on each row, so the common case that does
+     fit looks exactly as before. */
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: var(--sp-2);
+  gap: 6px var(--sp-1);
   border-top: 1px solid var(--line-soft);
   margin: 0 14px;
-  padding: 10px 4px calc(14px + env(safe-area-inset-bottom, 0px));
+  /* No horizontal inset: the 14px margin already holds the row off the
+     screen edge, and those 8px are the difference between one row and two
+     on a 360px phone. */
+  padding: 10px 0 calc(14px + env(safe-area-inset-bottom, 0px));
   transition: opacity 0.4s ease;
+}
+
+.stage-controls > * {
+  flex: none;
 }
 
 .stage-controls button,
@@ -4462,6 +4524,10 @@ body[data-route="hoard"] .view {
   align-items: center;
   justify-content: center;
   padding: 0 6px;
+  /* Six controls on a 360px stage is tight enough that "▶ PLAY" will break
+     after the glyph and stack if allowed to. A control label is two words at
+     most, so never wrap one. */
+  white-space: nowrap;
 }
 
 .stage-controls button:hover,
@@ -4471,14 +4537,64 @@ body[data-route="hoard"] .view {
   color: var(--ink);
 }
 
+/* border-width/style, not just the colour: `.stage-controls button` above is
+   more specific than `.pill` for `border: 0`, so the hairline this rule
+   already asked for by setting border-color was being drawn at zero width.
+   PLAY and AUTO rendered as bare text next to a bordered BPM stepper. */
 .stage-controls .pill {
   color: var(--ink);
-  border-color: var(--line);
+  border: 1px solid var(--line);
+  /* Tighter than the default pill: five controls have to share a 360px
+     stage, and the row wraps rather than squeezes now, so the padding is
+     what decides whether it stays on one line. */
+  padding: 7px 10px;
 }
 
 .stage-controls .stage-nav.disabled {
   opacity: 0.25;
   pointer-events: none;
+}
+
+/* The exit ✕ and the settings cog are the bar's two icon controls. Neither
+   carries `.pill`, so the generic rule above is all they had — and that
+   sets no width and no glyph size. The cog's inline SVG has no width/height
+   attribute of its own, so it collapsed to 0×0 and the only way into
+   settings from inside performance mode was invisible. Sized here the same
+   way .settings-btn sizes the header's copy of the same icon. */
+.stage-exit,
+.stage-settings {
+  position: relative;
+  flex: none;
+  min-width: 32px;
+  font-size: 1.125rem;
+  letter-spacing: 0;
+}
+
+/* The full 44px tap target without spending 44px of a very tight row —
+   §5.5's "pad the hitbox, not the visual", the same trick `.pill::after`
+   uses. Two icons at their drawn size is what keeps the bar on one line. */
+.stage-exit::after,
+.stage-settings::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--tap);
+  transform: translateX(-50%);
+}
+
+.stage-settings svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* The stage only ever shows a 2- or 3-digit BPM, so it does not need the
+   default stepper's roomier value column — and the width it gives back is
+   what keeps the whole bar on one line at 360px. */
+.stage-bpm .stepper-value {
+  min-width: 2.9em;
 }
 
 /* Auto-hide after four idle seconds of playback (§5.6). Never while idle,

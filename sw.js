@@ -2,7 +2,7 @@
    Bump CACHE_VERSION whenever any precached file changes, so returning
    visitors pick up the new build. */
 
-const CACHE_VERSION = 'chordhoard-v30';
+const CACHE_VERSION = 'chordhoard-v31';
 
 const PRECACHE = [
   './',
