@@ -3674,21 +3674,22 @@ body[data-words="on"] .perform-legend {
    option: a 16-beat chord in a 3rem chart bar spilled its dots straight
    across the barlines into its neighbours, and on the stage it ran off both
    edges, over the queue rail, and pushed the "N BEATS" label off-screen.
-   Wrapping inside the available width keeps one-dot-per-beat honest (the
-   dots are the only thing carrying duration) without letting the row set
-   the container's width. max-width is what makes wrapping actually happen:
-   the flex parent sizes this to max-content otherwise. */
+   A width-based flex-wrap does not give a predictable answer, either: how
+   many dots fit before wrapping depends on the bar's actual (fluid) width,
+   so the same 6-beat chord wraps at a different point in a wide chart than
+   a narrow one, and four dots is already as many as reads cleanly at a
+   glance. A 4-column grid fixes the row length instead of the row width:
+   at most 4 dots per line always, however many rows that takes, regardless
+   of the container's size. */
 .beat-dots {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: inline-grid;
+  grid-template-columns: repeat(4, auto);
   justify-content: center;
+  align-content: center;
+  justify-items: center;
   gap: 4px;
   flex: 0 1 auto;
   max-width: 100%;
-  /* A wrap container's automatic minimum is its widest ITEM (one dot), so
-     this is belt and braces against a future non-wrapping child. */
-  min-width: 0;
 }
 
 .beat-dot {
@@ -4287,12 +4288,23 @@ body[data-route="hoard"] .view {
   height: 100%;
   min-height: 0;
   overflow: hidden;
+  /* viewport-fit=cover means this fixed takeover runs under a phone's
+     rounded corners and (in landscape) the camera cutout. Zero in a plain
+     browser window. The rail is exempt in portrait — it positions against
+     .perform-full, not this padding box — but portrait side insets are 0
+     on every current device, so nothing is lost. */
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 .stage-title-block {
   flex: none;
   text-align: center;
-  padding: var(--sp-4) var(--sp-4) 0;
+  /* The env() term is what keeps the title out from under a notch or
+     status bar in the installed app — the bottom of the stage always paid
+     its safe-area inset (on .stage-controls) but the top never did, so the
+     stage sat visibly higher than centre: cramped above, roomy below. */
+  padding: calc(var(--sp-5) + env(safe-area-inset-top, 0px)) var(--sp-4) 0;
 }
 
 .stage-name {
@@ -4477,6 +4489,9 @@ body[data-route="hoard"] .view {
   flex: none;
   text-align: center;
   padding: 0 var(--sp-4) 10px;
+  /* The base .word-banner rule carries a bottom margin for in-page use;
+     here it was 12px of dead space between the words and the control bar. */
+  margin: 0;
 }
 
 /* Control bar — hairline-topped, mono, and it gets out of the way while
@@ -4625,7 +4640,19 @@ body[data-route="hoard"] .view {
   }
 
   .stage-title-block {
-    padding-top: var(--sp-2);
+    padding-top: calc(var(--sp-2) + env(safe-area-inset-top, 0px));
+  }
+
+  /* Height is the scarce dimension here, and a 12-beat chord's dots are
+     3 rows tall in the portrait 4-column grid. Wider rows of smaller dots
+     halve that without giving up one-dot-per-beat. */
+  .beat-dots-lg {
+    grid-template-columns: repeat(8, auto);
+    gap: 7px;
+  }
+  .beat-dots-lg .beat-dot {
+    width: 9px;
+    height: 9px;
   }
 
   .stage-rail {

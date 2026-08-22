@@ -883,17 +883,65 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
    */
   function fitNow() {
     root.style.removeProperty("--perform-now-fs");
-    // The rail's footprint is already reserved as padding on .stage-centre,
-    // so it is subtracted once here, not twice.
-    const available = root.clientWidth - railFootprint() - 16;
+    const centreStyle = getComputedStyle(centre);
+    const landscape = centreStyle.flexDirection === "row";
+    // Width budget. Portrait: the stage minus the rail's footprint (already
+    // reserved as padding on .stage-centre, so it is subtracted once here,
+    // not twice). Landscape: NOW shares the centre row with NEXT, so NEXT's
+    // width and the row gap come out of the budget too — sizing against the
+    // full stage width let a long symbol print straight across NEXT.
+    let available;
+    if (landscape) {
+      const gap = parseFloat(centreStyle.columnGap) || 0;
+      const nextW = nextBlock.getBoundingClientRect().width;
+      available = centre.clientWidth - nextW - gap - 32;
+    } else {
+      available = root.clientWidth - railFootprint() - 16;
+    }
     const textW = nowText.getBoundingClientRect().width;
     if (available <= 0 || !textW) return;
     const base = parseFloat(getComputedStyle(nowChord).fontSize);
-    if (textW > available) {
-      root.style.setProperty(
-        "--perform-now-fs",
-        Math.max(40, Math.floor(base * (available / textW))) + "px"
-      );
+    let scale = Math.min(1, available / textW);
+
+    // Height budget. The chord shares .stage-now with the beat dots (and
+    // the shape), and the dot grid grows ROWS as beats climb — clamp() in
+    // --fs-chord-now knows nothing about that, so a high-beat chord pushed
+    // the glyph up over the rail and down into the words. Whatever the
+    // block overflows by has to come out of the chord, the only resizable
+    // thing in it.
+    const measureBox = () => {
+      const pad =
+        (parseFloat(centreStyle.paddingTop) || 0) + (parseFloat(centreStyle.paddingBottom) || 0);
+      return Math.min(nowBlock.clientHeight || Infinity, centre.clientHeight - pad);
+    };
+    // The content's height is the span of its laid-out children — measured,
+    // not summed from heights, so the flex gap and the children's own
+    // margins (.stage-beats and .stage-shape both carry margin-top) count.
+    const measureSpan = () => {
+      let top = Infinity;
+      let bottom = -Infinity;
+      for (const child of nowBlock.children) {
+        const r = child.getBoundingClientRect();
+        if (!r.height) continue;
+        if (r.top < top) top = r.top;
+        if (r.bottom > bottom) bottom = r.bottom;
+      }
+      return bottom - top;
+    };
+    const setFs = (px) => root.style.setProperty("--perform-now-fs", Math.floor(px) + "px");
+
+    let fs = base * scale;
+    if (scale < 1) setFs(fs);
+    // Iterative rather than solved in one step: the chord's padding and
+    // underline are fixed pixels that don't scale with the font, so a
+    // single proportional shrink always lands a few pixels short on a
+    // deep overflow (a 24-beat chord's three dot rows in landscape).
+    for (let pass = 0; pass < 3; pass += 1) {
+      const overflowPx = measureSpan() - measureBox();
+      if (overflowPx <= 0.5 || fs <= 40) break;
+      // line-height is 0.95em, so each font px given up returns ~0.9px.
+      fs = Math.max(40, fs - overflowPx / 0.9);
+      setFs(fs);
     }
   }
 
@@ -945,7 +993,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   function cleanup() {
     alive = false;
     window.removeEventListener("hashchange", cleanup);
-      window.removeEventListener("resize", relayout);
+    window.removeEventListener("resize", relayout);
     document.removeEventListener("visibilitychange", onVisibility);
     root.removeEventListener("pointerdown", onStageTap);
     if (hideTimer) clearTimeout(hideTimer);
