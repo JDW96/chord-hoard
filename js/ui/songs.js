@@ -19,7 +19,7 @@
 import { sectionSuggestions, sectionTonic } from "../engine/song.js";
 import { state, renderIn } from "./app.js";
 import { tonicsFor, MAJOR_FAMILY_TONICS } from "./detail.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { songEntries, songById, saveSong, deleteSong, newSongId } from "./songs-store.js";
 import { el, clear, interleave, prettySymbol, prettyNote, capitalise } from "./util.js";
 
@@ -239,7 +239,6 @@ function drawEditor(section, routeId) {
     );
   }
 
-  section.appendChild(legendCaption());
 
   const status = el("p", { className: "song-status" });
 

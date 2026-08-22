@@ -2,13 +2,18 @@
    Bump CACHE_VERSION whenever any precached file changes, so returning
    visitors pick up the new build. */
 
-const CACHE_VERSION = 'chordhoard-v24';
+const CACHE_VERSION = 'chordhoard-v26';
 
 const PRECACHE = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/app.css',
+  // Newsreader, self-hosted. These MUST stay precached: without them the
+  // performance stage falls back to a system serif mid-gig, which is the
+  // one place the type carries the whole design.
+  './fonts/newsreader-roman-latin.woff2',
+  './fonts/newsreader-italic-latin.woff2',
   './js/engine/theory.js',
   './js/engine/numeral.js',
   './js/engine/chords.js',
@@ -43,6 +48,7 @@ const PRECACHE = [
   './js/ui/chord-copy.js',
   './js/ui/function-tint.js',
   './js/ui/words.js',
+  './js/ui/symbols.js',
   './js/ui/settings-panel.js',
   './js/ui/chords-lib.js',
   './js/ui/scales-lib.js',

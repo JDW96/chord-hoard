@@ -26,7 +26,7 @@ import {
   pianoChordSVG,
 } from "./diagrams.js";
 import { chordHref } from "./chord-link.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { playabilityRow } from "./playability.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
 import { copyFor, orderFor, copyBlock, revealList } from "./chord-copy.js";
@@ -292,7 +292,6 @@ export function render(container, params) {
           homeNumeral
         )}). These are the chords it usually moves to. Tap one.`
       ),
-      legendCaption(),
       revealList(numerals, destCard, "dest-list")
     )
   );

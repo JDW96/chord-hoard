@@ -18,7 +18,7 @@
 
 import { state, renderIn } from "./app.js";
 import { tonicsFor } from "./detail.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { songEntries, songById } from "./songs-store.js";
 import {
   setlistEntries,
@@ -207,7 +207,6 @@ function drawEditor(section, routeId) {
   }
 
   section.appendChild(itemPicker());
-  section.appendChild(legendCaption());
 
   const status = el("p", { className: "song-status" });
 

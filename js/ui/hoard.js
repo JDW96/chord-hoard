@@ -1,17 +1,24 @@
-// hoard.js — the browse view: search, filters, and result cards.
+// hoard.js — the browse view: search, filters, and the ledger.
 //
 // Search matches name, moods, genres and chord names in the home key.
 // Filters are chip groups: OR within a group, AND across groups.
 // Complexity is computed by the engine per entry in its home key for the
 // currently selected instrument, and cached in app.js's ratingCache.
+//
+// Results are LEDGER ROWS, not cards (STYLEGUIDE §5.2): hairline-separated
+// rows straight on the paper, three lines each — name + difficulty + pin,
+// the chords tinted by harmonic function, then one quiet meta line. That's
+// roughly three times the density of the old card, which matters because
+// the whole point of a hoard of 349 progressions is scanning it.
 
 import { state, renderIn, ratingIn, collectionLabel } from "./app.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { isPinned, pinButton } from "./pins.js";
 import { isPlayable } from "./playability.js";
 import { chosenTonic } from "./detail.js";
 import * as roulette from "./roulette.js";
-import { el, clear, interleave, prettySymbol, capitalise, levelClass } from "./util.js";
+import { levelBars, metaLine, lower } from "./symbols.js";
+import { el, clear, prettySymbol, capitalise, levelClass } from "./util.js";
 
 // Module-level UI state so search/filters survive a trip into a detail view.
 const filters = {
@@ -165,17 +172,20 @@ function optionsFromData() {
 // ---------------------------------------------------------------------------
 
 export function render(container) {
-  const list = el("div", { className: "card-list" });
-  const count = el("p", { className: "result-count", attrs: { "aria-live": "polite" } });
+  const list = el("div", { className: "ledger" });
+  const count = metaLine([""], { className: "hoard-count" });
+  count.setAttribute("aria-live", "polite");
   const sheet = el("div", {
     className: "filter-sheet" + (sheetOpen ? " open" : ""),
     id: "filter-sheet",
   });
 
+  // FILTER is a mono pill now rather than a labelled button — it sits on the
+  // search hairline, where the old full-width control row used to be.
   const filterBtn = el(
     "button",
     {
-      className: "filter-toggle",
+      className: "pill filter-toggle",
       type: "button",
       attrs: { "aria-expanded": String(sheetOpen), "aria-controls": "filter-sheet" },
       on: {
@@ -186,15 +196,15 @@ export function render(container) {
         },
       },
     },
-    "Filters"
+    "Filter"
   );
 
   const search = el("input", {
     className: "search-box",
     type: "search",
     value: query,
-    placeholder: "Search names, moods, genres, chords…",
-    attrs: { "aria-label": "Search the hoard", autocomplete: "off" },
+    placeholder: "Search the hoard…",
+    attrs: { "aria-label": "Search names, moods, genres and chords", autocomplete: "off" },
     on: {
       input: (ev) => {
         query = ev.target.value;
@@ -210,8 +220,11 @@ export function render(container) {
     "button",
     {
       type: "button",
-      className: "roulette-btn",
-      attrs: { "aria-label": "Surprise me — jump to a random match in performance mode" },
+      className: "pill pill-icon roulette-btn",
+      attrs: {
+        "aria-label": "Surprise me — jump to a random match in performance mode",
+        title: "Surprise me",
+      },
       on: {
         click: () => {
           const found = results();
@@ -223,19 +236,27 @@ export function render(container) {
         },
       },
     },
-    "🎲 Surprise me"
+    "🎲"
   );
 
   buildSheet(sheet);
 
+  // One hairline row carries search, filters and the dice. The old
+  // full-width "Surprise me" pill and its own row are gone (§5.7) — the
+  // dice says the same thing in a corner of the space.
   container.appendChild(
     el(
       "section",
       { className: "hoard" },
-      el("div", { className: "search-row" }, search, filterBtn),
-      el("div", { className: "roulette-row" }, rouletteBtn),
+      el(
+        "div",
+        { className: "hoard-search" },
+        el("span", { className: "hoard-search-glyph", attrs: { "aria-hidden": "true" } }, "⌕"),
+        search,
+        filterBtn,
+        rouletteBtn
+      ),
       sheet,
-      legendCaption(),
       count,
       list
     )
@@ -246,10 +267,11 @@ export function render(container) {
     rouletteBtn.disabled = !found.length;
     clear(list);
     const n = found.length;
+    // Meta voice: a count, not a sentence. CSS upper-cases it.
     count.textContent =
       n === state.entries.length
-        ? `The whole hoard — ${n} progressions`
-        : `${n} ${n === 1 ? "progression" : "progressions"} found`;
+        ? `${n} progressions`
+        : `${n} of ${state.entries.length} progressions`;
     if (!n) {
       list.appendChild(
         el(
@@ -265,13 +287,14 @@ export function render(container) {
       );
       return;
     }
-    for (const entry of found) list.appendChild(card(entry));
+    for (const entry of found) list.appendChild(ledgerRow(entry));
   }
 
   // Re-badge the filter button when selections change.
   function refreshFilterBadge() {
     const n = activeFilterCount();
-    filterBtn.textContent = n ? `Filters · ${n}` : "Filters";
+    filterBtn.textContent = n ? `Filter ${n}` : "Filter";
+    filterBtn.classList.toggle("active", n > 0);
     filterBtn.classList.toggle("has-active", n > 0);
   }
 
@@ -341,7 +364,10 @@ function buildSheet(sheet) {
       el(
         "div",
         { className: "filter-group" },
-        el("h3", {}, label),
+        // Group headings drop to the meta voice; the chips themselves stay
+        // as they are, because a chip IS the right control for a multi-select
+        // and the sheet is the one place the app is a form (§6).
+        metaLine([label], { tag: "h3" }),
         chipRow,
         // Setlists (roadmap 2.2) live alongside pins rather than as a new
         // top-level tab — curated pins with an order, not a different kind
@@ -375,62 +401,68 @@ function buildSheet(sheet) {
   );
 }
 
-function card(entry) {
+/**
+ * One ledger row (STYLEGUIDE §5.2). Three lines:
+ *
+ *   Axis Progression                              ▁▃▅  📌
+ *   C   G   Am   F
+ *   4/4 · 4 BARS · MID · POP ROCK · hopeful
+ *
+ * The whole row is the link and the pin is a nested button, exactly as the
+ * card was — pinButton() already stops the click propagating, so nothing
+ * about that behaviour changes.
+ *
+ * The always-visible numerals line is gone: at this density it doubled the
+ * row height to repeat information the chords already carry in colour. It
+ * comes back on the detail view, where there's room to read it.
+ */
+function ledgerRow(entry) {
   const rendered = renderIn(entry, entry.homeKey);
   const rating = ratingIn(entry, entry.homeKey, state.instrument);
   const cls = (c) => tintClass(c.numeral, entry.homeKey, entry.mode);
-  const numeralSpans = interleave(
-    rendered.chords,
-    (c) => el("span", { className: cls(c) }, c.display),
-    " · "
+
+  const chords = el(
+    "div",
+    { className: "ledger-chords" },
+    rendered.chords.map((c) =>
+      el("span", { className: cls(c) }, prettySymbol(c.symbol))
+    )
   );
-  const chordSpans = interleave(
-    rendered.chords,
-    (c) => el("span", { className: cls(c) }, prettySymbol(c.symbol)),
-    " – "
-  );
+
+  // The meta line reads as one caps string with the moods left lower-case,
+  // because they're words rather than codes (§5.1).
+  const meta = metaLine([
+    entry.timeSig,
+    `${entry.bars} bars`,
+    entry.tempo,
+    entry.genres.join(" "),
+    entry.moods.length ? lower(entry.moods.join(", ")) : null,
+    entry.instrument !== "both" ? capitalise(entry.instrument) : null,
+  ]);
 
   return el(
     "a",
     {
-      // The level also rides on the card itself so the edge stripe can be
-      // coloured in CSS without the badge having to carry the whole signal.
-      className: "card " + levelClass(rating.level),
+      className: "ledger-row " + levelClass(rating.level),
       href: "#/prog/" + encodeURIComponent(entry.id),
     },
     el(
       "div",
-      { className: "card-top" },
-      el("h2", { className: "card-name" }, entry.name),
+      { className: "ledger-top" },
+      el("h2", { className: "ledger-name" }, entry.name),
       el(
         "span",
-        { className: "badge " + levelClass(rating.level), attrs: { title: "Complexity in " + entry.homeKey } },
-        rating.level
-      ),
-      // Pins record the key you'd actually play it in — the remembered
-      // choice from the detail view where there is one, else the home key.
-      pinButton(entry, () => chosenTonic(entry), () => {
-        // Unpinning while "Pinned only" is on should drop the card.
-        if (filters.pinned.size && refresh) refresh();
-      })
+        { className: "ledger-marks" },
+        levelBars(rating.level, { title: "Complexity in " + entry.homeKey }),
+        // Pins record the key you'd actually play it in — the remembered
+        // choice from the detail view where there is one, else the home key.
+        pinButton(entry, () => chosenTonic(entry), () => {
+          // Unpinning while "Pinned only" is on should drop the row.
+          if (filters.pinned.size && refresh) refresh();
+        })
+      )
     ),
-    el("p", { className: "card-numerals" }, numeralSpans),
-    el("p", { className: "card-chords" }, chordSpans),
-    el(
-      "div",
-      { className: "card-chips" },
-      el("span", { className: "chip static" }, capitalise(entry.mode)),
-      el("span", { className: "chip static" }, entry.timeSig),
-      el("span", { className: "chip static" }, `${entry.bars} bars`),
-      el("span", { className: "chip static" }, capitalise(entry.tempo)),
-      entry.instrument !== "both"
-        ? el("span", { className: "chip static" }, capitalise(entry.instrument))
-        : null
-    ),
-    el(
-      "div",
-      { className: "card-moods" },
-      entry.moods.map((m) => el("span", { className: "mood-tag" }, m))
-    )
+    chords,
+    meta
   );
 }

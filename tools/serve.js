@@ -28,6 +28,10 @@ const TYPES = {
   ".png": "image/png",
   ".ico": "image/x-icon",
   ".md": "text/plain; charset=utf-8",
+  // Self-hosted Newsreader. Without this the fallback below serves fonts as
+  // application/octet-stream, which browsers accept but which hides real
+  // mime-type mistakes until they show up on a host that is stricter.
+  ".woff2": "font/woff2",
 };
 
 /**

@@ -994,6 +994,124 @@ its checkbox there, and note any new architectural fact here. Landed so far:
   plus the settings overlay: 11,450 elements, every one computing
   `manipulation`.
 
+
+- **"Fake Book" redesign**, 2026-08-22. The design system in `design-system/`
+  (`STYLEGUIDE.md` is the spec, `tokens.css` the tokens, `Redesign.dc.html`
+  the approved mockups 2a/2b/2c) applied across the shell, Hoard, detail and
+  performance mode. Identity: warm paper, hairline rules, serif chord
+  symbols, quiet ALL-CAPS mono metadata; dark mode is **stage mode**, a
+  near-black page where the current chord is the only bright thing. Harmony
+  keeps colour, difficulty becomes bars, beats become dots, blue stays
+  interface-only.
+  - **Newsreader is self-hosted** in `fonts/` (Google's `latin` subset of the
+    variable font, roman + italic, 276KB total, OFL.txt alongside), declared
+    in `css/app.css`, preloaded in `index.html` and precached by `sw.js`.
+    Nothing may point at the Google CDN or the PWA stops being
+    offline-complete. `latin-ext` and `vietnamese` are deliberately NOT
+    shipped: a sweep of every JSON and JS file found only `ã` and `í` beyond
+    ASCII, both inside `latin`'s own range, so the other subsets would be
+    182KB of precache for characters the app never renders.
+    **Known gap, do not go hunting for a fix:** Newsreader has 658 glyphs and
+    contains NO `♭` (U+266D), `♯` (U+266F) or `‖` (U+2016). This was verified
+    against the upstream variable TTF's cmap directly, not just the subset —
+    Google's `text=` endpoint appears to offer them and hands back an
+    invalid font that 400s, which is a red herring. So accidentals in chord
+    symbols fall back to the system serif by design, and the `unicode-range`
+    deliberately does not claim those codepoints so the fallback is immediate
+    rather than a failed lookup. If a future Jack wants matched accidentals
+    the only route is a small purpose-drawn font for those two glyphs.
+    For the same reason **barlines and repeat marks are CSS borders, never
+    glyphs** (see `.chart-*`): a typed `|`/`‖` would silently render in a
+    different face at a different weight from the chords beside it.
+  - `js/ui/symbols.js` is the new one-place-only home for the three marks:
+    `levelBars()` (rising bars, filled count = level, 3 rungs on guitar and
+    4 on piano ending at the same height), `beatDots()` (one dot per beat;
+    the wrapper carries the `.fn-*` class so `--beat-on: currentColor` tints
+    the dots to the chord's function and `body[data-tint="off"]` un-tints
+    them for free), and `metaLine()`/`lower()`/`metaLevel()`. Same reasoning
+    as `chord-copy.js` owning chord prose.
+  - **Hoard** is a ledger (`ledgerRow()`), not cards: hairline rows, three
+    lines each, roughly 3× the density. The always-visible numerals line is
+    gone from the list (the chords already carry function in colour) and
+    returns on the detail view. Search collapsed to a hairline field with
+    `⌕`, a FILTER pill and the 🎲 dice; the full-width "Surprise me" pill and
+    the meta chips/mood tags are gone.
+  - **Detail** is chart-first: lyric words, then a bar-line chart between two
+    2px rules with beat dots under each chord, then pill transport, then
+    everything else as `<details>` fold rows (Key & capo, Chord shapes, Solo
+    with, As heard in, From the bandstand) and a full-width dark Performance
+    mode bar. Folds are real `<details>`/`<summary>` so keyboard, screen
+    reader and find-in-page behaviour come from the platform. Chart cells are
+    per CHORD not per BAR — a chord may span two bars or half of one, and the
+    dots already carry duration, so bar grouping would add engraving
+    complexity without adding information.
+  - **Performance mode is a teleprompter**, replacing the 2×2 grid (which
+    supersedes backlog item 16, and closes backlog item 18's "show the
+    title"). One chord is the subject of the screen; a queue rail down the
+    left holds the rest (tap to jump), NEXT sits below, beats are 11px dots,
+    and the control bar fades out after 4 idle seconds of playback and comes
+    back on any tap (never while idle, never under
+    `prefers-reduced-motion`). The whole progression no longer has to fit, so
+    the old measure-and-shrink `layout()` loop is gone: `clamp()` sizes the
+    chord and `fitNow()` only catches an unusually long symbol.
+    Everything on the stage is a function of ONE index, so advancing has one
+    thing to update rather than four.
+    Two structural facts worth keeping:
+    (a) `.stage` must NOT declare `position` — it sits alongside
+    `.perform-full`, whose `position: fixed` IS the takeover and is also what
+    `.stage-rail` positions against; a later equal-specificity `position:
+    relative` quietly cancels both.
+    (b) NOW and NEXT live in a shared `.stage-centre` wrapper. They were
+    siblings at first, which made "NEXT to the right of NOW" inexpressible in
+    CSS, and NEXT kept a full-width row that stole the height the chord
+    needed and pushed it over the rail.
+    `--fs-chord-now/-next` are `min(vw, vh)` rather than vw alone: the
+    width-only form put a 180px chord on a 780×360 stage where it overflowed
+    into the rail. Portrait values are unchanged; landscape overrides them
+    again against height directly.
+    The beat fill is driven from the view, not the engine — `audio-player`
+    only calls back per chord, so `startBeatFill()` lights one dot per
+    `60000/bpm`. It can drift a few ms from the audio clock, the same trade
+    the chord highlight has always made.
+  - Tint on the stage moves to the UNDERLINE and the dots, not the glyph:
+    the symbol stays `--ink` so it is the brightest thing on a near-black
+    screen. `.fn-*` goes on the outer `.stage-chord` (whose border draws in
+    `currentColor`) and `.stage-chord-text` pulls the glyph back to ink.
+  - Inline tint legends are gone from every view (§4); `buildSettingsPanel()`
+    keeps the single copy. Capo mode still leaves every tint untouched —
+    a capo changes which shape your hands make, not what the chord is doing.
+  - Chords/Scales/Build/Songs/Setlists were NOT redesigned, per §6. They
+    adopt the tokens, type voices and meta lines only (font family and
+    weight, no layout or colour), so a chord symbol looks like a chord symbol
+    app-wide instead of the Hoard and the stage looking like a different app.
+  - The new component CSS sits in one banner-marked "FAKE BOOK" block placed
+    AFTER the older component rules and BEFORE the `.fn-*` block, which must
+    stay last. It wins on source order rather than by unpicking the old
+    rules, so the previous design is still legible in the file. Where an
+    older single-class rule set a property the new one didn't (`.roulette-btn
+    { width: 100% }`, `.filter-toggle`'s min-height, `.audio-play-btn`'s
+    44px minimum) the new `.pill`/`.play-circle` rules re-declare it
+    explicitly — that is what the reset lines at the top of those rules are.
+  - Three PRE-EXISTING bugs were found and fixed in passing, none caused by
+    this work: `.build-name` needed `min-width: 0` (a flex item's auto
+    minimum pushed the Save button off a 360px screen, 17px of page scroll);
+    `.solo-scale-grid` needed `minmax(0, 1fr)` (bare `1fr` keeps its
+    min-content minimum, 270px of scroll at 780×360); and
+    `.solo-scale-piano-cell` needed to out-specify `.diagram-cell.piano`,
+    whose viewport-sized width had no idea it was inside a narrow grid card.
+  - `tools/serve.js` gained a `.woff2` MIME type so local dev matches a
+    stricter host instead of falling through to `application/octet-stream`.
+  - **Verification caveat:** service worker registration does not work in the
+    Cowork embedded browser at all — the committed pre-redesign `sw.js` fails
+    to register there identically, so it is the environment, not the file.
+    Offline install was therefore verified statically instead: all 69
+    precache paths exist on disk, all return 200 over HTTP, and
+    `cache.addAll()` succeeds with the exact list read out of `sw.js`. Worth
+    confirming on a real device after the next deploy. Screenshots were also
+    unavailable (the browser pane does not composite frames in this session),
+    so all layout checking was done against computed styles and geometry
+    rather than by eye — a human look at the stage is still worth having.
+
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export
 

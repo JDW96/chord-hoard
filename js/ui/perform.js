@@ -34,10 +34,13 @@ import { chosenTonic, tonicsFor, isMajorFamily } from "./detail.js";
 import { songById } from "./songs-store.js";
 import { setlistById } from "./setlists-store.js";
 import * as roulette from "./roulette.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { openSettingsPanel } from "./settings-panel.js";
 import { createWordBanner } from "./words.js";
-import { el, clear, prettySymbol, prettyNote, capitalise } from "./util.js";
+import { metaLine } from "./symbols.js";
+import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
+import { chosenVoicingIndex } from "./voicing-choice.js";
+import { el, clear, prettySymbol, prettyNote, capitalise, getGuitarData } from "./util.js";
 
 // The settings cog (backlog item 15) lives in the header, which perform mode
 // hides entirely for its full-viewport takeover — so it needs its own small
@@ -349,23 +352,31 @@ function buildMissingSectionView(container, { title, index, total, exitHref, nav
   window.addEventListener("hashchange", () => unwireNav(), { once: true });
 }
 
+
 /**
- * The real performance grid for one progression in one key. `nav`, when
- * given ({ prevHref, nextHref }), adds previous/next section controls (a
- * song or setlist context); omitted entirely for a single standalone
- * progression. `labelPrefix` prepends the song/section context to the info
- * strip text. `extra`, when given, is one more control node placed in the
- * strip (the improv-roulette reroll dice — see rerollControl()).
+ * The performance stage for one progression in one key — the teleprompter
+ * (STYLEGUIDE §5.6), which replaced the 2×2 grid.
+ *
+ * The change in idea: the whole progression used to have to fit on screen at
+ * once, which meant a ten-chord entry shrank every chord until none of them
+ * were readable at arm's length. Now ONE chord is the subject of the screen
+ * and the rest is context arranged around it — a queue rail down the left,
+ * the next chord below, beats as dots. Nothing has to shrink to fit, so the
+ * old measure-and-shrink loop is gone; clamp() sizes the chord and only an
+ * unusually long symbol needs measuring (see fitNow()).
+ *
+ * `nav`, when given ({ prevHref, nextHref }), adds previous/next controls (a
+ * song or setlist context); omitted for a standalone progression.
+ * `labelPrefix` prepends the song/section context to the meta line. `extra`
+ * is one more control for the bar (the improv-roulette dice).
  */
 function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPrefix, extra }) {
   const rendered = renderIn(entry, tonic);
   const chords = rendered.chords;
 
-  // ---- Capo mode (backlog item 5): a toggle that swaps the big symbols for
-  // the shapes you'd actually play under the suggested capo, keeping the
-  // real sounding chord as small print alongside — for sight-reading while
-  // capoed up, rather than having to do the transposition in your head.
-  // Ephemeral (resets on re-entry), like the detail view's per-chord toggle.
+  // ---- Capo mode (backlog item 5), unchanged in behaviour: swap the big
+  // symbols for the shapes you'd actually play under the suggested capo,
+  // keeping the real sounding chord as small print alongside.
   let hint = null;
   let playedChords = null;
   if (state.instrument === "guitar") {
@@ -374,35 +385,368 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   }
   let capoMode = false;
 
-  // ---- Corner strip: exit, key + time signature + capo, wake indicator ----
+  // The chord currently under the spotlight. Everything on the stage — rail,
+  // NOW, NEXT, beats, shape — is a function of this one number, so there is
+  // exactly one thing to update when playback advances or a rail entry is
+  // tapped, rather than four things to keep in step.
+  let currentIndex = 0;
+  let playing = false;
+
+  /** The chord to DISPLAY at an index: the played shape under capo mode,
+      the sounding chord otherwise. */
+  function shown(i) {
+    return capoMode && playedChords ? playedChords[i] : chords[i];
+  }
+  /** Tint always follows the REAL harmonic function, never the capo-played
+      shape — a capo changes which shape your hands make, not what the chord
+      is doing. Same rule the grid followed before this rewrite. */
+  function tintOf(i) {
+    return tintClass(chords[i].numeral, tonic, entry.mode);
+  }
+
+  // ---- Title block --------------------------------------------------------
   const wakeDot = el(
     "span",
-    {
-      className: "wake-dot",
-      attrs: { title: "Screen staying awake", "aria-hidden": "true" },
-    },
+    { className: "stage-wake", attrs: { title: "Screen staying awake", "aria-hidden": "true" } },
     "●"
   );
   wakeDot.style.display = "none";
 
-  function infoText() {
+  function metaText() {
     const prefix = labelPrefix || "";
-    const base = `${prettyNote(tonic)} ${entry.mode} · ${entry.timeSig}`;
-    if (!hint) return prefix + base;
+    const base = `${prettyNote(tonic)} ${entry.mode} · ${entry.timeSig} · ${autoBpm} BPM`;
+    if (!hint) return `${prefix}${base} · no capo`;
     if (capoMode) {
       return `${prefix}Capo ${hint.capo} · playing as ${hint.playAs} · sounds ${prettyNote(tonic)} ${entry.mode}`;
     }
     return `${prefix}${base} · capo ${hint.capo} (as ${hint.playAs})`;
   }
 
-  const infoSpan = el("span", { className: "perform-strip-info" }, infoText());
+  const metaSpan = el("span", {}, "");
+  // The wake dot is appended rather than passed as a meta part: it spends
+  // most of its life hidden, and a hidden part would still leave metaLine's
+  // " · " separator dangling at the end of the line.
+  const metaNode = metaLine([metaSpan], { className: "stage-meta" });
+  metaNode.appendChild(wakeDot);
+  const titleBlock = el(
+    "div",
+    { className: "stage-title-block" },
+    el("div", { className: "stage-name" }, entry.name),
+    metaNode
+  );
+
+  function refreshMeta() {
+    metaSpan.textContent = metaText();
+  }
+
+  // ---- Queue rail ---------------------------------------------------------
+  // Every chord down the left edge, the current one at full strength with a
+  // function-tinted rule beside it. Tapping one jumps the stage there, which
+  // is how you get back to the top of a progression mid-song without
+  // waiting for the loop to come round.
+  const rail = el("div", {
+    className: "stage-rail" + (chords.length > 8 ? " dense" : ""),
+    attrs: { role: "group", "aria-label": "Chords in this progression" },
+  });
+
+  function buildRail() {
+    clear(rail);
+    chords.forEach((_, i) => {
+      rail.appendChild(
+        el(
+          "button",
+          {
+            type: "button",
+            className: "stage-rail-item " + tintOf(i),
+            attrs: { "aria-label": `Jump to ${prettySymbol(shown(i).symbol)}` },
+            on: { click: () => showChord(i) },
+          },
+          prettySymbol(shown(i).symbol)
+        )
+      );
+    });
+  }
+
+  // ---- NOW ----------------------------------------------------------------
+  // The symbol itself stays --ink and only the rule under it takes the
+  // harmony colour (§5.6): on a near-black stage the current chord has to be
+  // the brightest thing on screen, and tinting the glyph would dim it. So
+  // the tint class goes on the OUTER element, whose border-bottom draws in
+  // currentColor, and the inner span holds the text at full strength.
+  const nowText = el("span", { className: "stage-chord-text" });
+  const nowChord = el("div", { className: "stage-chord" }, nowText);
+  const nowBeats = el("span", { className: "beat-dots beat-dots-lg" });
+  const nowBeatsLabel = el("span", { className: "meta stage-beats-label" }, "");
+  const nowSounds = el("span", { className: "meta stage-sounds" }, "");
+  const nowShape = el("div", { className: "stage-shape" });
+  const nowBlock = el(
+    "div",
+    { className: "stage-now" },
+    nowChord,
+    el("div", { className: "stage-beats" }, nowBeats, nowBeatsLabel, nowSounds),
+    nowShape
+  );
+
+  // ---- NEXT ---------------------------------------------------------------
+  const nextChord = el("div", { className: "stage-next-chord" });
+  const nextBlock = el(
+    "div",
+    { className: "stage-next" },
+    el("div", { className: "meta stage-next-label" }, "Next"),
+    nextChord
+  );
+
+  // ---- Lyric words (roadmap 2.4) -----------------------------------------
+  const wordBanner = createWordBanner({ className: "stage-words" });
+  function rotateWords() {
+    wordBanner.reroll();
+  }
+
+  // ---- Chord shapes -------------------------------------------------------
+  // Loaded lazily and cached for the life of this view. A failed fetch just
+  // leaves the shape blank — the chord itself is what matters on stage.
+  let guitarData = null;
+  let guitarPending = false;
+  function ensureGuitarData() {
+    if (guitarData || guitarPending || state.instrument !== "guitar") return;
+    guitarPending = true;
+    getGuitarData()
+      .then((data) => {
+        guitarData = data;
+        drawShape();
+      })
+      .catch(() => {
+        /* no shapes on stage; the chord symbol still reads */
+      });
+  }
+
+  function drawShape() {
+    const chord = shown(currentIndex);
+    if (state.instrument === "piano") {
+      nowShape.innerHTML = pianoChordSVG(chord);
+      return;
+    }
+    if (!guitarData) {
+      nowShape.innerHTML = "";
+      return;
+    }
+    const voicings = voicingsFor(chord, guitarData);
+    if (!voicings || !voicings.length) {
+      nowShape.innerHTML = "";
+      return;
+    }
+    // Honour the voicing the player picked in the detail view — the whole
+    // point of voicing-choice.js is that choosing an easier F once fixes it
+    // everywhere, and the stage is where it matters most.
+    const index = chosenVoicingIndex(chord, voicings);
+    nowShape.innerHTML = guitarChordSVG(voicings[index], {
+      title: prettySymbol(chord.symbol),
+    });
+  }
+
+  // ---- Beat dots ----------------------------------------------------------
+  // Filled left to right across the sounding chord. audio-player only calls
+  // back per CHORD, not per beat, so the fill is driven here from the tempo:
+  // one dot every secPerBeat from the moment the chord lands. It can drift a
+  // few milliseconds from the audio clock, which is the same trade the
+  // chord highlight has always made and is invisible on a dot.
+  let beatTimer = null;
+  function stopBeatFill() {
+    if (beatTimer) {
+      clearInterval(beatTimer);
+      beatTimer = null;
+    }
+  }
+
+  function paintBeats(filled) {
+    nowBeats.querySelectorAll(".beat-dot").forEach((d, i) => {
+      d.classList.toggle("on", i < filled);
+    });
+  }
+
+  function startBeatFill() {
+    stopBeatFill();
+    if (!playing) return;
+    const total = chords[currentIndex].beats;
+    let filled = 1;
+    paintBeats(filled);
+    const msPerBeat = 60000 / autoBpm;
+    beatTimer = setInterval(() => {
+      filled += 1;
+      if (filled > total) {
+        stopBeatFill();
+        return;
+      }
+      paintBeats(filled);
+    }, msPerBeat);
+  }
+
+  // ---- The one update path ------------------------------------------------
+  function showChord(i) {
+    if (i == null) {
+      // Playback ended: keep the stage on the first chord rather than
+      // blanking it, so the screen still reads as a chart between takes.
+      playing = false;
+      stopBeatFill();
+      paintBeats(0);
+      return;
+    }
+    currentIndex = ((i % chords.length) + chords.length) % chords.length;
+    const chord = shown(currentIndex);
+    const tint = tintOf(currentIndex);
+
+    nowText.textContent = prettySymbol(chord.symbol);
+    nowChord.className = "stage-chord " + tint;
+
+    // Beat dots are rebuilt per chord because the count changes with it.
+    clear(nowBeats);
+    nowBeats.className = "beat-dots beat-dots-lg " + tint;
+    for (let b = 0; b < chords[currentIndex].beats; b += 1) {
+      nowBeats.appendChild(el("span", { className: "beat-dot", attrs: { "aria-hidden": "true" } }));
+    }
+    const beats = chords[currentIndex].beats;
+    nowBeatsLabel.textContent = `${beats} ${beats === 1 ? "beat" : "beats"}`;
+    nowSounds.textContent =
+      capoMode && playedChords ? `sounds ${prettySymbol(chords[currentIndex].symbol)}` : "";
+
+    const nextIdx = (currentIndex + 1) % chords.length;
+    nextChord.textContent = prettySymbol(shown(nextIdx).symbol);
+    nextChord.className = "stage-next-chord " + tintOf(nextIdx);
+
+    rail.querySelectorAll(".stage-rail-item").forEach((node, idx) => {
+      node.classList.toggle("current", idx === currentIndex);
+    });
+
+    drawShape();
+    fitNow();
+    startBeatFill();
+  }
+
+  // ---- Controls -----------------------------------------------------------
+  const settingsBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "stage-settings",
+      attrs: { "aria-label": "Settings" },
+      on: { click: () => openSettingsPanel(buildSettingsPanel) },
+    },
+  );
+  settingsBtn.innerHTML = SETTINGS_ICON;
+
+  let autoBpm = bpmForTempo(entry.tempo);
+  let activeControl = null; // "play" | "auto" | null
+
+  function resetPlayUI() {
+    if (activeControl === "play") activeControl = null;
+    playBtn.textContent = "▶ Play";
+    playBtn.classList.remove("active");
+    playBtn.setAttribute("aria-label", "Play");
+    playBtn.setAttribute("aria-pressed", "false");
+    playing = false;
+    showChord(null);
+    showControls();
+  }
+
+  const playBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "pill stage-play",
+      attrs: { "aria-label": "Play", "aria-pressed": "false" },
+      on: {
+        click: () => {
+          if (activeControl === "play") {
+            audioPlayer.stopPlayback();
+            return;
+          }
+          activeControl = "play";
+          playing = true;
+          playBtn.textContent = "■ Stop";
+          playBtn.classList.add("active");
+          playBtn.setAttribute("aria-label", "Stop");
+          playBtn.setAttribute("aria-pressed", "true");
+          audioPlayer.playProgression(chords, {
+            bpm: autoBpm,
+            timeSig: entry.timeSig,
+            loop: true,
+            onChordChange: showChord,
+            onLoop: rotateWords,
+            onStop: resetPlayUI,
+          });
+          idleHide();
+        },
+      },
+    },
+    "▶ Play"
+  );
+
+  function resetAutoUI() {
+    if (activeControl === "auto") activeControl = null;
+    autoBtn.textContent = "⟳ Auto";
+    autoBtn.classList.remove("active");
+    autoBtn.setAttribute("aria-pressed", "false");
+    playing = false;
+    showChord(null);
+    showControls();
+  }
+
+  const autoBtn = el(
+    "button",
+    {
+      type: "button",
+      className: "pill stage-auto",
+      attrs: {
+        "aria-pressed": "false",
+        title: "Silently walk the chords at this tempo, hands-free",
+      },
+      on: {
+        click: () => {
+          if (activeControl === "auto") {
+            audioPlayer.stopPlayback();
+            return;
+          }
+          activeControl = "auto";
+          playing = true;
+          autoBtn.textContent = "⟳ Stop";
+          autoBtn.classList.add("active");
+          autoBtn.setAttribute("aria-pressed", "true");
+          audioPlayer.playProgression(chords, {
+            bpm: autoBpm,
+            timeSig: entry.timeSig,
+            loop: true,
+            muted: true,
+            onChordChange: showChord,
+            onLoop: rotateWords,
+            onStop: resetAutoUI,
+          });
+          idleHide();
+        },
+      },
+    },
+    "⟳ Auto"
+  );
+
+  const bpmValue = el("span", { className: "stepper-value" }, `${autoBpm}`);
+  function stepBpm(delta) {
+    autoBpm = Math.min(220, Math.max(40, autoBpm + delta));
+    bpmValue.textContent = `${autoBpm}`;
+    refreshMeta();
+  }
+  const bpmStepper = el(
+    "div",
+    { className: "stepper stage-bpm" },
+    el("button", { type: "button", attrs: { "aria-label": "Slower" }, on: { click: () => stepBpm(-4) } }, "−"),
+    bpmValue,
+    el("button", { type: "button", attrs: { "aria-label": "Faster" }, on: { click: () => stepBpm(4) } }, "+")
+  );
 
   const capoBtn = hint
     ? el(
         "button",
         {
           type: "button",
-          className: "perform-capo-toggle",
+          className: "pill stage-capo",
           attrs: {
             "aria-pressed": String(capoMode),
             title: "Show the shapes to play under the capo instead of the sounding chords",
@@ -412,295 +756,99 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
               capoMode = !capoMode;
               capoBtn.classList.toggle("active", capoMode);
               capoBtn.setAttribute("aria-pressed", String(capoMode));
-              infoSpan.textContent = infoText();
-              buildGrid();
-              applyHighlight();
-              layout();
+              refreshMeta();
+              buildRail();
+              showChord(currentIndex);
             },
           },
         },
-        "Capo mode"
+        "Capo"
       )
     : null;
 
-  const settingsBtn = el(
-    "button",
-    {
-      type: "button",
-      className: "perform-settings",
-      attrs: { "aria-label": "Settings" },
-      on: { click: () => openSettingsPanel(buildSettingsPanel) },
-    },
-  );
-  settingsBtn.innerHTML = SETTINGS_ICON;
-
-  // ---- Play button (roadmap 1.1) + auto-advance (roadmap 2.3) -------------
-  // Always plays/walks the real sounding chords (`chords`, at `tonic`),
-  // never the capo-played shapes — same precedent as the tint above: the
-  // harmony doesn't change under a capo, only which shape your hands make.
-  // Both controls share ONE audioPlayer transport (only one playback runs
-  // at a time), so starting either one stops the other; `activeControl`
-  // tracks which button is "on" so a click always means "start (or stop)
-  // THIS control", never an accidental stop-only tap on the other one.
-  let soundingIndex = null;
-  let activeControl = null; // "play" | "auto" | null
-  function applyHighlight() {
-    grid.querySelectorAll(".perform-cell:not(.blank)").forEach((node, i) => {
-      node.classList.toggle("sounding", i === soundingIndex);
-    });
-  }
-  function highlightSounding(index) {
-    soundingIndex = index;
-    applyHighlight();
-  }
-  function resetPlayUI() {
-    if (activeControl === "play") activeControl = null;
-    playBtn.textContent = "▶";
-    playBtn.classList.remove("active");
-    playBtn.setAttribute("aria-label", "Play");
-    playBtn.setAttribute("aria-pressed", "false");
-    highlightSounding(null);
-  }
-  const playBtn = el(
-    "button",
-    {
-      type: "button",
-      className: "perform-play-toggle",
-      attrs: { "aria-label": "Play", "aria-pressed": "false" },
-      on: {
-        click: () => {
-          if (activeControl === "play") {
-            audioPlayer.stopPlayback();
-            return;
-          }
-          activeControl = "play";
-          playBtn.textContent = "■";
-          playBtn.classList.add("active");
-          playBtn.setAttribute("aria-label", "Stop");
-          playBtn.setAttribute("aria-pressed", "true");
-          audioPlayer.playProgression(chords, {
-            bpm: bpmForTempo(entry.tempo),
-            timeSig: entry.timeSig,
-            onChordChange: highlightSounding,
-            onLoop: rotateWords,
-            onStop: resetPlayUI,
-          });
-        },
-      },
-    },
-    "▶"
-  );
-
-  // Auto-advance: a silent, tempo-driven highlight walk for hands-free
-  // play-along, reusing the SAME scheduler with the synth muted rather than
-  // a second parallel timer — one code path, not two (roadmap 2.3). Loops,
-  // per the acceptance criteria, so it keeps walking until stopped.
-  let autoBpm = bpmForTempo(entry.tempo);
-  function resetAutoUI() {
-    if (activeControl === "auto") activeControl = null;
-    autoBtn.textContent = "Auto-advance";
-    autoBtn.classList.remove("active");
-    autoBtn.setAttribute("aria-pressed", "false");
-    highlightSounding(null);
-  }
-  const autoBtn = el(
-    "button",
-    {
-      type: "button",
-      className: "perform-auto-toggle",
-      attrs: {
-        "aria-pressed": "false",
-        title: "Silently walk the grid chord by chord at this tempo, hands-free",
-      },
-      on: {
-        click: () => {
-          if (activeControl === "auto") {
-            audioPlayer.stopPlayback();
-            return;
-          }
-          activeControl = "auto";
-          autoBtn.textContent = "Stop";
-          autoBtn.classList.add("active");
-          autoBtn.setAttribute("aria-pressed", "true");
-          audioPlayer.playProgression(chords, {
-            bpm: autoBpm,
-            timeSig: entry.timeSig,
-            loop: true,
-            muted: true,
-            onChordChange: highlightSounding,
-            onLoop: rotateWords,
-            onStop: resetAutoUI,
-          });
-        },
-      },
-    },
-    "Auto-advance"
-  );
-  const autoBpmValue = el("span", { className: "perform-bpm-value" }, `${autoBpm} BPM`);
-  const autoBpmStepper = el(
-    "div",
-    { className: "perform-bpm-stepper" },
-    el(
-      "button",
-      {
-        type: "button",
-        className: "perform-bpm-btn",
-        attrs: { "aria-label": "Slower" },
-        on: {
-          click: () => {
-            autoBpm = Math.max(40, autoBpm - 4);
-            autoBpmValue.textContent = `${autoBpm} BPM`;
-          },
-        },
-      },
-      "−"
-    ),
-    autoBpmValue,
-    el(
-      "button",
-      {
-        type: "button",
-        className: "perform-bpm-btn",
-        attrs: { "aria-label": "Faster" },
-        on: {
-          click: () => {
-            autoBpm = Math.min(220, autoBpm + 4);
-            autoBpmValue.textContent = `${autoBpm} BPM`;
-          },
-        },
-      },
-      "+"
-    )
-  );
-
-  const stripChildren = [
-    el(
-      "a",
-      {
-        className: "perform-exit",
-        href: exitHref,
-        attrs: { "aria-label": "Exit performance mode" },
-      },
-      "✕"
-    ),
+  const controlChildren = [
+    el("a", { className: "stage-exit", href: exitHref, attrs: { "aria-label": "Exit performance mode" } }, "✕"),
     settingsBtn,
-    playBtn,
-    extra || null,
   ];
-  if (nav) stripChildren.push(navButton("prev", nav.prevHref, "Previous section"));
-  stripChildren.push(capoBtn, infoSpan);
-  if (nav) stripChildren.push(navButton("next", nav.nextHref, "Next section"));
-  stripChildren.push(wakeDot);
+  if (nav) controlChildren.push(stageNav("prev", nav.prevHref, "Previous section"));
+  controlChildren.push(playBtn, autoBtn, bpmStepper, capoBtn, extra || null);
+  if (nav) controlChildren.push(stageNav("next", nav.nextHref, "Next section"));
 
-  const strip = el("div", { className: "perform-strip" }, ...stripChildren);
-  const autoRow = el("div", { className: "perform-auto-row" }, autoBtn, autoBpmStepper);
+  const controls = el("div", { className: "stage-controls" }, ...controlChildren);
 
-  // ---- Lyric prompt words (roadmap 2.4) ---------------------------------
-  // The banner MUST live inside .perform-topbar: that's the only element
-  // layout() measures the chrome height from, and anything between the
-  // topbar and the grid is invisible to that maths (which is exactly how
-  // chords end up overflowing their cells). The colour legend and the
-  // banner share the third row — CSS shows whichever the words setting
-  // selects — so the topbar stays three rows tall either way and the
-  // banner adds no net chrome height. During a performance a lyric prompt
-  // outranks a reminder of what the tint colours mean.
-  const wordBanner = createWordBanner({
-    className: "perform-words",
-    onLayout: () => layout(),
-  });
-  function rotateWords() {
-    wordBanner.reroll();
+  // ---- Control auto-hide (§5.6) -------------------------------------------
+  // Four idle seconds while something is running and the bar fades out, so
+  // the stage is just the music. Any tap brings it back. Never while idle —
+  // a still screen with no visible controls reads as broken — and never at
+  // all under prefers-reduced-motion.
+  const reduceMotion =
+    typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let hideTimer = null;
+
+  function showControls() {
+    controls.classList.remove("hidden");
+    if (hideTimer) clearTimeout(hideTimer);
+    hideTimer = null;
   }
-  const topBar = el(
-    "div",
-    { className: "perform-topbar" },
-    strip,
-    autoRow,
+
+  function idleHide() {
+    if (reduceMotion) return;
+    if (hideTimer) clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      if (playing) controls.classList.add("hidden");
+    }, 4000);
+  }
+
+  function onStageTap() {
+    showControls();
+    if (playing) idleHide();
+  }
+
+  // ---- Assemble -----------------------------------------------------------
+  // NOW and NEXT share a wrapper so landscape can put them side by side by
+  // flipping one flex-direction (§5.6). They were siblings of the rail and
+  // the words at first, which meant "NEXT to the right of NOW" was not
+  // expressible in CSS at all and NEXT kept its own full-width row —
+  // stealing the height the chord needed and pushing it over the rail.
+  const centre = el("div", { className: "stage-centre" }, nowBlock, nextBlock);
+
+  const root = el(
+    "section",
+    { className: "perform-full stage" },
+    titleBlock,
+    rail,
+    centre,
     wordBanner.node,
-    legendCaption("perform-legend")
+    controls
   );
-
-  // ---- Chord grid ----------------------------------------------------------
-  // Fixed at TWO columns, always (backlog item 16): four chords are 2×2,
-  // eight are 2×4, ten are 2×5. Any shortfall is drawn as empty cells rather
-  // than reflowing, and short progressions sit on the same 2×2 base — so
-  // chord size shrinks predictably with row count instead of jumping when a
-  // column count changes.
-  const GRID_COLS = 2;
-  const gridRows = Math.max(2, Math.ceil(chords.length / GRID_COLS));
-  const grid = el("div", { className: "perform-grid" });
-
-  function buildGrid() {
-    clear(grid);
-    chords.forEach((chord, i) => {
-      const playedChord = playedChords ? playedChords[i] : null;
-      const big = capoMode && playedChord ? playedChord : chord;
-      // Tint by the real sounding chord's function, not the capo-played
-      // shape — the harmonic function doesn't change under a capo, just
-      // which shape your hands make.
-      const cls = tintClass(chord.numeral, tonic, entry.mode);
-      grid.appendChild(
-        el(
-          "div",
-          { className: "perform-cell" },
-          el("div", { className: "perform-symbol " + cls }, prettySymbol(big.symbol)),
-          el(
-            "div",
-            { className: "perform-sub" },
-            el("span", { className: "perform-numeral " + cls }, chord.display),
-            el("span", { className: "perform-beats" }, `${chord.beats}`),
-            capoMode && playedChord
-              ? el("span", { className: "perform-sounds" }, `sounds ${prettySymbol(chord.symbol)}`)
-              : null
-          )
-        )
-      );
-    });
-    // Fill the last row(s) out to the fixed grid with visible empty cells.
-    for (let i = chords.length; i < gridRows * GRID_COLS; i += 1) {
-      grid.appendChild(
-        el("div", { className: "perform-cell blank", attrs: { "aria-hidden": "true" } })
-      );
-    }
-  }
-  buildGrid();
-  applyHighlight();
-
-  const root = el("section", { className: "perform-full" }, topBar, grid);
   container.appendChild(root);
 
-  // ---- Fit-to-viewport ------------------------------------------------------
-  function layout() {
-    const shown = capoMode && playedChords ? playedChords : chords;
-    const longest = Math.max(...shown.map((c) => prettySymbol(c.symbol).length));
-    const w = root.clientWidth;
-    const h = root.clientHeight;
-    if (!w || !h) return;
-    // Two columns always, portrait or landscape — the row count is the only
-    // thing that grows, so the type size scales predictably (item 16).
-    const cols = GRID_COLS;
-    const rows = gridRows;
-    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+  buildRail();
+  refreshMeta();
+  ensureGuitarData();
+  showChord(0);
 
-    // First guess from cell geometry, then shrink until nothing overflows.
-    const cellW = w / cols;
-    const cellH = (h - topBar.offsetHeight) / rows;
-    let fs = Math.min(cellH * 0.42, (cellW * 1.55) / Math.max(2, longest));
-    fs = Math.max(14, fs);
-    root.style.setProperty("--perform-fs", fs + "px");
-    for (let i = 0; i < 12; i += 1) {
-      const overflowing =
-        grid.scrollHeight > grid.clientHeight + 1 ||
-        grid.scrollWidth > grid.clientWidth + 1 ||
-        root.scrollHeight > root.clientHeight + 1;
-      if (!overflowing) break;
-      fs *= 0.9;
-      root.style.setProperty("--perform-fs", fs + "px");
+  root.addEventListener("pointerdown", onStageTap);
+
+  // ---- Fit the NOW chord --------------------------------------------------
+  // clamp() in --fs-chord-now handles the ordinary case; this only catches a
+  // long symbol ("A♭add9") that would run off the side at the clamped size.
+  // One measure-and-scale, not the old repeated shrink loop over a grid.
+  function fitNow() {
+    root.style.removeProperty("--perform-now-fs");
+    // Leave the queue rail its own column: a long symbol scaled only to the
+    // full width would centre itself straight over the rail's chords.
+    const railW = rail.offsetWidth || 0;
+    const available = root.clientWidth - 32 - railW * 2;
+    if (available <= 0 || !nowText.scrollWidth) return;
+    const overflow = nowText.scrollWidth / available;
+    if (overflow > 1) {
+      const base = parseFloat(getComputedStyle(nowChord).fontSize);
+      root.style.setProperty("--perform-now-fs", Math.floor(base / overflow) + "px");
     }
   }
 
-  // ---- Screen Wake Lock -------------------------------------------------------
+  // ---- Screen Wake Lock ---------------------------------------------------
   let wakeLock = null;
   let alive = true;
 
@@ -726,8 +874,11 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   function cleanup() {
     alive = false;
     window.removeEventListener("hashchange", cleanup);
-    window.removeEventListener("resize", layout);
+    window.removeEventListener("resize", fitNow);
     document.removeEventListener("visibilitychange", onVisibility);
+    root.removeEventListener("pointerdown", onStageTap);
+    if (hideTimer) clearTimeout(hideTimer);
+    stopBeatFill();
     unwireNav();
     wordBanner.dispose();
     audioPlayer.stopPlayback();
@@ -738,11 +889,22 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   }
 
   window.addEventListener("hashchange", cleanup);
-  window.addEventListener("resize", layout);
+  window.addEventListener("resize", fitNow);
   document.addEventListener("visibilitychange", onVisibility);
 
-  layout();
+  fitNow();
   // Fonts and layout settle a tick later; measure once more to be sure.
-  requestAnimationFrame(layout);
+  requestAnimationFrame(fitNow);
   acquireWakeLock();
+}
+
+/** Previous/next section control for the stage's control bar. */
+function stageNav(direction, href, label) {
+  const props = {
+    className: "stage-nav " + direction + (href ? "" : " disabled"),
+    attrs: { "aria-label": label },
+  };
+  if (href) props.href = href;
+  else props.attrs["aria-disabled"] = "true";
+  return el("a", props, direction === "prev" ? "‹" : "›");
 }

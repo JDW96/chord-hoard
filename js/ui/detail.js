@@ -13,12 +13,13 @@ import { voicingsFor, guitarChordSVG, pianoChordSVG } from "./diagrams.js";
 import { chosenVoicingIndex, nextVoicingIndex } from "./voicing-choice.js";
 import { openDiagramPopup } from "./diagram-popup.js";
 import { chordHref } from "./chord-link.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { createWordBanner } from "./words.js";
 import { isPinned, pin, pinButton } from "./pins.js";
 import { playabilityRow } from "./playability.js";
 import { wheelSVG, captionFor } from "./circle-of-fifths.js";
 import { state, renderIn, ratingIn } from "./app.js";
+import { beatDots, metaLine, lower, metaLevel } from "./symbols.js";
 import {
   el,
   clear,
@@ -101,6 +102,44 @@ function keyLabel(entry, tonic) {
 }
 
 // ---------------------------------------------------------------------------
+// Fold rows (STYLEGUIDE §5.4)
+//
+// Everything below the transport collapses to a hairline row: a label, a
+// meta summary of what's inside, and a chevron. Built on <details>/<summary>
+// rather than a div with aria-expanded bookkeeping, so the open/close
+// behaviour, keyboard handling and screen-reader announcement all come from
+// the platform — and so the browser's own find-in-page can open a closed
+// fold to reveal a match.
+// ---------------------------------------------------------------------------
+
+/**
+ * @param {string} label     the row's name ("Key & capo")
+ * @param {Node|string} summary  what's inside, in the meta voice
+ * @param {Node|Node[]} body     revealed content
+ * @param {boolean} [open]   start expanded (the prose row does)
+ */
+function fold(label, summary, body, open = false) {
+  const summaryNode =
+    typeof summary === "string" ? metaLine([summary]) : summary;
+  return el(
+    "details",
+    { className: "fold", attrs: open ? { open: "" } : {} },
+    el(
+      "summary",
+      {},
+      el("span", { className: "fold-label" }, label),
+      el(
+        "span",
+        { className: "fold-summary" },
+        summaryNode,
+        el("span", { className: "fold-chevron", attrs: { "aria-hidden": "true" } }, "›")
+      )
+    ),
+    el("div", { className: "fold-body" }, body)
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Detail view
 // ---------------------------------------------------------------------------
 
@@ -128,7 +167,10 @@ export function render(container, params) {
   const body = el("div", { className: "detail-body" });
   // The href gains the current tonic in draw(), so the chosen key survives
   // a refresh inside performance mode (#/perform/<id>/<tonic>).
-  const performLink = el("a", { className: "perform-btn" }, "Performance mode");
+  // It lives at the BOTTOM of the page now as a full-width dark bar (§5.4)
+  // rather than as a small button in the top bar: it's the end of the
+  // read-then-play journey, not a piece of chrome.
+  const performLink = el("a", { className: "perform-cta" }, "Performance mode  →");
   // Pins record the key currently on screen; see chooseTonic() for how the
   // recorded key follows later key changes while pinned.
   const pinBtn = pinButton(entry, () => tonic);
@@ -141,7 +183,7 @@ export function render(container, params) {
         "div",
         { className: "detail-topbar" },
         el("a", { className: "back-link", href: "#/hoard" }, "‹ Hoard"),
-        el("div", { className: "detail-actions" }, pinBtn, performLink)
+        el("div", { className: "detail-actions" }, pinBtn)
       ),
       body
     )
@@ -172,15 +214,19 @@ export function render(container, params) {
     const rating = ratingIn(entry, tonic, state.instrument);
     const perChordLevel = new Map(rendered.chords.map((c, i) => [i, rating.perChord[i].level]));
 
-    // ---- Title + badges -------------------------------------------------
+    // ---- Title + meta line ------------------------------------------------
+    // The badge survives as the one labelled level on the whole app (§4) —
+    // this is the screen where reading "G1" beats counting bars — and it is
+    // still the toggle for the per-chord breakdown.
     const badge = el(
       "button",
       {
         type: "button",
-        className: "badge badge-btn " + levelClass(rating.level),
+        className: "meta-level-btn",
         attrs: {
           title: "Tap to see the level of each chord",
           "aria-pressed": String(showPerChord),
+          "aria-label": `Complexity ${rating.level}. Tap to see the level of each chord`,
         },
         on: {
           click: () => {
@@ -189,57 +235,77 @@ export function render(container, params) {
           },
         },
       },
-      rating.level
+      metaLevel(rating.level)
     );
 
     body.appendChild(
       el(
         "header",
-        { className: "detail-head" },
-        el("h2", { className: "detail-name" }, entry.name),
-        el(
-          "div",
-          { className: "detail-meta" },
-          el("span", { className: "chip static" }, keyLabel(entry, tonic)),
-          el("span", { className: "chip static" }, entry.timeSig),
-          el("span", { className: "chip static" }, `${entry.bars} bars`),
-          el("span", { className: "chip static" }, capitalise(entry.tempo)),
-          badge
-        ),
-        el(
-          "div",
-          { className: "card-moods" },
-          entry.moods.map((m) => el("span", { className: "mood-tag" }, m)),
-          entry.genres.map((g) => el("span", { className: "mood-tag genre" }, g))
-        )
+        { className: "detail-head-new" },
+        el("h2", { className: "detail-title" }, entry.name),
+        metaLine([
+          keyLabel(entry, tonic),
+          entry.timeSig,
+          `${entry.bars} bars`,
+          entry.tempo,
+          badge,
+          entry.moods.length ? lower(entry.moods.join(", ")) : null,
+        ])
       )
     );
 
-    // ---- Big chord-by-chord strip ---------------------------------------
-    const strip = el("div", { className: "chord-strip" });
+    // ---- Lyric words, ABOVE the chart (§5.4) ------------------------------
+    // The chart is what you play; the words are what you sing over it, so
+    // they sit in reading order above rather than tacked on underneath.
+    wordBanner = createWordBanner({ className: "detail-words" });
+    body.appendChild(wordBanner.node);
+
+    // ---- Chart hero (§5.3) -------------------------------------------------
+    // One cell per chord between two strong rules, beat dots under each.
+    // Cells are per CHORD rather than per BAR: a chord may span two bars or
+    // half of one, and the dots already carry the duration, so grouping by
+    // bar would add engraving complexity without adding information.
+    //
+    // Barlines and the end repeat are CSS borders, never "|" and "‖"
+    // characters — Newsreader has no U+2016, so a typed barline would
+    // silently fall back to another face at a different weight (see the
+    // @font-face banner in css/app.css).
+    const strip = el("div", { className: "chart" });
     rendered.chords.forEach((chord, i) => {
       const cls = tintClass(chord.numeral, tonic, entry.mode);
       strip.appendChild(
         el(
           "div",
-          { className: "chord-block" },
-          el("div", { className: "chord-symbol " + cls }, prettySymbol(chord.symbol)),
-          el(
-            "div",
-            { className: "chord-sub" },
-            el("span", { className: "chord-numeral " + cls }, chord.display),
-            el("span", { className: "chord-beats" }, `${chord.beats} beats`)
-          ),
+          { className: "chart-bar" },
+          el("div", { className: "chart-symbol " + cls }, prettySymbol(chord.symbol)),
+          // Neutral until something is playing; playback fills them in the
+          // chord's own function colour.
+          beatDots(chord.beats),
+          // CLAUDE.md is explicit that the app always shows numerals AND
+          // named chords, so the numeral rides under the dots rather than
+          // being dropped for a tidier chart.
+          el("div", { className: "chart-numeral " + cls }, chord.display),
           showPerChord
-            ? el(
-                "span",
-                { className: "badge small " + levelClass(perChordLevel.get(i)) },
-                perChordLevel.get(i)
-              )
+            ? metaLine([metaLevel(perChordLevel.get(i))], { className: "chart-level" })
             : null
         )
       );
     });
+    // End repeat: thin rule, thick rule, two dots — drawn, not typed.
+    strip.appendChild(
+      el(
+        "div",
+        { className: "chart-repeat", attrs: { "aria-label": "Repeat", role: "img" } },
+        el(
+          "span",
+          { className: "chart-repeat-dots", attrs: { "aria-hidden": "true" } },
+          el("span", {}),
+          el("span", {})
+        ),
+        el("span", { className: "chart-repeat-thin", attrs: { "aria-hidden": "true" } }),
+        el("span", { className: "chart-repeat-thick", attrs: { "aria-hidden": "true" } })
+      )
+    );
 
     // ---- Audio transport (roadmap 1.1) ------------------------------------
     // Play/stop, BPM stepper, loop/count-in/metronome toggles. State
@@ -247,11 +313,22 @@ export function render(container, params) {
     // survives a redraw; the play button and highlight wiring are rebuilt
     // fresh each draw() (which always stops any prior playback first, see
     // above), so they only ever reference this draw's own chord strip.
-    const countInLabel = el("span", { className: "audio-count-in" });
+    const countInLabel = el("span", { className: "audio-count-in meta" });
 
+    // The sounding chord's beat dots fill in its own function tint (§5.3).
+    // Looked up live rather than cached, so a redraw can't leave this
+    // pointing at detached nodes.
     function highlightSounding(index) {
-      strip.querySelectorAll(".chord-block").forEach((node, i) => {
-        node.classList.toggle("sounding", i === index);
+      strip.querySelectorAll(".chart-bar").forEach((node, i) => {
+        const on = i === index;
+        node.classList.toggle("sounding", on);
+        const dots = node.querySelector(".beat-dots");
+        if (!dots) return;
+        // Borrow the symbol's tint class so --beat-on (currentColor) picks
+        // up the harmonic function without this needing to know the colour.
+        const tint = node.querySelector(".chart-symbol").className.match(/fn-\S+/);
+        dots.classList.toggle(tint ? tint[0] : "fn-tonic", on);
+        dots.querySelectorAll(".beat-dot").forEach((d) => d.classList.toggle("on", on));
       });
     }
 
@@ -268,7 +345,7 @@ export function render(container, params) {
       "button",
       {
         type: "button",
-        className: "audio-play-btn",
+        className: "play-circle audio-play-btn",
         attrs: { "aria-label": "Play", "aria-pressed": "false" },
         on: {
           click: () => {
@@ -305,10 +382,10 @@ export function render(container, params) {
       "▶"
     );
 
-    const bpmValue = el("span", { className: "bpm-value" }, `${bpm} BPM`);
+    const bpmValue = el("span", { className: "stepper-value bpm-value" }, `${bpm} BPM`);
     const bpmStepper = el(
       "div",
-      { className: "bpm-stepper" },
+      { className: "stepper bpm-stepper" },
       el(
         "button",
         {
@@ -347,7 +424,7 @@ export function render(container, params) {
         "button",
         {
           type: "button",
-          className: "audio-toggle" + (get() ? " active" : ""),
+          className: "pill audio-toggle" + (get() ? " active" : ""),
           attrs: { "aria-pressed": String(get()) },
           on: {
             click: () => {
@@ -362,23 +439,21 @@ export function render(container, params) {
       return btn;
     }
 
+    // Chart first, transport under it — the chart is the hero of this view
+    // and the controls act on it, so they read top to bottom in that order.
+    body.appendChild(strip);
     body.appendChild(
       el(
         "div",
-        { className: "audio-transport" },
+        { className: "detail-transport" },
         playBtn,
         bpmStepper,
         audioToggle("Loop", () => loopOn, (v) => (loopOn = v)),
         audioToggle("Count-in", () => countInOn, (v) => (countInOn = v)),
-        audioToggle("Metronome", () => metronomeOn, (v) => (metronomeOn = v)),
+        audioToggle("Click", () => metronomeOn, (v) => (metronomeOn = v)),
         countInLabel
       )
     );
-
-    body.appendChild(strip);
-    wordBanner = createWordBanner();
-    body.appendChild(wordBanner.node);
-    body.appendChild(legendCaption());
 
     // ---- Key selector ----------------------------------------------------
     // The wheel IS the key selector now (backlog item 3 follow-up, agreed
@@ -434,33 +509,45 @@ export function render(container, params) {
           );
     }
 
+    // Fold 1 — Key & capo. Summary reads "C · HOME · NO CAPO" so the two
+    // facts you'd open it for are already answered on the closed row.
+    const capoSummary =
+      state.instrument !== "guitar"
+        ? null
+        : capo.suggest(rendered.chords, tonic, !isMajorFamily(entry))
+          ? `Capo ${capo.suggest(rendered.chords, tonic, !isMajorFamily(entry)).capo}`
+          : "No capo";
     body.appendChild(
-      el(
-        "div",
-        { className: "key-picker" },
+      fold(
+        "Key & capo",
+        metaLine([
+          prettyNote(tonic),
+          tonic === entry.homeKey ? "home" : `home ${prettyNote(entry.homeKey)}`,
+          capoSummary,
+        ]),
         el(
-          "h3",
-          {},
-          "Key",
-          tonic !== entry.homeKey
-            ? el("span", { className: "home-note" }, ` · home key is ${prettyNote(entry.homeKey)}`)
-            : el("span", { className: "home-note" }, " · this is the home key")
-        ),
-        wheelHost,
-        el("p", { className: "wheel-caption" }, captionFor(tonic, family)),
-        el(
-          "p",
-          { className: "wheel-hint" },
-          "Outer ring is major, inner ring is its relative minor. Tap a key to jump there."
-        ),
-        capoLine
+          "div",
+          { className: "key-picker" },
+          wheelHost,
+          el("p", { className: "wheel-caption" }, captionFor(tonic, family)),
+          el(
+            "p",
+            { className: "wheel-hint" },
+            "Outer ring is major, inner ring is its relative minor. Tap a key to jump there."
+          ),
+          capoLine
+        )
       )
     );
 
     // ---- Diagrams strip ---------------------------------------------------
     const diagrams = el("div", { className: "diagram-strip" });
     body.appendChild(
-      el("div", { className: "diagrams" }, el("h3", {}, "Chord shapes"), diagrams)
+      fold(
+        "Chord shapes",
+        metaLine([rendered.distinctChords.map((c) => prettySymbol(c.symbol)).join("  ")]),
+        el("div", { className: "diagrams" }, diagrams)
+      )
     );
     fillDiagrams(diagrams, rendered);
 
@@ -473,33 +560,32 @@ export function render(container, params) {
       solo.reason === "home"
         ? "matches this progression's own key."
         : "the relative of this progression's key, same notes with a different note as home.";
+    const soloName = `${prettyNote(solo.tonic)} ${SOLO_SCALE_LABEL[solo.scaleKey]}`;
     body.appendChild(
-      el(
-        "p",
-        { className: "solo-scale-line" },
-        el("strong", {}, solo.score < 0.15 ? "Closest fit: " : "Solo with: "),
-        el("a", { href: soloScaleHref(solo) }, `${prettyNote(solo.tonic)} ${SOLO_SCALE_LABEL[solo.scaleKey]}`),
-        " · " + soloReasonText
+      fold(
+        solo.score < 0.15 ? "Closest fit" : "Solo with",
+        metaLine([soloName]),
+        el(
+          "p",
+          { className: "solo-scale-line" },
+          el("a", { href: soloScaleHref(solo) }, soloName),
+          " · " + soloReasonText
+        )
       )
     );
 
-    // ---- Notes -------------------------------------------------------------
-    if (entry.notes) {
-      body.appendChild(
-        el("div", { className: "notes" }, el("h3", {}, "From the bandstand"), el("p", {}, entry.notes))
-      );
-    }
-
     // ---- Songs ------------------------------------------------------------
+    // Only a row when there's something in it: 247 of the 349 entries ship
+    // no verified songs, and an empty fold on all of them would be noise.
     if (entry.songs && entry.songs.length) {
+      const n = entry.songs.length;
       body.appendChild(
-        el(
-          "div",
-          { className: "songs" },
-          el("h3", {}, "As heard in"),
+        fold(
+          "As heard in",
+          metaLine([`${n} ${n === 1 ? "song" : "songs"}`]),
           el(
             "ul",
-            {},
+            { className: "songs-list" },
             entry.songs.map((song) =>
               el(
                 "li",
@@ -512,6 +598,23 @@ export function render(container, params) {
         )
       );
     }
+
+    // ---- Notes -------------------------------------------------------------
+    // Open by default: it's prose written to be read, not a reference table
+    // you go looking for, and it's the last thing before the CTA.
+    if (entry.notes) {
+      body.appendChild(
+        fold(
+          "From the bandstand",
+          metaLine([]),
+          el("p", { className: "bandstand" }, entry.notes),
+          true
+        )
+      );
+    }
+
+    // ---- Performance mode CTA (§5.4) ---------------------------------------
+    body.appendChild(performLink);
   }
 }
 

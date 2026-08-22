@@ -1,0 +1,202 @@
+/* Chord Hoard design system — "Fake Book" direction (2026-08 redesign).
+   Drop-in replacement for the token blocks at the top of css/app.css.
+   Same contract as before: light is the base, dark overrides colours only,
+   :root[data-theme] mirrors the media query for the manual override.
+   Nothing outside these blocks may hardcode a colour. */
+
+:root {
+  color-scheme: light dark;
+
+  /* Surfaces — warm paper, not clinical white. */
+  --bg: #faf9f5;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f1efe8;
+  --bg-sheet: #ffffff;
+  --line: #d8d8d1;        /* control borders */
+  --line-soft: #e7e5dc;   /* ledger hairlines */
+  --line-strong: #191917; /* chart double rules */
+
+  --ink: #191917;
+  --ink-dim: #56564f;
+  --ink-faint: #8c8a80;
+
+  /* Accent — interface only (links, active pin, active controls).
+     Harmony has its own ramp; never reuse blue for harmony. */
+  --accent: #1d5fa8;
+  --accent-bright: #17508f;
+  --accent-dim: #7ba3d2;
+  --accent-wash: #e6f1fb;
+  --on-accent: #ffffff;
+
+  --header-bg: rgba(250, 249, 245, 0.92);
+  --tabbar-bg: rgba(241, 239, 232, 0.96);
+
+  /* Diagrams (unchanged palette contract). */
+  --key-white: #ffffff;
+  --key-black: #3a3a34;
+  --key-line: #000000;
+  --key-press: #8fe0c0;
+  --key-root: #3fbf95;
+  --key-label: #56564f;
+
+  /* Complexity levels: easy → hard. Rendered as rising BARS, never dots. */
+  --lv-1: #639922;
+  --lv-2: #ba7517;
+  --lv-3: #d85a30;
+  --lv-4: #a32d2d;
+  --lv-off: #e0ded4;      /* unfilled bar */
+  --on-level: #ffffff;
+
+  /* Harmonic function tints — text colour AND (perform only) subtle fills. */
+  --fn-tonic: #1f8a72;
+  --fn-subdominant: #7c5cbf;
+  --fn-dominant: #b8790c;
+  --fn-borrowed: #c9502f;
+
+  /* Beats — round dots, neutral. --beat-on follows the local text colour
+     in neutral contexts; perform mode sets it to the chord's function tint. */
+  --beat-dot: 4px;             /* browse/detail size; perform uses 11px */
+  --beat-on: currentColor;
+  --beat-off: var(--lv-off);
+
+  /* Type — three voices, never mixed inside one element:
+     display  = chords, titles, lyric words, editorial prose
+     ui       = controls, buttons, body labels
+     mono     = metadata (ALL CAPS + letter-spacing), always quiet */
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+  --fs-meta: 0.656rem;             /* 10.5px mono meta lines */
+  --ls-meta: 0.08em;               /* .1em–.18em as prominence rises */
+  --fs-chord-row: 1.3125rem;       /* ledger chord line */
+  --fs-chord-chart: 2.5rem;        /* detail chart hero */
+  /* Perform NOW/NEXT. min(vw, vh) rather than vw alone: the width-only
+     form produced a 180px chord on a 780×360 landscape stage, where it
+     overflowed its own flex cell and collided with the queue rail above and
+     the NEXT chord below. The vw terms are unchanged, so portrait sizes are
+     exactly as designed; the vh terms only bite when height is the real
+     constraint (landscape, and short portrait windows). */
+  --fs-chord-now: clamp(3.5rem, min(50vw, 42vh), 11.25rem);  /* perform NOW chord */
+  --fs-chord-next: clamp(1.75rem, min(19vw, 14vh), 4.25rem); /* perform NEXT chord */
+
+  /* Spacing (unchanged) */
+  --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem;
+  --sp-4: 1rem; --sp-5: 1.5rem; --sp-6: 2rem;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --tap: 44px;
+
+  --diagram-guitar-w: 13.5rem;
+  --diagram-piano-w: min(26rem, 84vw);
+  --diagram-piano-hero-w: min(28rem, 92vw);
+  --diagram-popup-w: min(26rem, 88vw);
+  --wheel-w: min(20rem, 88vw);
+
+  --header-h: 3.25rem;
+  --tabbar-h: 3.5rem;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark = stage mode. Higher contrast than the old dark theme: true near-black
+   stage, chords in warm off-white, chrome receding further. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0b0c;
+    --bg-raised: #161615;
+    --bg-sunken: #060607;
+    --bg-sheet: #161615;
+    --line: #3a3a37;
+    --line-soft: #232320;
+    --line-strong: #f6f5f0;
+
+    --ink: #f6f5f0;
+    --ink-dim: #8f8f89;
+    --ink-faint: #6f6f69;
+
+    --accent: #9fc4ee;
+    --accent-bright: #c2daf5;
+    --accent-dim: #5d7fa5;
+    --accent-wash: rgba(159, 196, 238, 0.14);
+    --on-accent: #0a1a2b;
+
+    --header-bg: rgba(11, 11, 12, 0.92);
+    --tabbar-bg: rgba(6, 6, 7, 0.96);
+
+    --key-white: #f7f7f4;
+    --key-black: #33333a;
+    --key-line: #0b0b0c;
+    --key-press: #7fd8b6;
+    --key-root: #2fb98d;
+    --key-label: #8f8f89;
+
+    --lv-1: #97c459;
+    --lv-2: #ef9f27;
+    --lv-3: #f0997b;
+    --lv-4: #e24b4a;
+    --lv-off: #2c2c29;
+    --on-level: #16160f;
+
+    --fn-tonic: #56dab3;
+    --fn-subdominant: #b7a0e8;
+    --fn-dominant: #f0ac3f;
+    --fn-borrowed: #ff8f6b;
+
+    --beat-off: #2c2c29;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Manual dark override — keep byte-identical to the media-query block. */
+:root[data-theme="dark"] {
+  --bg: #0b0b0c;
+  --bg-raised: #161615;
+  --bg-sunken: #060607;
+  --bg-sheet: #161615;
+  --line: #3a3a37;
+  --line-soft: #232320;
+  --line-strong: #f6f5f0;
+
+  --ink: #f6f5f0;
+  --ink-dim: #8f8f89;
+  --ink-faint: #6f6f69;
+
+  --accent: #9fc4ee;
+  --accent-bright: #c2daf5;
+  --accent-dim: #5d7fa5;
+  --accent-wash: rgba(159, 196, 238, 0.14);
+  --on-accent: #0a1a2b;
+
+  --header-bg: rgba(11, 11, 12, 0.92);
+  --tabbar-bg: rgba(6, 6, 7, 0.96);
+
+  --key-white: #f7f7f4;
+  --key-black: #33333a;
+  --key-line: #0b0b0c;
+  --key-press: #7fd8b6;
+  --key-root: #2fb98d;
+  --key-label: #8f8f89;
+
+  --lv-1: #97c459;
+  --lv-2: #ef9f27;
+  --lv-3: #f0997b;
+  --lv-4: #e24b4a;
+  --lv-off: #2c2c29;
+  --on-level: #16160f;
+
+  --fn-tonic: #56dab3;
+  --fn-subdominant: #b7a0e8;
+  --fn-dominant: #f0ac3f;
+  --fn-borrowed: #ff8f6b;
+
+  --beat-off: #2c2c29;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}

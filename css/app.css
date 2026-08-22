@@ -1,48 +1,91 @@
-/* app.css — Chord Hoard. Neutral surfaces, one pastel-blue accent, chord
-   symbols carrying the contrast. Light and dark both first-class: the
-   palette follows the device via prefers-color-scheme, and :root[data-theme]
-   is reserved for a manual override.
+/* app.css — Chord Hoard, "Fake Book" direction (design-system/STYLEGUIDE.md).
+   Warm paper, hairline rules, serif chord symbols, quiet ALL-CAPS mono
+   metadata. Dark mode is STAGE mode: a near-black page where the current
+   chord is the only bright thing. Harmony gets colour, difficulty gets bars,
+   beats get dots, and blue belongs to the interface alone.
    Mobile-first (designed at 360×780), works at desktop widths and in
-   780×360 landscape. No frameworks. */
+   780×360 landscape. No frameworks, no build step. */
+
+/* ------------------------------------------------------------------ */
+/* Newsreader — self-hosted so the stage never flashes a fallback serif  */
+/* mid-gig. Files live in fonts/ and are precached by sw.js; nothing     */
+/* here may point at a CDN or the PWA stops being offline-complete.     */
+/*                                                                      */
+/* These are Google's "latin" subset of the VARIABLE font (opsz 6..72,   */
+/* wght 300..800), so one file per style covers every size and weight    */
+/* the app uses, and font-optical-sizing does the right thing between    */
+/* 13px metadata and a 180px chord on the stage.                         */
+/*                                                                      */
+/* KNOWN GAP, do not go hunting for a fix: Newsreader has 658 glyphs and */
+/* contains NO ♭ (U+266D), ♯ (U+266F) or ‖ (U+2016) — verified against   */
+/* the upstream variable TTF's cmap, not just the subset. Google's       */
+/* text= endpoint appears to offer them but returns an invalid font.     */
+/* So accidentals in chord symbols fall back to the system serif below   */
+/* by design. The unicode-range here deliberately does NOT claim         */
+/* U+266D/U+266F, so the fallback is immediate and explicit rather than  */
+/* a failed lookup. Barlines and repeat marks are drawn as CSS borders    */
+/* (see .chart-*), never as glyphs, for the same reason. */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("../fonts/newsreader-roman-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("../fonts/newsreader-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* ------------------------------------------------------------------ */
 /* Tokens                                                              */
 /*                                                                     */
-/* Light is the base declaration; the dark block below overrides only  */
-/* the colours. Nothing outside these two blocks may hardcode a colour */
-/* — if a rule needs one that isn't here, add a token rather than a    */
-/* hex, or it will be invisible in one of the two modes.               */
+/* Light is the base declaration; the two dark blocks below override    */
+/* only the colours. Nothing outside these blocks may hardcode a colour */
+/* — if a rule needs one that isn't here, add a token rather than a     */
+/* hex, or it will be invisible in one of the two modes.                */
 /* ------------------------------------------------------------------ */
 
 :root {
   color-scheme: light dark;
 
-  /* Surfaces — near-neutral, a hair warm so it isn't clinical. */
-  --bg: #fafaf8;
+  /* Surfaces — warm paper, not clinical white. */
+  --bg: #faf9f5;
   --bg-raised: #ffffff;
-  --bg-sunken: #f1f1ee;
+  --bg-sunken: #f1efe8;
   --bg-sheet: #ffffff;
-  --line: #d8d8d1;
-  --line-soft: #e4e4de;
+  --line: #d8d8d1;        /* control borders */
+  --line-soft: #e7e5dc;   /* ledger hairlines */
+  --line-strong: #191917; /* chart double rules */
 
   --ink: #191917;
   --ink-dim: #56564f;
-  --ink-faint: #71716c;
+  --ink-faint: #8c8a80;
 
-  /* Accent — interface only. Harmonic function has its own ramps. */
+  /* Accent — interface only (links, active pin, active controls).
+     Harmony has its own ramp; never reuse blue for harmony. */
   --accent: #1d5fa8;
   --accent-bright: #17508f;
   --accent-dim: #7ba3d2;
   --accent-wash: #e6f1fb;
   --on-accent: #ffffff;
 
-  /* Translucent bars sit over scrolling content, so they need the page
-     colour with alpha rather than a surface token. */
-  --header-bg: rgba(250, 250, 248, 0.92);
-  --tabbar-bg: rgba(241, 241, 238, 0.96);
+  --header-bg: rgba(250, 249, 245, 0.92);
+  --tabbar-bg: rgba(241, 239, 232, 0.96);
 
-  /* Diagrams. Key separators are true black in light mode: on white keys
-     a grey hairline disappears at the sizes we render. */
+  /* Diagrams (unchanged palette contract). */
   --key-white: #ffffff;
   --key-black: #3a3a34;
   --key-line: #000000;
@@ -50,53 +93,62 @@
   --key-root: #3fbf95;
   --key-label: #56564f;
 
-  /* Complexity levels: easy → hard. */
+  /* Complexity levels: easy → hard. Rendered as rising BARS, never dots. */
   --lv-1: #639922;
   --lv-2: #ba7517;
   --lv-3: #d85a30;
   --lv-4: #a32d2d;
+  --lv-off: #e0ded4;      /* unfilled bar */
   --on-level: #ffffff;
 
-  /* Harmonic function tinting (backlog item 9): tonic teal, subdominant
-     purple, dominant amber, borrowed coral. Blue stays reserved for the
-     interface accent, so none of these four reuse it. Text colour only —
-     no background pills, to keep the neutral chassis. */
+  /* Harmonic function tints — text colour AND (perform only) subtle fills. */
   --fn-tonic: #1f8a72;
   --fn-subdominant: #7c5cbf;
   --fn-dominant: #b8790c;
   --fn-borrowed: #c9502f;
 
-  /* Type scale — chord symbols are the hero. */
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
+  /* Beats — round dots, neutral. --beat-on follows the local text colour
+     in neutral contexts; perform mode sets it to the chord's function tint. */
+  --beat-dot: 4px;             /* browse/detail size; perform uses 11px */
+  --beat-on: currentColor;
+  --beat-off: var(--lv-off);
+
+  /* Type — three voices, never mixed inside one element:
+     display  = chords, titles, lyric words, editorial prose
+     ui       = controls, buttons, body labels
+     mono     = metadata (ALL CAPS + letter-spacing), always quiet */
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-base: 1rem;
   --fs-md: 1.125rem;
   --fs-lg: 1.375rem;
   --fs-xl: 1.75rem;
-  --fs-chord-card: 1.3rem;
-  --fs-chord-hero: clamp(2.2rem, 9vw, 3.4rem);
-  --fs-chord-perform: clamp(2.6rem, 12vw, 5rem);
+  --fs-meta: 0.656rem;             /* 10.5px mono meta lines */
+  --ls-meta: 0.08em;               /* .1em–.18em as prominence rises */
+  --fs-chord-row: 1.3125rem;       /* ledger chord line */
+  --fs-chord-chart: 2.5rem;        /* detail chart hero */
+  /* Perform NOW/NEXT. min(vw, vh) rather than vw alone: the width-only
+     form produced a 180px chord on a 780×360 landscape stage, where it
+     overflowed its own flex cell and collided with the queue rail above and
+     the NEXT chord below. The vw terms are unchanged, so portrait sizes are
+     exactly as designed; the vh terms only bite when height is the real
+     constraint (landscape, and short portrait windows). */
+  --fs-chord-now: clamp(3.5rem, min(50vw, 42vh), 11.25rem);  /* perform NOW chord */
+  --fs-chord-next: clamp(1.75rem, min(19vw, 14vh), 4.25rem); /* perform NEXT chord */
 
-  /* Spacing */
-  --sp-1: 0.25rem;
-  --sp-2: 0.5rem;
-  --sp-3: 0.75rem;
-  --sp-4: 1rem;
-  --sp-5: 1.5rem;
-  --sp-6: 2rem;
+  /* Spacing (unchanged) */
+  --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem;
+  --sp-4: 1rem; --sp-5: 1.5rem; --sp-6: 2rem;
 
   --radius: 12px;
   --radius-sm: 8px;
   --radius-pill: 999px;
+  --tap: 44px;
 
-  --tap: 44px; /* minimum touch target */
-
-  /* Diagram widths. The SVGs have a viewBox and no width/height, so the cell
-     decides the size and the shape follows from the viewBox. Guitar grids are
-     100×120, keyboards are roughly 198×83, which is why the two need separate
-     widths to end up looking like the same weight of thing. */
   --diagram-guitar-w: 13.5rem;
   --diagram-piano-w: min(26rem, 84vw);
   --diagram-piano-hero-w: min(28rem, 92vw);
@@ -105,23 +157,24 @@
 
   --header-h: 3.25rem;
   --tabbar-h: 3.5rem;
-
-  --shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark. Colour tokens only — sizes, spacing and type are shared. */
+/* Dark = stage mode. Higher contrast than the old dark theme: true near-black
+   stage, chords in warm off-white, chrome receding further. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111112;
-    --bg-raised: #1a1a1c;
-    --bg-sunken: #0b0b0c;
-    --bg-sheet: #1a1a1c;
-    --line: #34343a;
-    --line-soft: #2a2a2c;
+    --bg: #0b0b0c;
+    --bg-raised: #161615;
+    --bg-sunken: #060607;
+    --bg-sheet: #161615;
+    --line: #3a3a37;
+    --line-soft: #232320;
+    --line-strong: #f6f5f0;
 
-    --ink: #f2f2ef;
-    --ink-dim: #a8a8a3;
-    --ink-faint: #8c8c88;
+    --ink: #f6f5f0;
+    --ink-dim: #8f8f89;
+    --ink-faint: #6f6f69;
 
     --accent: #9fc4ee;
     --accent-bright: #c2daf5;
@@ -129,22 +182,21 @@
     --accent-wash: rgba(159, 196, 238, 0.14);
     --on-accent: #0a1a2b;
 
-    --header-bg: rgba(17, 17, 18, 0.92);
-    --tabbar-bg: rgba(11, 11, 12, 0.96);
+    --header-bg: rgba(11, 11, 12, 0.92);
+    --tabbar-bg: rgba(6, 6, 7, 0.96);
 
-    /* Dark mode already has contrast between the keys and the page, so
-       the separator matches the background rather than fighting it. */
     --key-white: #f7f7f4;
     --key-black: #33333a;
-    --key-line: #111112;
+    --key-line: #0b0b0c;
     --key-press: #7fd8b6;
     --key-root: #2fb98d;
-    --key-label: #a8a8a3;
+    --key-label: #8f8f89;
 
     --lv-1: #97c459;
     --lv-2: #ef9f27;
     --lv-3: #f0997b;
     --lv-4: #e24b4a;
+    --lv-off: #2c2c29;
     --on-level: #16160f;
 
     --fn-tonic: #56dab3;
@@ -152,29 +204,24 @@
     --fn-dominant: #f0ac3f;
     --fn-borrowed: #ff8f6b;
 
+    --beat-off: #2c2c29;
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   }
 }
 
-/* Forcing dark from the settings panel (roadmap 0.2) on a device whose OS
-   is set to light: prefers-color-scheme never matches there, so the block
-   above never runs regardless of data-theme. This is the same token set,
-   just reachable without the media query, so "Dark" wins outright rather
-   than only being able to cancel an OS dark mode back to light. Keep the
-   two blocks' values in sync by hand — same reason the media query above
-   duplicates rather than shares with this one: CSS custom properties can't
-   be composed across a media query boundary. */
+/* Manual dark override — keep byte-identical to the media-query block. */
 :root[data-theme="dark"] {
-  --bg: #111112;
-  --bg-raised: #1a1a1c;
-  --bg-sunken: #0b0b0c;
-  --bg-sheet: #1a1a1c;
-  --line: #34343a;
-  --line-soft: #2a2a2c;
+  --bg: #0b0b0c;
+  --bg-raised: #161615;
+  --bg-sunken: #060607;
+  --bg-sheet: #161615;
+  --line: #3a3a37;
+  --line-soft: #232320;
+  --line-strong: #f6f5f0;
 
-  --ink: #f2f2ef;
-  --ink-dim: #a8a8a3;
-  --ink-faint: #8c8c88;
+  --ink: #f6f5f0;
+  --ink-dim: #8f8f89;
+  --ink-faint: #6f6f69;
 
   --accent: #9fc4ee;
   --accent-bright: #c2daf5;
@@ -182,20 +229,21 @@
   --accent-wash: rgba(159, 196, 238, 0.14);
   --on-accent: #0a1a2b;
 
-  --header-bg: rgba(17, 17, 18, 0.92);
-  --tabbar-bg: rgba(11, 11, 12, 0.96);
+  --header-bg: rgba(11, 11, 12, 0.92);
+  --tabbar-bg: rgba(6, 6, 7, 0.96);
 
   --key-white: #f7f7f4;
   --key-black: #33333a;
-  --key-line: #111112;
+  --key-line: #0b0b0c;
   --key-press: #7fd8b6;
   --key-root: #2fb98d;
-  --key-label: #a8a8a3;
+  --key-label: #8f8f89;
 
   --lv-1: #97c459;
   --lv-2: #ef9f27;
   --lv-3: #f0997b;
   --lv-4: #e24b4a;
+  --lv-off: #2c2c29;
   --on-level: #16160f;
 
   --fn-tonic: #56dab3;
@@ -203,8 +251,10 @@
   --fn-dominant: #f0ac3f;
   --fn-borrowed: #ff8f6b;
 
+  --beat-off: #2c2c29;
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
+
 
 /* ------------------------------------------------------------------ */
 /* Base                                                                */
@@ -2092,7 +2142,12 @@ a.chord-note.note-link:focus-visible {
 
 @media (min-width: 700px) {
   .solo-scale-grid {
-    grid-template-columns: repeat(3, 1fr);
+    /* minmax(0, 1fr), not 1fr: a bare 1fr track keeps its automatic
+       min-content minimum, so the non-wrapping note chips inside each card
+       forced the three columns wider than the grid and pushed 270px of
+       horizontal scroll onto the page at 780×360. Pre-existing; it bites
+       between roughly 700px and 900px wide, which includes landscape phone. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -2143,7 +2198,11 @@ a.chord-note.note-link:focus-visible {
 
 /* Smaller than the tab's hero piano (.lib-piano-cell) — three of these sit
    side by side in the card grid on wider screens. */
-.solo-scale-piano-cell {
+/* Needs .diagram-cell.piano beaten on specificity, not just source order:
+   that rule sets width to --diagram-piano-w, which is sized against the
+   viewport and has no idea it is sitting inside a narrow grid card. The
+   cap alone was hiding it while the grid columns happened to be wide. */
+.diagram-cell.piano.solo-scale-piano-cell {
   width: 100%;
   max-width: 18rem;
   margin: var(--sp-2) 0 0;
@@ -2779,6 +2838,11 @@ body[data-route="scales"] .instrument-toggle {
 
 .build-name {
   flex: 1;
+  /* A flex item defaults to min-width:auto, so this input refused to shrink
+     below its intrinsic width and pushed the Save button off the side of a
+     360px screen (17px of horizontal page scroll). Pre-existing; fixed here
+     because 360×780 is the width this app is designed at. */
+  min-width: 0;
   min-height: var(--tap);
   padding: 0 var(--sp-3);
   border: 1px solid var(--line);
@@ -2790,6 +2854,7 @@ body[data-route="scales"] .instrument-toggle {
 }
 
 .build-save-btn {
+  flex: none;
   min-height: var(--tap);
   padding: 0 var(--sp-4);
   border-radius: var(--radius-sm);
@@ -3469,6 +3534,1132 @@ body[data-words="off"] .word-banner {
 body[data-words="on"] .perform-legend {
   display: none;
 }
+
+
+/* ================================================================== */
+/* FAKE BOOK — the 2026-08 redesign (design-system/STYLEGUIDE.md).      */
+/*                                                                      */
+/* This block comes AFTER the older component rules on purpose. Where   */
+/* it restyles something that already existed (.app-name, .search-box,  */
+/* .perform-grid…) it wins on source order at equal specificity, so the */
+/* old rules stay put as the record of what the app used to look like   */
+/* rather than being surgically unpicked. Anything genuinely deleted    */
+/* (STYLEGUIDE §5.7) is hidden here explicitly and noted.               */
+/*                                                                      */
+/* It stops short of the .fn-* tint block, which must remain the very   */
+/* last thing in the file — see that block's own banner for why.        */
+/* ================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* The three type voices (STYLEGUIDE §3)                                */
+/*                                                                      */
+/* display = chords, titles, lyric words, editorial prose               */
+/* ui      = buttons, section labels, body copy                         */
+/* meta    = metadata, counts, captions — ALWAYS uppercase, always quiet */
+/*                                                                      */
+/* Never mixed inside one element. The rule of thumb: if the eye should  */
+/* land on it, display; if you act on it, ui; if you only consult it,    */
+/* meta.                                                                */
+/* ------------------------------------------------------------------ */
+
+.meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: var(--ls-meta);
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Moods read as words, not codes, so they opt out of the caps (§5.1). */
+.meta-lower {
+  text-transform: lowercase;
+}
+
+.meta-sep {
+  opacity: 0.55;
+}
+
+/* A complexity level named rather than drawn — the detail view's "G1",
+   the one screen where reading the level beats counting bars. */
+.meta-level {
+  font-weight: 700;
+}
+.meta-level.lv-1 { color: var(--lv-1); }
+.meta-level.lv-2 { color: var(--lv-2); }
+.meta-level.lv-3 { color: var(--lv-3); }
+.meta-level.lv-4 { color: var(--lv-4); }
+
+/* App title: Newsreader italic, the "C" in the interface accent. */
+.app-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Difficulty = rising bars (STYLEGUIDE §4) — js/ui/symbols.js          */
+/*                                                                      */
+/* Bottom-aligned so the ramp reads as "rising" rather than "centred".  */
+/* The height ladder is per-position, not per-instrument, so guitar's   */
+/* three bars and piano's four finish at the same 11px and the two      */
+/* never look like differently-sized controls next to each other.       */
+/* ------------------------------------------------------------------ */
+
+.level-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+  flex: none;
+}
+
+.level-bar {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--lv-off);
+}
+
+/* Three-bar (guitar) ladder. */
+.level-bar:nth-child(1) { height: 5px; }
+.level-bar:nth-child(2) { height: 8px; }
+.level-bar:nth-child(3) { height: 11px; }
+/* Four-bar (piano) ladder — same 5→11 span, one extra step. */
+.level-bars:has(.level-bar:nth-child(4)) .level-bar:nth-child(1) { height: 5px; }
+.level-bars:has(.level-bar:nth-child(4)) .level-bar:nth-child(2) { height: 7px; }
+.level-bars:has(.level-bar:nth-child(4)) .level-bar:nth-child(3) { height: 9px; }
+.level-bars:has(.level-bar:nth-child(4)) .level-bar:nth-child(4) { height: 11px; }
+
+.level-bars.lv-1 .level-bar.on { background: var(--lv-1); }
+.level-bars.lv-2 .level-bar.on { background: var(--lv-2); }
+.level-bars.lv-3 .level-bar.on { background: var(--lv-3); }
+.level-bars.lv-4 .level-bar.on { background: var(--lv-4); }
+
+/* ------------------------------------------------------------------ */
+/* Beats = round dots (STYLEGUIDE §4) — js/ui/symbols.js                */
+/*                                                                      */
+/* --beat-on is `currentColor`, so a wrapper carrying a .fn-* class      */
+/* tints its dots to the chord's harmonic function automatically, and    */
+/* body[data-tint="off"] un-tints them in the same breath without this   */
+/* file knowing the toggle exists.                                       */
+/* ------------------------------------------------------------------ */
+
+.beat-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.beat-dot {
+  width: var(--beat-dot);
+  height: var(--beat-dot);
+  border-radius: 50%;
+  background: var(--beat-off);
+}
+
+.beat-dot.on {
+  background: var(--beat-on);
+}
+
+/* The stage draws the same dots much larger, and further apart so they
+   stay countable at arm's length. */
+.beat-dots-lg {
+  gap: 10px;
+}
+.beat-dots-lg .beat-dot {
+  width: 11px;
+  height: 11px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Control pills (STYLEGUIDE §5.5)                                      */
+/*                                                                      */
+/* Mono voice, hairline border, quiet until active. The visual is small; */
+/* the hitbox is padded out to the 44px minimum with a pseudo-element    */
+/* rather than by inflating the pill, so a row of them stays tight.      */
+/* ------------------------------------------------------------------ */
+
+.pill {
+  position: relative;
+  /* Resets, not decoration: several controls that become pills carry older
+     single-class rules of equal specificity (.filter-toggle min-height,
+     .roulette-btn width:100%, .audio-toggle background). Declaring the same
+     properties here lets source order settle it, so a pill is a pill
+     wherever it is applied. */
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Minimum tap target without changing the drawn size (§7). */
+.pill::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--tap);
+  transform: translateY(-50%);
+}
+
+.pill:hover,
+.pill:focus-visible {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.pill:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* A pill that is only a glyph (the dice, the cog) — square, no tracking. */
+.pill-icon {
+  padding: 7px 9px;
+  letter-spacing: 0;
+}
+
+/* The primary play control: a filled circle, the one solid shape on the
+   page. Ink on paper in light, paper on ink in dark — it inverts with the
+   theme because --ink/--bg already do. */
+.play-circle {
+  position: relative;
+  /* Same reason as .pill above — .audio-play-btn sets min-width/min-height
+     to the 44px tap target, which would round this up from the 40px the
+     design calls for. The ::after below restores the hitbox. */
+  min-width: 0;
+  min-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.play-circle::after {
+  content: "";
+  position: absolute;
+  inset: 50% 50%;
+  width: var(--tap);
+  height: var(--tap);
+  transform: translate(-50%, -50%);
+}
+
+.play-circle.active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* A stepper (− 96 +) reads as one pill with two tap zones inside it. */
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.stepper button {
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ink-dim);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepper button:hover,
+.stepper button:focus-visible {
+  color: var(--ink);
+  background: var(--bg-sunken);
+}
+
+.stepper .stepper-value {
+  min-width: 3.6em;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hoard — the ledger (STYLEGUIDE §5.2)                                 */
+/*                                                                      */
+/* Hairline-separated rows straight on the page: no card boxes, no      */
+/* chips, no left stripe. The rows run edge to edge, so the view's own  */
+/* horizontal padding is dropped on this route and each row carries its */
+/* own instead — that's what lets the hairlines reach the screen edges. */
+/* ------------------------------------------------------------------ */
+
+body[data-route="hoard"] .view {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+.hoard-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-5) var(--sp-1);
+}
+
+.hoard-search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: 0 var(--sp-5);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.hoard-search-glyph {
+  flex: none;
+  color: var(--ink-faint);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* The search field loses its box entirely — the hairline under the row is
+   the field. Keeps the top of the list quiet so the first row is the first
+   thing the eye lands on. */
+.hoard-search .search-box {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: var(--sp-2) 0;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+}
+
+.hoard-search .search-box:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.hoard-search .search-box::placeholder {
+  color: var(--ink-faint);
+}
+
+/* Focus has to stay visible for keyboard users even though the field has
+   no box: the hairline thickens and takes the accent instead. */
+.hoard-search:focus-within {
+  border-bottom-color: var(--accent);
+  box-shadow: 0 1px 0 0 var(--accent);
+}
+
+.hoard-count {
+  padding: var(--sp-3) var(--sp-5) var(--sp-1);
+}
+
+.ledger {
+  display: block;
+}
+
+.ledger-row {
+  display: block;
+  padding: 12px var(--sp-5);
+  border-bottom: 1px solid var(--line-soft);
+  color: inherit;
+  text-decoration: none;
+}
+
+.ledger-row:hover,
+.ledger-row:focus-visible {
+  background: var(--bg-sunken);
+  outline: none;
+}
+
+.ledger-row:focus-visible {
+  box-shadow: inset 3px 0 0 0 var(--accent);
+}
+
+.ledger-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.ledger-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.ledger-marks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+/* The chord line. min-width on each chord keeps the rhythm even whatever
+   the symbol length: "C  G  Am  F" and "E♭  Cm  A♭add9  B♭" sit on the
+   same tick spacing instead of one row looking crowded (§5.2). */
+.ledger-chords {
+  margin: 3px 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 18px;
+  row-gap: 2px;
+  font-family: var(--font-display);
+  font-size: var(--fs-chord-row);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.ledger-chords > span {
+  min-width: 24px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Detail — chart hero (STYLEGUIDE §5.3)                                */
+/*                                                                      */
+/* A bar-line chart between two strong rules. The barlines are CSS       */
+/* borders, NOT "|" and "‖" glyphs: Newsreader contains neither U+2016   */
+/* nor the accidentals (see the @font-face banner), so a glyph barline    */
+/* would silently fall back to a different typeface and sit at a          */
+/* different weight from the chords beside it. Borders also let the       */
+/* repeat sign be drawn properly — thin rule, thick rule, two dots.       */
+/* ------------------------------------------------------------------ */
+
+.chart {
+  margin: var(--sp-3) var(--sp-4) var(--sp-2);
+  border-top: 2px solid var(--line-strong);
+  border-bottom: 2px solid var(--line-strong);
+  padding: 14px 0 12px;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chart::-webkit-scrollbar {
+  display: none;
+}
+
+.chart-bar {
+  flex: 1 1 0;
+  min-width: 4.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-left: 1px solid var(--line);
+}
+
+.chart-bar:first-of-type {
+  border-left: 0;
+}
+
+.chart-symbol {
+  font-family: var(--font-display);
+  font-size: var(--fs-chord-chart);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.chart-numeral {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: var(--ls-meta);
+  color: var(--ink-faint);
+}
+
+/* End repeat — a thin rule, a thick rule and two dots, drawn rather than
+   typed. Sits flush to the chart's own top and bottom rules. */
+.chart-repeat {
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding-left: 8px;
+}
+
+.chart-repeat-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.chart-repeat-dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.chart-repeat-thin {
+  width: 1px;
+  align-self: stretch;
+  background: var(--line-strong);
+}
+
+.chart-repeat-thick {
+  width: 4px;
+  align-self: stretch;
+  background: var(--line-strong);
+}
+
+/* Playback fills the sounding bar's dots and lifts its symbol. */
+.chart-bar.sounding .chart-symbol {
+  text-shadow: 0 0 0 currentColor;
+}
+
+/* Lyric words sit ABOVE the chart on this view: the chart is what you're
+   playing, the words are what you're singing over it (§5.4). */
+.detail-words {
+  margin: 0 var(--sp-4);
+}
+
+/* ------------------------------------------------------------------ */
+/* Detail — fold rows (STYLEGUIDE §5.4)                                 */
+/*                                                                      */
+/* Progressive disclosure: label, a meta summary of what's inside, and a */
+/* chevron. Built on <details>/<summary> so keyboard and screen-reader   */
+/* behaviour comes from the platform rather than from ARIA bookkeeping.  */
+/* ------------------------------------------------------------------ */
+
+.fold {
+  border-top: 1px solid var(--line-soft);
+  margin: 0 var(--sp-4);
+}
+
+.fold:last-of-type {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.fold > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: var(--tap);
+  padding: 13px 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.fold > summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.fold-label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.fold-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  max-width: 55%;
+}
+
+.fold-summary .meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fold-chevron {
+  flex: none;
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.fold[open] .fold-chevron {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold-chevron {
+    transition: none;
+  }
+}
+
+.fold-body {
+  padding: 0 0 var(--sp-4);
+}
+
+/* Editorial prose is display voice — the one long-form reading on the
+   page, and the only place the serif gets to behave like body text. */
+.fold-body .bandstand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.96875rem;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+
+/* Perform CTA: a full-width dark bar, pinned after the last fold. */
+.perform-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 48px;
+  margin: var(--sp-4) var(--sp-4) var(--sp-5);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.perform-cta:hover,
+.perform-cta:focus-visible {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Detail top matter. */
+.detail-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.detail-head-new {
+  padding: var(--sp-1) var(--sp-4) 0;
+}
+
+.detail-transport {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+/* ------------------------------------------------------------------ */
+/* Perform — the teleprompter (STYLEGUIDE §5.6)                         */
+/*                                                                      */
+/* One chord is the subject of the screen; everything else is context    */
+/* arranged around it. The whole progression no longer has to fit, so    */
+/* the old fit-to-viewport shrink loop is gone — clamp() sizes the NOW   */
+/* chord and only a long symbol needs measuring (see perform.js).        */
+/* ------------------------------------------------------------------ */
+
+.stage {
+  /* NO position here. .stage is applied alongside .perform-full, whose
+     position:fixed + inset:0 IS the full-viewport takeover and is also what
+     .stage-rail positions itself against. A "position: relative" here would
+     be a later rule of equal specificity and would quietly cancel both. */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stage-title-block {
+  flex: none;
+  text-align: center;
+  padding: var(--sp-4) var(--sp-4) 0;
+}
+
+.stage-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stage-meta {
+  margin-top: 3px;
+  letter-spacing: 0.18em;
+}
+
+/* The wake indicator rides with the meta line rather than floating in a
+   corner: it's a footnote about the device, not about the music. */
+.stage-wake {
+  margin-left: 0.6em;
+  color: var(--accent-dim);
+}
+
+/* Queue rail — every chord in the progression down the left edge, the
+   current one at full strength with a function-tinted rule beside it.
+   Absolutely positioned so it never competes with the NOW chord for
+   vertical space; tap an entry to jump there. */
+.stage-rail {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  pointer-events: auto;
+}
+
+.stage-rail-item {
+  display: block;
+  padding: 2px 0 2px 10px;
+  margin-left: -13px;
+  border-left: 3px solid transparent;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0.55;
+  cursor: pointer;
+  text-align: left;
+}
+
+.stage-rail-item.current {
+  opacity: 1;
+  border-left-color: currentColor;
+}
+
+/* A long progression would otherwise run the rail off the top and bottom
+   of the screen; past eight chords it tightens rather than overflowing. */
+.stage-rail.dense {
+  gap: 10px;
+}
+.stage-rail.dense .stage-rail-item {
+  font-size: 1.125rem;
+}
+
+/* NOW + NEXT together. A column in portrait (identical to the stacking
+   before this wrapper existed) and a row in landscape, which is the whole
+   reason it exists — see the landscape block below. */
+.stage-centre {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-now {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 var(--sp-4);
+}
+
+.stage-chord {
+  font-family: var(--font-display);
+  font-size: var(--perform-now-fs, var(--fs-chord-now));
+  font-weight: 700;
+  line-height: 0.95;
+  white-space: nowrap;
+  color: var(--ink);
+  border-bottom: 5px solid currentColor;
+  padding: 0 14px 6px;
+}
+
+/* The underline takes the harmony colour while the symbol itself stays
+   --ink: on a near-black stage the chord must be the brightest thing on
+   screen, so the tint moves to the rule under it rather than dimming the
+   symbol (§4 allows tint on underline/dots in perform). The .fn-* class
+   sits on .stage-chord, so its border-bottom picks the function colour up
+   through currentColor; this inner span then pulls the glyph itself back
+   to full-strength ink. */
+.stage-chord-text {
+  color: var(--ink);
+}
+
+.stage-beats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.stage-beats-label {
+  letter-spacing: 0.16em;
+}
+
+.stage-shape {
+  margin-top: 6px;
+  width: 96px;
+  max-width: 30vw;
+}
+
+.stage-shape svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* No room for a chord diagram on a short viewport — the chord itself
+   always wins the space. */
+@media (max-height: 700px) {
+  .stage-shape {
+    display: none;
+  }
+}
+
+.stage-next {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding-bottom: var(--sp-2);
+}
+
+.stage-next-label {
+  letter-spacing: 0.22em;
+  color: var(--ink-faint);
+  opacity: 0.8;
+}
+
+.stage-next-chord {
+  font-family: var(--font-display);
+  font-size: var(--fs-chord-next);
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.stage-words {
+  flex: none;
+  text-align: center;
+  padding: 0 var(--sp-4) 10px;
+}
+
+/* Control bar — hairline-topped, mono, and it gets out of the way while
+   something is running (see .stage-controls.hidden below). */
+.stage-controls {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-2);
+  border-top: 1px solid var(--line-soft);
+  margin: 0 14px;
+  padding: 10px 4px calc(14px + env(safe-area-inset-bottom, 0px));
+  transition: opacity 0.4s ease;
+}
+
+.stage-controls button,
+.stage-controls a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.stage-controls button:hover,
+.stage-controls a:hover,
+.stage-controls button:focus-visible,
+.stage-controls a:focus-visible {
+  color: var(--ink);
+}
+
+.stage-controls .pill {
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.stage-controls .stage-nav.disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* Auto-hide after four idle seconds of playback (§5.6). Never while idle,
+   and never at all under prefers-reduced-motion — there it simply stays. */
+.stage-controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-controls {
+    transition: none;
+  }
+}
+
+/* Landscape: the rail becomes a strip across the top, and NEXT moves
+   alongside NOW instead of below it (§5.6). */
+@media (orientation: landscape) and (max-height: 520px) {
+  /* Landscape has to pay for the title, the horizontal rail, the words and
+     the control bar out of 360px of height, which leaves roughly 145px for
+     the chord. The portrait clamp (sized against width) lands well above
+     that and the chord overflows its own flex cell into the rail above and
+     NEXT below, so landscape sizes against height directly. NEXT keeps the
+     ~40% relationship the design asks for. */
+  :root {
+    --fs-chord-now: clamp(3rem, 30vh, 7rem);
+    --fs-chord-next: clamp(1.25rem, 12vh, 2.75rem);
+  }
+
+  .stage-title-block {
+    padding-top: var(--sp-2);
+  }
+
+  .stage-rail {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 4px var(--sp-4) 0;
+  }
+  .stage-rail-item {
+    margin-left: 0;
+    padding: 0 0 3px;
+    border-left: 0;
+    border-bottom: 3px solid transparent;
+    font-size: 1.125rem;
+  }
+  .stage-rail-item.current {
+    border-bottom-color: currentColor;
+  }
+  .stage-centre {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6%;
+    /* The NOW block is chord + beat dots, so it is not the chord alone that
+       gets centred here — the chord rides above centre and can graze the
+       rail. A little clearance costs nothing at this size. */
+    padding-top: 10px;
+  }
+  .stage-now {
+    flex: 0 1 auto;
+  }
+  .stage-next {
+    flex: 0 0 auto;
+    padding-bottom: 0;
+  }
+  .stage-shape {
+    display: none;
+  }
+}
+
+
+/* Instrument toggle as the GTR|PNO mono pill (§5.2). Same control, same
+   behaviour — it just stops shouting in sentence case. */
+.instrument-toggle {
+  background: none;
+}
+
+.instrument-toggle button {
+  min-height: 1.9rem;
+  min-width: 0;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* The pin inside a ledger row keeps its full 44px hitbox but draws small,
+   so a three-line row isn't stretched to button height (§7: pad the
+   hitbox, not the visual). */
+.ledger-marks .pin-btn {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.ledger-marks .pin-btn::after {
+  content: "";
+  position: absolute;
+  inset: 50% 50%;
+  width: var(--tap);
+  height: var(--tap);
+  transform: translate(-50%, -50%);
+}
+
+.ledger-marks .pin-btn:hover,
+.ledger-marks .pin-btn:focus-visible {
+  background: none;
+  color: var(--ink);
+}
+
+.ledger-marks .pin-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Filter sheet: group headings in the meta voice (§6). */
+.filter-group h3.meta {
+  margin: 0 0 var(--sp-2);
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Views not yet redesigned (STYLEGUIDE §6)                             */
+/*                                                                      */
+/* Chords, Scales, Build, Songs and Setlists keep their existing        */
+/* layouts — they are not part of this pass — but they adopt the type   */
+/* voices, so a chord symbol looks like a chord symbol everywhere in    */
+/* the app. Without this the Hoard and the stage would be set in        */
+/* Newsreader while the Chords tab stayed in system sans, which reads   */
+/* as two different apps rather than one unfinished one.                */
+/*                                                                      */
+/* Font family and weight only. No layout, spacing or colour is touched */
+/* here, so nothing in those views can move as a side effect.           */
+/* ------------------------------------------------------------------ */
+
+/* Anything that IS a chord symbol, a note name or a Roman numeral. */
+.chord-hero-symbol,
+.chord-note,
+.dest-symbol,
+.dest-numeral,
+.degree-symbol,
+.degree-numeral,
+.visitor-symbol,
+.build-chip-symbol,
+.build-chip-numeral,
+.build-sug-symbol,
+.song-slot-chords,
+.song-slot-numerals,
+.song-suggest-numerals {
+  font-family: var(--font-display);
+}
+
+/* The Chords tab hero is the same kind of object as the stage's NOW
+   chord, so it takes the same weight. */
+.chord-hero-symbol {
+  font-weight: 700;
+}
+
+/* View titles match the redesigned views' serif italic. */
+.scale-name,
+.builder-title,
+.song-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* Captions and secondary lines that were already quiet become the meta
+   voice properly, rather than small sans that now sits oddly against the
+   mono metadata used everywhere else. */
+.build-saved-meta,
+.scale-notes-hint,
+.chord-hero-quality {
+  font-family: var(--font-mono);
+  letter-spacing: var(--ls-meta);
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ */
+/* Deleted in the redesign (STYLEGUIDE §5.7)                            */
+/*                                                                      */
+/* Hidden rather than deleted from the file: these rules are still the   */
+/* record of the previous design, and several of the classes are still  */
+/* produced by views not yet redesigned (Chords, Scales, Build, Songs), */
+/* where the chip/tag look is still doing a job. Only the surfaces the  */
+/* redesign actually covers switch them off.                            */
+/* ------------------------------------------------------------------ */
+
+/* Meta chips and mood pills never appear in a list any more — the meta
+   line says the same thing in a quarter of the height. */
+.ledger-row .chip.static,
+.ledger-row .mood-tag {
+  display: none;
+}
+
+/* The full-width "Surprise me" pill is now the 🎲 beside the search field. */
+.roulette-row {
+  display: none;
+}
+
+/* Inline tint legends are gone everywhere (§4): the views that rendered
+   them no longer call legendCaption(), and js/ui/app.js buildSettingsPanel()
+   keeps the single remaining copy. The .perform-legend variant and the
+   words/legend row-swap it took part in went with the 2×2 grid. */
+.perform-legend,
+body[data-words="on"] .perform-legend,
+body[data-words="off"] .perform-legend {
+  display: none;
+}
+
 
 /* ------------------------------------------------------------------ */
 /* Harmonic function tinting (backlog item 9) — js/ui/function-tint.js  */

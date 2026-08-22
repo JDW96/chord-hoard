@@ -28,7 +28,7 @@ import { DIATONIC_NUMERALS, isDiatonic } from "../engine/harmony.js";
 import * as audioPlayer from "./audio-player.js";
 import { state, registerBuiltEntry, unregisterBuiltEntry } from "./app.js";
 import { MAJOR_FAMILY_TONICS, MINOR_FAMILY_TONICS } from "./detail.js";
-import { tintClass, legendCaption } from "./function-tint.js";
+import { tintClass } from "./function-tint.js";
 import { builtEntries, saveBuilt, deleteBuilt, newBuiltId } from "./built.js";
 import {
   el,
@@ -230,7 +230,6 @@ function draw(section, moves, redraw) {
         : "Start with…"
     )
   );
-  sugHost.appendChild(legendCaption());
 
   for (const [chillies, label, numerals, blurb] of groups) {
     if (!numerals.length) continue;
