@@ -101,6 +101,56 @@ function keyLabel(entry, tonic) {
   return prettyNote(tonic) + " " + entry.mode;
 }
 
+/**
+ * Size the chart's chord symbols to fit their bars (STYLEGUIDE §5.3).
+ *
+ * Bars are equal-width flex cells, so a six-character symbol (A♭add9,
+ * B♭maj7) at the designed 40px rendered around 142px inside a 68px bar and
+ * spilled over its neighbours' barlines — that is the "too big" Jack saw.
+ *
+ * ONE size is applied to every bar, computed from whichever symbol is
+ * tightest, rather than shrinking each symbol independently. Per-symbol
+ * fitting does fix the overflow, but it puts a 16px chord next to a 40px one
+ * and the chart stops reading as a chart — the even type is most of what
+ * makes a row of bars look engraved rather than accidental.
+ *
+ * Measured rather than derived from character count on purpose: accidentals
+ * fall back to a different typeface (Newsreader has no ♭/♯), so counting
+ * characters would mis-predict the real width. Measuring gets that for free.
+ *
+ * Below MIN_CHART_FS the chart stops shrinking and scrolls instead — past
+ * that point the type is doing more harm than the scroll is.
+ */
+const MIN_CHART_FS = 20;
+
+function fitChartSymbols(chart) {
+  const symbols = [...chart.querySelectorAll(".chart-symbol")];
+  if (!symbols.length) return;
+  for (const s of symbols) s.style.removeProperty("font-size");
+
+  const base = parseFloat(getComputedStyle(symbols[0]).fontSize);
+  if (!base) return;
+
+  let ratio = 1;
+  for (const symbol of symbols) {
+    const bar = symbol.closest(".chart-bar");
+    const available = bar.clientWidth - 10;
+    const width = symbol.getBoundingClientRect().width;
+    if (available <= 0 || !width) continue;
+    ratio = Math.min(ratio, available / width);
+  }
+  if (ratio >= 1) return;
+
+  const size = Math.max(MIN_CHART_FS, Math.floor(base * ratio));
+  for (const s of symbols) s.style.fontSize = size + "px";
+
+  // A long progression (a 12-bar blues runs to nine bars) still cannot fit a
+  // phone at readable type, so the chart scrolls — and the scrollbar is
+  // hidden, which would leave that completely undiscoverable. Flag it so CSS
+  // can fade the right edge, the one hint that there is more chart to see.
+  chart.classList.toggle("scrollable", chart.scrollWidth > chart.clientWidth + 1);
+}
+
 // ---------------------------------------------------------------------------
 // Fold rows (STYLEGUIDE §5.4)
 //
@@ -194,10 +244,19 @@ export function render(container, params) {
   // under any in-flight playback), so every redraw stops it rather than
   // trying to keep old DOM-bound callbacks alive across a rebuild; leaving
   // the route entirely does the same.
+  // Rotating the phone changes every bar's width, so the chart symbols need
+  // re-fitting. Torn down with the rest of the view's listeners.
+  function onResize() {
+    const chart = body.querySelector(".chart");
+    if (chart) fitChartSymbols(chart);
+  }
+  window.addEventListener("resize", onResize);
+
   window.addEventListener(
     "hashchange",
     () => {
       audioPlayer.stopPlayback();
+      window.removeEventListener("resize", onResize);
       if (wordBanner) wordBanner.dispose();
     },
     { once: true }
@@ -614,7 +673,19 @@ export function render(container, params) {
     }
 
     // ---- Performance mode CTA (§5.4) ---------------------------------------
+    // Sticky (see .perform-cta), so it floats above the folds rather than
+    // needing a scroll to the bottom of the page to reach.
     body.appendChild(performLink);
+
+    // Bar widths only exist once the chart is in the document, so the fit
+    // runs here rather than while building. Once now, and again after the
+    // font settles, because a fallback-metrics first paint would measure the
+    // wrong width for any symbol containing an accidental.
+    fitChartSymbols(strip);
+    requestAnimationFrame(() => fitChartSymbols(strip));
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => fitChartSymbols(strip));
+    }
   }
 }
 

@@ -3971,7 +3971,7 @@ body[data-route="hoard"] .view {
 /* ------------------------------------------------------------------ */
 
 .chart {
-  margin: var(--sp-3) var(--sp-4) var(--sp-2);
+  margin: var(--sp-3) 0 var(--sp-2);
   border-top: 2px solid var(--line-strong);
   border-bottom: 2px solid var(--line-strong);
   padding: 14px 0 12px;
@@ -3985,15 +3985,28 @@ body[data-route="hoard"] .view {
   display: none;
 }
 
+/* Set by fitChartSymbols() when the bars genuinely do not fit. Fading the
+   last bar is the only cue that the chart scrolls, since the scrollbar is
+   hidden — without it a 12-bar blues just looks truncated. */
+.chart.scrollable {
+  -webkit-mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+}
+
 .chart-bar {
+  /* Equal bars, independent of what is written in them: that even rhythm is
+     most of what makes the row read as an engraved chart, and it also keeps
+     fitChartSymbols() convergent — bar widths do not move when the type
+     size does. min-width is the escape hatch: once the type floor is hit
+     the bars hold their width and the chart scrolls. */
   flex: 1 1 0;
-  min-width: 4.25rem;
+  min-width: 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 0 6px;
+  padding: 0 4px;
   border-left: 1px solid var(--line);
 }
 
@@ -4153,8 +4166,17 @@ body[data-route="hoard"] .view {
   color: var(--ink-dim);
 }
 
-/* Perform CTA: a full-width dark bar, pinned after the last fold. */
+/* Perform CTA: a full-width dark bar. Sticky, not static (Jack: "make the
+   performance view button floating so you don't have to scroll down for it").
+   Sticky rather than fixed on purpose — it floats above the folds while you
+   read, then settles into its natural place at the end of the page instead
+   of hovering over the last row forever. The offset clears the fixed tab
+   bar and the home indicator. */
 .perform-cta {
+  position: sticky;
+  bottom: calc(var(--tabbar-h) + var(--sp-3) + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  box-shadow: var(--shadow);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4309,6 +4331,12 @@ body[data-route="hoard"] .view {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  /* The rail is absolutely positioned, so without this the chord centres on
+     the whole viewport and a long symbol runs straight under it. Reserving
+     the measured rail width means NOW and NEXT centre in the space that is
+     actually free, and they do it at the SAME offset for every chord, so
+     nothing shifts sideways as the progression advances. */
+  padding-left: var(--stage-rail-w, 0px);
 }
 
 .stage-now {

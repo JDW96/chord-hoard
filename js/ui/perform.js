@@ -4,11 +4,12 @@
 //
 // Full-viewport takeover: the shell hides its header and tab bar via
 // body[data-route="perform"|"perform-song"|"perform-setlist"] (see app.css),
-// and this view pins itself to the viewport. The whole progression must FIT
-// — zero scrolling, portrait or landscape — so we lay chords in a grid whose
-// column count follows the orientation and chord count, then shrink a single
-// font-size variable until nothing overflows. Everything but the chord
-// symbols is deliberately dim.
+// and this view pins itself to the viewport. It is a TELEPROMPTER, not the
+// old 2×2 grid: ONE chord is the subject of the screen, with a queue rail
+// down the left, NEXT below and beats as dots. The whole progression no
+// longer has to fit, so nothing shrinks to accommodate the chord count —
+// clamp() sizes the current chord and only measured geometry (a long symbol,
+// a wide rail) adjusts it, in relayout(). Everything but the chord is dim.
 //
 // Screen Wake Lock: requested on entry, re-acquired when the tab becomes
 // visible again, released on exit. Where unsupported (or refused) we degrade
@@ -758,6 +759,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
               capoBtn.setAttribute("aria-pressed", String(capoMode));
               refreshMeta();
               buildRail();
+              relayout();
               showChord(currentIndex);
             },
           },
@@ -834,18 +836,87 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   // clamp() in --fs-chord-now handles the ordinary case; this only catches a
   // long symbol ("A♭add9") that would run off the side at the clamped size.
   // One measure-and-scale, not the old repeated shrink loop over a grid.
+  /**
+   * Keep the queue rail to a sane share of the stage.
+   *
+   * The rail is as wide as its widest chord, so a progression containing
+   * something like A♭add9 let it take a quarter of a 360px screen — and
+   * since the NOW block reserves the rail's width, every chord then got
+   * squeezed to pay for it. Only shrinks, never grows, and only when the
+   * budget is blown, so short-symbol progressions keep the designed size.
+   *
+   * Set inline rather than through a custom property because the base size
+   * legitimately comes from three different rules (normal, .dense, and the
+   * landscape strip); an inline value beats all of them without this having
+   * to know which one is in play.
+   */
+  function fitRail() {
+    const items = rail.querySelectorAll(".stage-rail-item");
+    if (!items.length) return;
+    items.forEach((n) => n.style.removeProperty("font-size"));
+    // Landscape lays the rail out as a horizontal strip, where width is not
+    // the scarce dimension — leave it to CSS.
+    if (getComputedStyle(rail).position !== "absolute") return;
+    const budget = root.clientWidth * 0.22;
+    const width = rail.offsetWidth;
+    if (!width || width <= budget) return;
+    const base = parseFloat(getComputedStyle(items[0]).fontSize);
+    const next = Math.max(14, Math.floor(base * (budget / width)));
+    items.forEach((n) => (n.style.fontSize = next + "px"));
+  }
+
+  /**
+   * Size the NOW chord to the room it actually has.
+   *
+   * clamp() in --fs-chord-now covers a one- or two-character symbol; this is
+   * what stops a six-character one (A♭add9, B♭maj7) running off both sides
+   * of the screen. Measured per chord rather than once from the longest
+   * symbol in the progression: the whole idea of the teleprompter is that
+   * the current chord fills the screen, and sizing everything down to suit
+   * the worst case would shrink "C" to a third of the space it could have.
+   *
+   * Measured with getBoundingClientRect, NOT scrollWidth: .stage-chord-text
+   * is an inline span (it exists so the glyph can stay --ink while the
+   * underline takes the harmony tint) and scrollWidth is always 0 on inline
+   * elements — which silently disabled this whole function until Jack
+   * spotted the oversized chords.
+   */
   function fitNow() {
     root.style.removeProperty("--perform-now-fs");
-    // Leave the queue rail its own column: a long symbol scaled only to the
-    // full width would centre itself straight over the rail's chords.
-    const railW = rail.offsetWidth || 0;
-    const available = root.clientWidth - 32 - railW * 2;
-    if (available <= 0 || !nowText.scrollWidth) return;
-    const overflow = nowText.scrollWidth / available;
-    if (overflow > 1) {
-      const base = parseFloat(getComputedStyle(nowChord).fontSize);
-      root.style.setProperty("--perform-now-fs", Math.floor(base / overflow) + "px");
+    // The rail's footprint is already reserved as padding on .stage-centre,
+    // so it is subtracted once here, not twice.
+    const available = root.clientWidth - railFootprint() - 16;
+    const textW = nowText.getBoundingClientRect().width;
+    if (available <= 0 || !textW) return;
+    const base = parseFloat(getComputedStyle(nowChord).fontSize);
+    if (textW > available) {
+      root.style.setProperty(
+        "--perform-now-fs",
+        Math.max(40, Math.floor(base * (available / textW))) + "px"
+      );
     }
+  }
+
+  /**
+   * How much of the stage's left edge the rail occupies — its RIGHT edge,
+   * not its width. The rail is inset 16px from the left, so reserving only
+   * its width left the chord overlapping that inset.
+   */
+  function railFootprint() {
+    if (getComputedStyle(rail).position !== "absolute") return 0;
+    return rail.getBoundingClientRect().right - root.getBoundingClientRect().left;
+  }
+
+  /** Publish it so .stage-centre can keep NOW/NEXT clear of the rail. */
+  function syncRailWidth() {
+    root.style.setProperty("--stage-rail-w", railFootprint() + "px");
+  }
+
+  /** One call for everything that depends on measured geometry. */
+  function relayout() {
+    fitRail();
+    syncRailWidth();
+    fitNow();
   }
 
   // ---- Screen Wake Lock ---------------------------------------------------
@@ -874,7 +945,7 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   function cleanup() {
     alive = false;
     window.removeEventListener("hashchange", cleanup);
-    window.removeEventListener("resize", fitNow);
+      window.removeEventListener("resize", relayout);
     document.removeEventListener("visibilitychange", onVisibility);
     root.removeEventListener("pointerdown", onStageTap);
     if (hideTimer) clearTimeout(hideTimer);
@@ -889,12 +960,12 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
   }
 
   window.addEventListener("hashchange", cleanup);
-  window.addEventListener("resize", fitNow);
+  window.addEventListener("resize", relayout);
   document.addEventListener("visibilitychange", onVisibility);
 
-  fitNow();
+  relayout();
   // Fonts and layout settle a tick later; measure once more to be sure.
-  requestAnimationFrame(fitNow);
+  requestAnimationFrame(relayout);
   acquireWakeLock();
 }
 

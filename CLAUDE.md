@@ -1078,6 +1078,33 @@ its checkbox there, and note any new architectural fact here. Landed so far:
     only calls back per chord, so `startBeatFill()` lights one dot per
     `60000/bpm`. It can drift a few ms from the audio clock, the same trade
     the chord highlight has always made.
+  - **Long chord symbols are fitted, not fixed** (Jack, 2026-08-22: "sus
+    chords are too big"). A♭add9 at the designed sizes rendered 142px inside a
+    68px chart bar and 673px on a 360px stage. Two separate fits:
+    `fitChartSymbols()` in detail.js applies ONE size to every bar, computed
+    from whichever symbol is tightest, with a 20px floor past which the chart
+    scrolls (`.chart.scrollable` fades its right edge, since the scrollbar is
+    hidden). Uniform rather than per-symbol on purpose — per-symbol fitting
+    puts a 16px chord next to a 40px one and the row stops reading as an
+    engraved chart. `fitNow()` in perform.js sizes per chord instead, because
+    the teleprompter's whole idea is the current chord filling the screen and
+    sizing everything to the worst case would shrink "C" to a third of the
+    space it could have. Both MEASURE rather than count characters:
+    accidentals fall back to a different typeface, so a character count
+    mis-predicts the real width.
+    `fitNow()` was silently dead until this point — it measured
+    `nowText.scrollWidth`, and `.stage-chord-text` is an inline span, where
+    scrollWidth is always 0. Use getBoundingClientRect() on inline elements.
+    `fitRail()` caps the queue rail at 22% of the stage width, because the
+    rail is as wide as its widest chord and .stage-centre reserves that width
+    — so one long symbol made every chord pay for it. The reservation is the
+    rail's RIGHT EDGE, not its width: it is inset 16px, and reserving only
+    the width left the chord lapping over that inset.
+  - **The Performance mode CTA is sticky**, not static (Jack: "make it
+    floating so you don't have to scroll down for it"). Sticky rather than
+    fixed so it floats above the folds while reading and then settles into
+    its natural place at the end of the page, instead of hovering over the
+    last row forever. Offset clears the fixed tab bar and the home indicator.
   - Tint on the stage moves to the UNDERLINE and the dots, not the glyph:
     the symbol stays `--ink` so it is the brightest thing on a near-black
     screen. `.fn-*` goes on the outer `.stage-chord` (whose border draws in
