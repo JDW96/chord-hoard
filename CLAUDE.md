@@ -1178,7 +1178,56 @@ its checkbox there, and note any new architectural fact here. Landed so far:
     working tree, unregister + delete caches + reload, and re-do that dance
     after every file edit or you measure the SW's snapshot, not your change.
   - `.claude/launch.json` has a second entry, `chord-hoard-alt` on port 8081,
-    so two sessions can run dev servers side by side.
+    so two sessions can run dev servers side by side. A third,
+    `chord-hoard-alt2` on 8082, was added 2026-08-22 for the same reason.
+
+- **Stop actually stops the audio**, 2026-08-22 (Jack: "sometimes when you
+  play the audio it can't be paused without force quitting the app").
+  CACHE_VERSION v36. Two causes, both fixed:
+  - `finish()` in `audio-player.js` cleared its JS timers and called
+    `onStop`, but never touched the audio graph. A note is committed to the
+    AudioContext the moment it is scheduled, so Stop only stopped *new*
+    scheduling: the chord already sounding played out its full duration
+    (nine seconds on a six-beat bar at 40bpm) and a Stop during the count-in
+    let the whole bar of clicks run, because count-in clicks are all
+    scheduled up front rather than through the lookahead loop. The UI said
+    stopped while the music carried on, so the natural response was to tap
+    again — and the button now read Play, which started a fresh playback.
+    Tap, still hear it, tap, still hear it, force quit.
+    Each playback now owns a `bus` gain node (every tone and click routes
+    through it instead of straight to the shared `filter`) and collects its
+    oscillators in a `voices` Set. `silence()` ramps the bus to zero over
+    `FADE_OUT_SEC` (30ms, short enough to feel instant, long enough not to
+    click), stops every oscillator, and disconnects the bus a moment later.
+    Its disconnect timer is deliberately NOT in the view's `timeouts` set —
+    `finish()` clears that set. Auditions (`playChord`) still go straight to
+    the shared filter: the new params default to it, so that path is
+    unchanged.
+  - The stage's Play/Auto buttons toggled on a local `activeControl` flag
+    rather than the player's real state. If `current` was already null —
+    playback ended abnormally, an empty chord list, `ensureContext()`
+    throwing — `stopPlayback()` was a no-op, no `onStop` fired, and the
+    button stayed stuck reading "Stop" with nothing on screen able to
+    un-stick it (performance mode hides the header, so there is no escape
+    hatch). Both stop branches now call their own reset unconditionally; the
+    resets are idempotent. Both handlers also claim their UI state AFTER
+    `playProgression()` returns rather than before, because that call stops
+    whatever was running and fires the old playback's `onStop`
+    **synchronously** — so hot-switching Auto→Play left `playing` false
+    under a running playback, freezing the beat dots and pinning the control
+    bar open. `detail.js` got the same treatment.
+  - Backstop in `app.js`'s `renderRoute()`: a global `stopPlayback()` on
+    every route render, so audio can never outlive the view that started it
+    even if a teardown is missed. The instrument toggle also calls
+    `renderRoute()`, which is harmless — `detail.js`'s `draw()` already
+    stopped playback on every redraw.
+  - Verified in a real browser by patching `AudioContext.prototype.createOscillator`
+    to record every voice's scheduled stop time, then measuring the tail at
+    the moment Stop is pressed: 4.3s of count-in clicks and 5.1s of chord
+    tail both cut to 0.03s. Plus all nine Play/Auto/switch/stop states on the
+    stage, beat dots still filling after a hot-switch, controls still
+    auto-hiding, natural (non-loop) end, looping past a boundary with words
+    rotating, the chord-library audition, and leaving both views mid-playback.
 
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export

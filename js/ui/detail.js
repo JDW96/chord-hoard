@@ -410,12 +410,11 @@ export function render(container, params) {
           click: () => {
             if (audioPlayer.isPlaying()) {
               audioPlayer.stopPlayback();
+              resetAudioUI(); // no-op if it had already ended, so never a stuck ■
               return;
             }
-            playBtn.textContent = "■";
-            playBtn.classList.add("active");
-            playBtn.setAttribute("aria-label", "Stop");
-            playBtn.setAttribute("aria-pressed", "true");
+            // Dress the button only once playback is actually under way — if
+            // the context refuses to start, the button should still read Play.
             audioPlayer.playProgression(rendered.chords, {
               bpm,
               timeSig: entry.timeSig,
@@ -435,6 +434,10 @@ export function render(container, params) {
               },
               onStop: resetAudioUI,
             });
+            playBtn.textContent = "■";
+            playBtn.classList.add("active");
+            playBtn.setAttribute("aria-label", "Stop");
+            playBtn.setAttribute("aria-pressed", "true");
           },
         },
       },

@@ -659,14 +659,17 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
         click: () => {
           if (activeControl === "play") {
             audioPlayer.stopPlayback();
+            // Reset whatever stopPlayback() did. If the player had already
+            // finished, it is a no-op and no onStop fires — which used to
+            // leave the button stuck reading "Stop" with nothing on the
+            // stage able to un-stick it.
+            resetPlayUI();
             return;
           }
-          activeControl = "play";
-          playing = true;
-          playBtn.textContent = "■ Stop";
-          playBtn.classList.add("active");
-          playBtn.setAttribute("aria-label", "Stop");
-          playBtn.setAttribute("aria-pressed", "true");
+          // Claim the state AFTER starting: playProgression() stops whatever
+          // was running first, and that playback's onStop runs synchronously
+          // inside this call. Setting the flags first let the old reset clear
+          // the new run's.
           audioPlayer.playProgression(chords, {
             bpm: autoBpm,
             timeSig: entry.timeSig,
@@ -675,6 +678,12 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
             onLoop: rotateWords,
             onStop: resetPlayUI,
           });
+          activeControl = "play";
+          playing = true;
+          playBtn.textContent = "■ Stop";
+          playBtn.classList.add("active");
+          playBtn.setAttribute("aria-label", "Stop");
+          playBtn.setAttribute("aria-pressed", "true");
           idleHide();
         },
       },
@@ -705,13 +714,9 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
         click: () => {
           if (activeControl === "auto") {
             audioPlayer.stopPlayback();
+            resetAutoUI(); // same self-heal as Play above
             return;
           }
-          activeControl = "auto";
-          playing = true;
-          autoBtn.textContent = "⟳ Stop";
-          autoBtn.classList.add("active");
-          autoBtn.setAttribute("aria-pressed", "true");
           audioPlayer.playProgression(chords, {
             bpm: autoBpm,
             timeSig: entry.timeSig,
@@ -721,6 +726,11 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
             onLoop: rotateWords,
             onStop: resetAutoUI,
           });
+          activeControl = "auto";
+          playing = true;
+          autoBtn.textContent = "⟳ Stop";
+          autoBtn.classList.add("active");
+          autoBtn.setAttribute("aria-pressed", "true");
           idleHide();
         },
       },

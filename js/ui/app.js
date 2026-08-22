@@ -29,6 +29,7 @@ import { openSettingsPanel, settingsRow } from "./settings-panel.js";
 import { legendCaption } from "./function-tint.js";
 import { wordsEnabled, setWordsEnabled, reflectWords } from "./words.js";
 import { downloadBackup, importBackup } from "./backup.js";
+import * as audioPlayer from "./audio-player.js";
 
 // ---------------------------------------------------------------------------
 // Theme override (backlog item 15's second half / roadmap 0.2) — applied
@@ -189,6 +190,12 @@ let dataError = null;
 function renderRoute() {
   const main = document.getElementById("view");
   if (!main) return;
+  // Backstop: nothing may outlive the view that started it. The detail view
+  // and performance mode each stop their own playback on the way out, but if
+  // one of those teardowns is ever missed the sound carries on with no
+  // transport left on screen to stop it — the only way out then is force
+  // quitting the app. Cheap, and a no-op when nothing is playing.
+  audioPlayer.stopPlayback();
   clear(main);
 
   // Set before the loading/error branches: CSS scopes the header instrument
