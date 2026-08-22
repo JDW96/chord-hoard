@@ -890,13 +890,20 @@ function buildPerformanceView(container, { entry, tonic, exitHref, nav, labelPre
     // not twice). Landscape: NOW shares the centre row with NEXT, so NEXT's
     // width and the row gap come out of the budget too — sizing against the
     // full stage width let a long symbol print straight across NEXT.
+    // The budget is for the TEXT, so the chord box's own side padding
+    // (which the underline spans, and which does not scale with the font)
+    // comes off it too — without this the underline printed to the screen
+    // edge and clipped while the glyph technically "fit".
+    const chordStyle = getComputedStyle(nowChord);
+    const chordPad =
+      (parseFloat(chordStyle.paddingLeft) || 0) + (parseFloat(chordStyle.paddingRight) || 0);
     let available;
     if (landscape) {
       const gap = parseFloat(centreStyle.columnGap) || 0;
       const nextW = nextBlock.getBoundingClientRect().width;
-      available = centre.clientWidth - nextW - gap - 32;
+      available = centre.clientWidth - nextW - gap - chordPad - 32;
     } else {
-      available = root.clientWidth - railFootprint() - 16;
+      available = root.clientWidth - railFootprint() - chordPad - 16;
     }
     const textW = nowText.getBoundingClientRect().width;
     if (available <= 0 || !textW) return;
