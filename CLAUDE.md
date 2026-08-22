@@ -1144,6 +1144,42 @@ its checkbox there, and note any new architectural fact here. Landed so far:
     so all layout checking was done against computed styles and geometry
     rather than by eye — a human look at the stage is still worth having.
 
+- **Stage fit and safe-area fixes**, 2026-08-22 (after the redesign shipped).
+  Jack reported "large font renders with artefacts all around it" plus a
+  bottom-heavy stage (big empty bottom, cramped top). Root causes found and
+  fixed (commit 7aa62da, CACHE_VERSION v34):
+  - The "artefacts" were the beat dots: before the v31 wrap fix a 12–24-beat
+    chord sprayed its dots across the rail and off both screen edges, and a
+    STALE SERVICE-WORKER CACHE kept serving that CSS after the fix shipped.
+    When Jack reports graphics that should already be fixed, suspect SW update
+    lag first — the SW needs one visit to fetch the new version and a second
+    to serve it. `.beat-dots` is now a fixed 4-column grid (a width-based
+    flex-wrap broke at a different point in every bar); landscape overrides
+    the stage's large dots to 8 slimmer columns because height is scarce there.
+  - `fitNow()` in perform.js now fits HEIGHT as well as width and uses the
+    landscape width budget (centre row minus NEXT minus gap) — previously the
+    chord glyph overlapped the horizontal rail strip above, the words below,
+    and (long symbols) the NEXT block beside it. The height trim is iterative:
+    the chord's padding/underline are fixed pixels a single proportional
+    shrink always undershoots.
+  - The top of the stage never paid `env(safe-area-inset-top)` while the
+    bottom always did (on .stage-controls) — with viewport-fit=cover the
+    installed app put the title under the notch: cramped above, roomy below.
+    `.stage` also pays the side insets for the landscape camera cutout, and
+    `.stage-words` drops the 12px margin it inherited from `.word-banner`.
+  - Verification technique when no compositing/screenshots are available:
+    DOM-geometry sweeps via the browser pane's JS tool — pairwise overlap
+    checks (chord/rail/NEXT/words/controls/dots) over the library's worst
+    cases (24-beat chords, 15-chord rails, A♭add9) at 360×780 and 780×360,
+    page-overflow/zero-size-control checks per route (ignore elements inside
+    overflow-x scrollers — the diagram strips overflow by design), and a
+    colour-vs-effective-background audit in both themes. IMPORTANT: app.js
+    re-registers the service worker on every load, so before measuring the
+    working tree, unregister + delete caches + reload, and re-do that dance
+    after every file edit or you measure the SW's snapshot, not your change.
+  - `.claude/launch.json` has a second entry, `chord-hoard-alt` on port 8081,
+    so two sessions can run dev servers side by side.
+
 - [ ] **Phase 5** — GitHub repo + Pages deploy (user creates account; walk them through)
 - v2 backlog: shareable song-structure links, MIDI export
 
